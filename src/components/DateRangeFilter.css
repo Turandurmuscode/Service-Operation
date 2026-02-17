@@ -1,0 +1,44 @@
+.date-range-filter {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.date-range-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.date-range-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.date-range-btn.active {
+  background: var(--accent-dim);
+  border-color: rgba(232,160,32,0.4);
+  color: var(--accent);
+}
+
+.date-range-btn svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .date-range-filter { gap: 6px; }
+  .date-range-btn { font-size: 11px; padding: 6px 10px; }
+}

@@ -1,0 +1,91 @@
+.dashboard-widgets {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  padding: 24px 32px 0;
+  max-width: 1600px;
+}
+
+.widget {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+}
+
+.widget::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+}
+
+.widget:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.widget-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.widget-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.widget-title {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.widget-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.widget-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.widget-success .widget-icon { background: var(--success-dim); color: var(--success); }
+.widget-warning .widget-icon { background: var(--warning-dim); color: var(--warning); }
+.widget-danger  .widget-icon { background: var(--danger-dim);  color: var(--danger); }
+.widget-info    .widget-icon { background: var(--info-dim);    color: var(--info); }
+.widget-accent  .widget-icon { background: var(--accent-dim);  color: var(--accent); }
+.widget-primary .widget-icon { background: var(--info-dim);    color: var(--info); }
+
+@media (max-width: 1400px) {
+  .dashboard-widgets { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-widgets { grid-template-columns: repeat(2, 1fr); padding: 16px 16px 0; }
+}
+
+@media (max-width: 768px) {
+  .dashboard-widgets { grid-template-columns: repeat(2, 1fr); }
+}
