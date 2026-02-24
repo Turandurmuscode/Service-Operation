@@ -1,34 +1,45 @@
 import React, { useState } from 'react';
 import ClientsGrid from '../components/ClientsGrid';
 import ClientForm from '../components/ClientForm';
-import ClientModal from '../components/ClientModal';
+import ClientDetailPage from './ClientDetailPage';
 
-function ClientsPage({ 
-  clients, 
-  incidents, 
-  addClient, 
+function ClientsPage({
+  clients,
+  incidents,
+  addClient,
   setClients,
-  addClientNote 
+  addClientNote,
+  showToast,
 }) {
   const [showForm, setShowForm] = useState(false);
-  const [selectedClient, setSelectedClient] = useState(null);
+  const [detailClient, setDetailClient] = useState(null);
 
   const toggleFavorite = (clientId) => {
-    const updatedClients = clients.map(client => {
-      if (client.id === clientId) {
-        return { ...client, favorite: !client.favorite };
-      }
-      return client;
-    });
-    setClients(updatedClients);
-    localStorage.setItem('clients', JSON.stringify(updatedClients));
+    const updated = clients.map(c => c.id === clientId ? { ...c, favorite: !c.favorite } : c);
+    setClients(updated);
+    localStorage.setItem('clients', JSON.stringify(updated));
   };
 
   const deleteClient = (clientId) => {
-    const updatedClients = clients.filter(c => c.id !== clientId);
-    setClients(updatedClients);
-    localStorage.setItem('clients', JSON.stringify(updatedClients));
+    const updated = clients.filter(c => c.id !== clientId);
+    setClients(updated);
+    localStorage.setItem('clients', JSON.stringify(updated));
   };
+
+  // Detay sayfası açıksa onu göster
+  if (detailClient) {
+    const freshClient = clients.find(c => c.id === detailClient.id) || detailClient;
+    return (
+      <ClientDetailPage
+        client={freshClient}
+        incidents={incidents}
+        clients={clients}
+        onBack={() => setDetailClient(null)}
+        addClientNote={addClientNote}
+        showToast={showToast}
+      />
+    );
+  }
 
   return (
     <div className="page-content">
@@ -37,39 +48,24 @@ function ClientsPage({
           <h1>👥 Müşteri Yönetimi</h1>
           <p>Müşteri bilgilerini görüntüle ve düzenle</p>
         </div>
-        <button 
-          className="btn btn-primary"
-          onClick={() => setShowForm(!showForm)}
-        >
+        <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
           {showForm ? '✕ Formu Kapat' : '+ Yeni Müşteri'}
         </button>
       </div>
 
       {showForm && (
         <div className="card" style={{ marginBottom: '16px' }}>
-          <ClientForm addClient={(client) => {
-            addClient(client);
-            setShowForm(false);
-          }} />
+          <ClientForm addClient={(client) => { addClient(client); setShowForm(false); }} />
         </div>
       )}
 
-      <ClientsGrid 
+      <ClientsGrid
         clients={clients}
         incidents={incidents}
-        onClientClick={setSelectedClient}
+        onClientClick={setDetailClient}
         onToggleFavorite={toggleFavorite}
         onDeleteClient={deleteClient}
       />
-
-      {selectedClient && (
-        <ClientModal
-          client={selectedClient}
-          incidents={incidents}
-          onClose={() => setSelectedClient(null)}
-          onAddNote={addClientNote}
-        />
-      )}
     </div>
   );
 }

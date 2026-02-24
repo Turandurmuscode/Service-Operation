@@ -1,92 +1,121 @@
 .bulk-actions-toolbar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  margin-bottom: 12px;
+  gap: 16px;
+  padding: 14px 18px;
+  background: var(--bg-elevated, #f8fafc);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .bulk-select-all {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-secondary, #64748b);
   user-select: none;
+  padding: 4px;
 }
 
 .bulk-select-all input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
-  accent-color: var(--accent);
+  accent-color: var(--accent, #f59e0b);
+  border-radius: 4px;
 }
 
 .bulk-actions-menu {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   flex: 1;
 }
 
 .bulk-selected-count {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-right: 6px;
+  font-size: 13px;
+  color: var(--text-muted, #94a3b8);
+  margin-right: 10px;
   white-space: nowrap;
+  font-weight: 600;
+  padding: 4px 10px;
+  background: var(--bg-surface, #ffffff);
+  border-radius: 6px;
+  border: 1px solid var(--border, #e2e8f0);
 }
 
 .bulk-action-btn {
-  padding: 5px 12px;
-  border-radius: var(--radius-md);
-  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
-  font-family: var(--font-sans);
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
   cursor: pointer;
-  transition: all 0.15s;
-  border: 1px solid var(--border);
-  background: var(--bg-hover);
-  color: var(--text-secondary);
+  transition: all 0.2s;
+  border: 1px solid var(--border-strong, #cbd5e1);
+  background: var(--bg-surface, #ffffff);
+  color: var(--text-secondary, #64748b);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-.bulk-action-btn:hover { color: var(--text-primary); }
+.bulk-action-btn:hover { 
+  color: var(--text-primary, #1e293b);
+  background: var(--bg-hover, #f1f5f9);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
 
 .bulk-action-btn.success {
-  background: var(--success-dim);
-  color: var(--success);
-  border-color: rgba(34,197,94,0.2);
+  background: rgba(22, 163, 74, 0.08);
+  color: var(--success, #16a34a);
+  border-color: rgba(22, 163, 74, 0.25);
+}
+
+.bulk-action-btn.success:hover {
+  background: rgba(22, 163, 74, 0.12);
+  border-color: rgba(22, 163, 74, 0.35);
 }
 
 .bulk-action-btn.danger {
-  background: var(--danger-dim);
-  color: var(--danger);
-  border-color: rgba(239,68,68,0.2);
+  background: rgba(220, 38, 38, 0.08);
+  color: var(--danger, #dc2626);
+  border-color: rgba(220, 38, 38, 0.25);
+}
+
+.bulk-action-btn.danger:hover {
+  background: rgba(220, 38, 38, 0.12);
+  border-color: rgba(220, 38, 38, 0.35);
 }
 
 .bulk-action-btn.warning {
-  background: var(--warning-dim);
-  color: var(--warning);
-  border-color: rgba(245,158,11,0.2);
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--warning, #f59e0b);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.bulk-action-btn.warning:hover {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
 }
 
 .bulk-dropdown-menu {
   position: absolute;
-  top: calc(100% + 4px);
+  top: calc(100% + 6px);
   left: 0;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-md);
-  padding: 4px;
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-strong, #cbd5e1);
+  border-radius: 10px;
+  padding: 6px;
   display: none;
   flex-direction: column;
   gap: 2px;
-  min-width: 130px;
-  box-shadow: var(--shadow-md);
+  min-width: 160px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
   z-index: 100;
 }
 
@@ -97,17 +126,20 @@
 .bulk-action-dropdown:hover .bulk-dropdown-menu { display: flex; }
 
 .bulk-dropdown-menu button {
-  padding: 7px 10px;
+  padding: 10px 14px;
   background: transparent;
   border: none;
   text-align: left;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  font-family: var(--font-sans);
-  color: var(--text-primary);
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  color: var(--text-primary, #1e293b);
   cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: background 0.15s;
+  border-radius: 6px;
+  transition: all 0.15s;
 }
 
-.bulk-dropdown-menu button:hover { background: var(--bg-hover); }
+.bulk-dropdown-menu button:hover { 
+  background: var(--bg-elevated, #f8fafc);
+  padding-left: 18px;
+}

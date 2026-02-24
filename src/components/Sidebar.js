@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Sidebar.css';
 
 const Icons = {
@@ -58,100 +58,146 @@ const Icons = {
       <path d="M9 6v6M6.5 7.5l5 3M11.5 7.5l-5 3"/>
     </svg>
   ),
-  chevronLeft: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 4L6 8l4 4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  chevronLeft:  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 4L6 8l4 4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   chevronRight: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  close: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round"/></svg>,
 };
 
-function Sidebar({ activeTab, setActiveTab, incidentCount, clientCount, collapsed, setCollapsed }) {
+function Sidebar({
+  activeTab, setActiveTab,
+  incidentCount, clientCount,
+  collapsed, setCollapsed,
+  mobileOpen, setMobileOpen,
+}) {
   const sections = [
     {
       label: 'Genel',
       items: [
         { id: 'dashboard', icon: Icons.dashboard, label: 'Dashboard' },
-        { id: 'incidents', icon: Icons.incidents, label: 'Arızalar', badge: incidentCount },
+        { id: 'incidents', icon: Icons.incidents, label: 'Arızalar',    badge: incidentCount },
         { id: 'clients',   icon: Icons.clients,   label: 'Müşteriler', badge: clientCount },
-      ]
+      ],
     },
     {
       label: 'İş Yönetimi',
       items: [
-        { id: 'kanban',    icon: Icons.kanban,    label: 'Kanban Board' },
-        { id: 'calendar',  icon: Icons.calendar,  label: 'Takvim' },
-      ]
+        { id: 'kanban',   icon: Icons.kanban,   label: 'Kanban Board' },
+        { id: 'calendar', icon: Icons.calendar, label: 'Takvim' },
+      ],
     },
     {
       label: 'Raporlama',
       items: [
         { id: 'analytics', icon: Icons.analytics, label: 'Analiz' },
         { id: 'reports',   icon: Icons.reports,   label: 'Raporlar' },
-      ]
+      ],
     },
     {
       label: 'Sistem',
       items: [
-        { id: 'settings',  icon: Icons.settings,  label: 'Ayarlar' },
-      ]
-    }
+        { id: 'settings', icon: Icons.settings, label: 'Ayarlar' },
+      ],
+    },
   ];
 
+  // Mobil: dışarıya tıklayınca kapat
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handle = (e) => {
+      if (e.target.classList.contains('sidebar-overlay')) {
+        setMobileOpen(false);
+      }
+    };
+    document.addEventListener('click', handle);
+    return () => document.removeEventListener('click', handle);
+  }, [mobileOpen, setMobileOpen]);
+
+  // Mobil: scroll kilitle
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen]);
+
+  const handleNavClick = (id) => {
+    setActiveTab(id);
+    if (setMobileOpen) setMobileOpen(false); // mobilde tıklayınca kapat
+  };
+
   return (
-    <div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
-      <div className="sidebar-header">
-        <div className="sidebar-logo">
-          <div className="logo-icon">{Icons.logo}</div>
-          {!collapsed && <span className="logo-text">ServisPanel</span>}
-        </div>
+    <>
+      {/* Mobil overlay */}
+      {mobileOpen && (
+        <div className="sidebar-overlay" />
+      )}
 
-        <button
-          className="collapse-btn"
-          onClick={() => setCollapsed(!collapsed)}
-          title={collapsed ? 'Genişlet' : 'Daralt'}
-        >
-          {collapsed ? Icons.chevronRight : Icons.chevronLeft}
-        </button>
-      </div>
-
-      <nav className="sidebar-nav">
-        {sections.map((section) => (
-          <div key={section.label}>
-            <div className="nav-section-label">{section.label}</div>
-            {section.items.map(item => (
-              <button
-                key={item.id}
-                className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
-                onClick={() => setActiveTab(item.id)}
-                title={collapsed ? item.label : ''}
-              >
-                <span className="nav-icon">{item.icon}</span>
-                {!collapsed && (
-                  <>
-                    <span className="nav-label">{item.label}</span>
-                    {item.badge > 0 && (
-                      <span className="nav-badge">{item.badge}</span>
-                    )}
-                  </>
-                )}
-                {collapsed && item.badge > 0 && (
-                  <span className="nav-badge-dot"></span>
-                )}
-              </button>
-            ))}
+      <div className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
+        <div className="sidebar-header">
+          <div className="sidebar-logo">
+            <div className="logo-icon">{Icons.logo}</div>
+            {!collapsed && <span className="logo-text">ServisPanel</span>}
           </div>
-        ))}
-      </nav>
 
-      <div className="sidebar-footer">
-        <div className="sidebar-user">
-          <div className="user-avatar">A</div>
-          {!collapsed && (
-            <div className="user-info">
-              <div className="user-name">Admin</div>
-              <div className="user-role">Sistem Yöneticisi</div>
+          {/* Desktop collapse butonu */}
+          <button
+            className="collapse-btn desktop-only"
+            onClick={() => setCollapsed(!collapsed)}
+            title={collapsed ? 'Genişlet' : 'Daralt'}
+          >
+            {collapsed ? Icons.chevronRight : Icons.chevronLeft}
+          </button>
+
+          {/* Mobil kapat butonu */}
+          <button
+            className="collapse-btn mobile-only"
+            onClick={() => setMobileOpen(false)}
+            title="Kapat"
+          >
+            {Icons.close}
+          </button>
+        </div>
+
+        <nav className="sidebar-nav">
+          {sections.map((section) => (
+            <div key={section.label}>
+              <div className="nav-section-label">{section.label}</div>
+              {section.items.map(item => (
+                <button
+                  key={item.id}
+                  className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                  onClick={() => handleNavClick(item.id)}
+                  title={collapsed ? item.label : ''}
+                >
+                  <span className="nav-icon">{item.icon}</span>
+                  {!collapsed && (
+                    <>
+                      <span className="nav-label">{item.label}</span>
+                      {item.badge > 0 && (
+                        <span className="nav-badge">{item.badge}</span>
+                      )}
+                    </>
+                  )}
+                  {collapsed && item.badge > 0 && (
+                    <span className="nav-badge-dot"></span>
+                  )}
+                </button>
+              ))}
             </div>
-          )}
+          ))}
+        </nav>
+
+        <div className="sidebar-footer">
+          <div className="sidebar-user">
+            <div className="user-avatar">A</div>
+            {!collapsed && (
+              <div className="user-info">
+                <div className="user-name">Admin</div>
+                <div className="user-role">Sistem Yöneticisi</div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
