@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import IncidentFilters from '../components/IncidentFilters';
+import Icon from '../components/Icon';
 import IncidentList from '../components/IncidentList';
 import IncidentForm from '../components/IncidentForm';
 
@@ -10,6 +11,7 @@ function IncidentsPage({
   resolveIncident,
   updateIncidentStatus,
   addIncidentNote,
+  updateIncident,
 }) {
   const [showForm, setShowForm] = useState(false);
   const [filters, setFilters] = useState({
@@ -37,7 +39,7 @@ function IncidentsPage({
     <div className="page-content">
       <div className="page-header">
         <div>
-          <h1>🔧 Arıza Yönetimi</h1>
+          <h1><Icon name="bolt" size={20} /> Arıza Yönetimi</h1>
           <p>Tüm arıza kayıtlarını görüntüle ve yönet</p>
         </div>
         <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
@@ -52,7 +54,7 @@ function IncidentsPage({
       )}
 
       <div className="card">
-        <h2>📋 Arıza Listesi ({filteredIncidents.length} kayıt)</h2>
+        <h2><Icon name="clipboard" size={16} /> Arıza Listesi ({filteredIncidents.length} kayıt)</h2>
         <IncidentFilters onFilterChange={setFilters} />
         <IncidentList
           incidents={filteredIncidents}
@@ -60,6 +62,7 @@ function IncidentsPage({
           resolveIncident={resolveIncident}
           updateIncidentStatus={updateIncidentStatus}
           addIncidentNote={addIncidentNote}
+          updateIncident={updateIncident}
         />
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './ClientModal.css';
+import Icon from './Icon';
 
 function ClientModal({ client, incidents, onClose, onAddNote }) {
   const [note, setNote] = useState('');
@@ -46,9 +47,9 @@ function ClientModal({ client, incidents, onClose, onAddNote }) {
             </div>
             <div>
               <h2>{client.name}</h2>
-              <p className="client-city">📍 {client.city}</p>
+              <p className="client-city"><Icon name="pin" size={14} /> {client.city}</p>
               {isRisky && (
-                <span className="badge risky" style={{ marginTop: '4px' }}>⚠️ RİSKLİ MÜŞTERİ</span>
+                <span className="badge risky" style={{ marginTop: '4px' }}><Icon name="alert" size={14} style={{ marginRight: 6 }} /> RİSKLİ MÜŞTERİ</span>
               )}
             </div>
           </div>
@@ -86,9 +87,7 @@ function ClientModal({ client, incidents, onClose, onAddNote }) {
                 {clientIncidents.slice(0, 5).map(inc => (
                   <div key={inc.id} className="incident-history-item">
                     <div className="incident-history-header">
-                      <span className={`badge ${inc.priority}`}>
-                        {inc.priority === 'critical' ? '🔴' : inc.priority === 'medium' ? '🟡' : '🟢'}
-                      </span>
+                      <span className={`badge ${inc.priority}`}></span>
                       <span className={`badge ${inc.status}`}>
                         {inc.status === 'resolved' ? 'Çözüldü' : 'Aktif'}
                       </span>
@@ -98,7 +97,7 @@ function ClientModal({ client, incidents, onClose, onAddNote }) {
                     </div>
                     <div className="incident-description">{inc.description}</div>
                     {inc.duration && (
-                      <div className="incident-duration">⏱️ {inc.duration} dakika</div>
+                      <div className="incident-duration"><Icon name="clock" size={14} /> {inc.duration} dakika</div>
                     )}
                   </div>
                 ))}

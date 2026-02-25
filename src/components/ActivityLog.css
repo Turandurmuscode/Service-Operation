@@ -1,7 +1,7 @@
 .activity-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   max-height: 320px;
   overflow-y: auto;
 }
@@ -10,27 +10,37 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 10px;
-  border-radius: var(--radius-md);
-  transition: background 0.15s;
+  padding: 8px 10px;
+  border-radius: 4px;
+  transition: background 0.2s;
   cursor: default;
 }
 
 .activity-item:hover {
-  background: var(--bg-hover);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.dark-mode .activity-item:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .activity-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-sm);
+  width: 28px;
+  height: 28px;
+  border-radius: 3px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--text-muted);
+  color: var(--text-secondary);
+}
+
+.dark-mode .activity-icon {
+  background: var(--bg-elevated);
+  border-color: var(--border);
+  color: var(--text-secondary);
 }
 
 .activity-icon svg {
@@ -51,8 +61,16 @@
   line-height: 1.4;
 }
 
+.dark-mode .activity-message {
+  color: var(--text-primary);
+}
+
 .activity-time {
   font-size: 11px;
+  color: var(--text-muted);
+}
+
+.dark-mode .activity-time {
   color: var(--text-muted);
 }
 

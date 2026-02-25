@@ -9,15 +9,20 @@
 .widget {
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px;
+  border-radius: 6px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   transition: all 0.2s;
   position: relative;
   overflow: hidden;
   cursor: default;
+}
+
+.dark-mode .widget {
+  background: var(--bg-surface);
+  border-color: var(--border);
 }
 
 .widget::before {
@@ -25,19 +30,24 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+  background: transparent;
 }
 
 .widget:hover {
   border-color: var(--border-strong);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: none;
+  box-shadow: var(--shadow-elevated);
+}
+
+.dark-mode .widget:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-elevated-dark);
 }
 
 .widget-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-sm);
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,30 +55,42 @@
 }
 
 .widget-icon svg {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
 }
 
 .widget-title {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.5px;
+}
+
+.dark-mode .widget-title {
+  color: var(--text-muted);
 }
 
 .widget-value {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
+.dark-mode .widget-value {
+  color: var(--text-primary);
+}
+
 .widget-subtitle {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
+}
+
+.dark-mode .widget-subtitle {
+  color: var(--text-secondary);
 }
 
 .widget-success .widget-icon { background: var(--success-dim); color: var(--success); }
@@ -76,7 +98,7 @@
 .widget-danger  .widget-icon { background: var(--danger-dim);  color: var(--danger); }
 .widget-info    .widget-icon { background: var(--info-dim);    color: var(--info); }
 .widget-accent  .widget-icon { background: var(--accent-dim);  color: var(--accent); }
-.widget-primary .widget-icon { background: var(--info-dim);    color: var(--info); }
+.widget-primary .widget-icon { background: var(--primary-dim);    color: var(--primary); }
 
 @media (max-width: 1400px) {
   .dashboard-widgets { grid-template-columns: repeat(3, 1fr); }

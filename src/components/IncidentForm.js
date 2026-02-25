@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import Icon from './Icon';
+import { SLA_TIERS, deadlineFromTier } from '../utils/slaTiers';
+import { autoAssign, getRoutingMode, ROUTING_MODES } from '../utils/autoRouter';
 
 const loadJSON = (key, fallback) => {
   try { return JSON.parse(localStorage.getItem(key)) || fallback; }
@@ -21,6 +24,7 @@ function IncidentForm({ clients, addIncident }) {
   const [deadline, setDeadline]       = useState('');
   const [technicianId, setTechnicianId] = useState('');
   const [showTemplates, setShowTemplates] = useState(false);
+  const [autoAssigned, setAutoAssigned]   = useState(null); // assigned tech object
 
   const [technicians, setTechnicians] = useState([]);
   const [templates, setTemplates]     = useState(DEFAULT_TEMPLATES);
@@ -31,6 +35,23 @@ function IncidentForm({ clients, addIncident }) {
     setTemplates(loadJSON('incidentTemplates', DEFAULT_TEMPLATES));
   }, []);
 
+  // Helper: get selected client object
+  const selectedClient = clients.find(c => c.id === parseInt(clientId));
+  const clientTier     = selectedClient ? (SLA_TIERS[selectedClient.slaTier] || SLA_TIERS.bronze) : null;
+
+  // Re-run auto-assign when category or clientId changes
+  useEffect(() => {
+    const mode = getRoutingMode();
+    if (mode !== 'manual') {
+      const tech = autoAssign(category);
+      setAutoAssigned(tech);
+      setTechnicianId(tech ? String(tech.id) : '');
+    } else {
+      setAutoAssigned(null);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, clientId]);
+
   const filteredClients = clients.filter(client =>
     client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     client.city.toLowerCase().includes(searchTerm.toLowerCase())
@@ -38,10 +59,9 @@ function IncidentForm({ clients, addIncident }) {
 
   const handlePriorityChange = (val) => {
     setPriority(val);
-    const now = new Date();
-    const hoursMap = { critical: 2, medium: 8, low: 24 };
-    now.setHours(now.getHours() + hoursMap[val]);
-    setDeadline(new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16));
+    // Use client's tier limits if known, otherwise hardcoded defaults
+    const tierKey = selectedClient?.slaTier || 'bronze';
+    setDeadline(deadlineFromTier(val, tierKey));
   };
 
   // Kategori değişince şablon önerilerini göster
@@ -58,22 +78,26 @@ function IncidentForm({ clients, addIncident }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!clientId || !description) { alert('Lütfen müşteri seçin ve açıklama girin'); return; }
-    const slaMinutes = { critical: 120, medium: 480, low: 1440 };
+    const tierKey   = selectedClient?.slaTier || 'bronze';
+    const tierLimits = SLA_TIERS[tierKey]?.limits || { critical: 240, medium: 960, low: 2880 };
     addIncident({
       clientId: parseInt(clientId),
       description,
       priority,
       category,
-      slaDeadline: slaMinutes[priority],
+      slaTier: tierKey,
+      slaDeadline: tierLimits[priority],
       deadline: deadline || null,
       technicianId: technicianId ? parseInt(technicianId) : null,
     });
     setClientId(''); setDescription(''); setPriority('low');
     setCategory('software'); setSearchTerm(''); setDeadline(''); setTechnicianId('');
+    setAutoAssigned(null);
   };
 
   const currentTemplates = templates[category] || [];
   const selectedTech = technicians.find(t => t.id === parseInt(technicianId));
+  const routingMode  = getRoutingMode();
 
   const suggestStyle = {
     padding: '7px 12px', borderRadius: '8px', fontSize: '12px', cursor: 'pointer',
@@ -84,13 +108,13 @@ function IncidentForm({ clients, addIncident }) {
 
   return (
     <div className="card">
-      <h2>🆕 Yeni Arıza Kaydı</h2>
+      <h2><Icon name="tool" size={18} style={{ marginRight: 8 }} /> Yeni Arıza Kaydı</h2>
       <form onSubmit={handleSubmit}>
 
         {/* Müşteri Arama */}
         <div className="form-group">
           <label>Müşteri Ara</label>
-          <input type="text" placeholder="🔍 Müşteri adı veya şehir ara..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+          <input type="text" placeholder="Müşteri adı veya şehir ara..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
         </div>
 
         <div className="form-group">
@@ -106,20 +130,44 @@ function IncidentForm({ clients, addIncident }) {
           )}
         </div>
 
+        {/* Müşteri seçilince SLA tier badge */}
+        {clientTier && (
+          <div style={{
+            padding: '8px 12px', borderRadius: '8px', marginBottom: '8px', fontSize: '12px',
+            background: clientTier.bgColor, border: `1px solid ${clientTier.borderColor}`, color: clientTier.color,
+            display: 'flex', alignItems: 'center', gap: '8px',
+          }}>
+            <span style={{ fontSize: '16px' }}>{clientTier.icon}</span>
+            <span><strong>{clientTier.label} SLA Paketi</strong> — Critical: {clientTier.limits.critical >= 60 ? `${clientTier.limits.critical / 60}sa` : `${clientTier.limits.critical}dk`} &middot; Medium: {clientTier.limits.medium / 60}sa &middot; Low: {clientTier.limits.low / 60}sa</span>
+          </div>
+        )}
+
         {/* Teknisyen Atama */}
         <div className="form-group">
-          <label>👷 Teknisyen Ata</label>
+          <label><Icon name="user" size={14} /> Teknisyen Ata</label>
           {technicians.length === 0 ? (
             <p style={{ fontSize: '12px', color: 'var(--text-muted)', padding: '8px 0' }}>
               Henüz teknisyen eklenmedi. <strong>Ayarlar → Teknisyen Yönetimi</strong>'nden ekleyin.
             </p>
           ) : (
-            <select value={technicianId} onChange={e => setTechnicianId(e.target.value)}>
-              <option value="">-- Teknisyen Seçin (opsiyonel) --</option>
-              {technicians.map(tech => (
-                <option key={tech.id} value={tech.id}>{tech.name} — {tech.role}</option>
-              ))}
-            </select>
+            <>
+              {routingMode !== 'manual' && (
+                <div style={{
+                  marginBottom: '6px', padding: '6px 10px', borderRadius: '8px', fontSize: '12px',
+                  background: '#8b5cf615', border: '1px solid #8b5cf630', color: '#8b5cf6',
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                }}>
+                  <span>{ROUTING_MODES[routingMode]?.icon}</span>
+                  <span><strong>{ROUTING_MODES[routingMode]?.label}</strong> mod aktif{autoAssigned ? ` — ${autoAssigned.name} otomatik atandı` : ''}</span>
+                </div>
+              )}
+              <select value={technicianId} onChange={e => { setTechnicianId(e.target.value); setAutoAssigned(null); }}>
+                <option value="">-- Teknisyen Seçin (opsiyonel) --</option>
+                {technicians.map(tech => (
+                  <option key={tech.id} value={tech.id}>{tech.name} — {tech.role}</option>
+                ))}
+              </select>
+            </>
           )}
           {selectedTech && (
             <div style={{
@@ -136,11 +184,11 @@ function IncidentForm({ clients, addIncident }) {
         {/* Kategori + Şablon Önerileri */}
         <div className="form-group">
           <label>Kategori</label>
-          <select value={category} onChange={e => handleCategoryChange(e.target.value)}>
-            <option value="software">💻 Yazılım</option>
-            <option value="hardware">🖥️ Donanım</option>
-            <option value="network">🌐 Network</option>
-            <option value="other">📦 Diğer</option>
+            <select value={category} onChange={e => handleCategoryChange(e.target.value)}>
+            <option value="software">Yazılım</option>
+            <option value="hardware">Donanım</option>
+            <option value="network">Network</option>
+            <option value="other">Diğer</option>
           </select>
         </div>
 
@@ -149,7 +197,7 @@ function IncidentForm({ clients, addIncident }) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
             <label style={{ margin: 0 }}>Sorun Açıklaması</label>
             {currentTemplates.length > 0 && (
-              <button
+                <button
                 type="button"
                 onClick={() => setShowTemplates(!showTemplates)}
                 style={{
@@ -157,7 +205,7 @@ function IncidentForm({ clients, addIncident }) {
                   cursor: 'pointer', background: 'var(--accent)', color: '#000', fontWeight: '600',
                 }}
               >
-                📋 Şablonlar {showTemplates ? '▲' : '▼'}
+                <Icon name="clipboard" size={14} /> Şablonlar {showTemplates ? '▲' : '▼'}
               </button>
             )}
           </div>
@@ -168,7 +216,7 @@ function IncidentForm({ clients, addIncident }) {
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px' }}>Tıklayarak seç:</p>
               {currentTemplates.map((tpl, idx) => (
                 <button key={idx} type="button" style={suggestStyle} onClick={() => applyTemplate(tpl)}>
-                  📌 {tpl}
+                  <Icon name="pin" size={14} style={{ marginRight: 8 }} /> {tpl}
                 </button>
               ))}
             </div>
@@ -184,17 +232,17 @@ function IncidentForm({ clients, addIncident }) {
         {/* Öncelik */}
         <div className="form-group">
           <label>Öncelik Seviyesi</label>
-          <select value={priority} onChange={e => handlePriorityChange(e.target.value)}>
-            <option value="low">🟢 Düşük (24 saat)</option>
-            <option value="medium">🟡 Orta (8 saat)</option>
-            <option value="critical">🔴 Kritik (2 saat)</option>
+            <select value={priority} onChange={e => handlePriorityChange(e.target.value)}>
+            <option value="low">Düşük (24 saat)</option>
+            <option value="medium">Orta (8 saat)</option>
+            <option value="critical">Kritik (2 saat)</option>
           </select>
         </div>
 
         {/* Deadline */}
         <div className="form-group">
           <label>
-            📅 Son Tarih / Deadline
+            <Icon name="calendar" size={14} /> Son Tarih / Deadline
             <small style={{ marginLeft: '8px', color: '#94a3b8', fontWeight: 'normal' }}>
               (önceliğe göre otomatik, değiştirebilirsin)
             </small>

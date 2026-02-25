@@ -25,22 +25,33 @@
 }
 
 .note-form textarea {
-  padding: 8px 12px;
+  padding: 8px 11px;
   background: var(--bg-elevated);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-md);
-  font-size: 12.5px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 12px;
   color: var(--text-primary);
   font-family: var(--font-sans);
   resize: vertical;
-  min-height: 70px;
+  min-height: 68px;
   outline: none;
   transition: border-color 0.15s;
 }
 
+.dark-mode .note-form textarea {
+  background: var(--bg-elevated);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
 .note-form textarea:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-dim);
+  box-shadow: 0 0 0 2px var(--accent-dim);
+}
+
+.dark-mode .note-form textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-dim);
 }
 
 .notes-timeline {
@@ -61,11 +72,11 @@
   position: absolute;
   left: -5px;
   top: 4px;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--accent);
-  border: 2px solid var(--bg-surface);
+  border: 2px solid var(--text-inverse);
 }
 
 .note-timeline-text {

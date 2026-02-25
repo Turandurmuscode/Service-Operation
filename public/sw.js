@@ -1,4 +1,4 @@
-const CACHE_NAME = 'servis-panel-v1';
+const CACHE_NAME = 'servis-panel-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -64,4 +64,68 @@ self.addEventListener('fetch', event => {
         });
     })
   );
+});
+
+// ── PUSH BİLDİRİMLERİ ────────────────────────────────────────────
+self.addEventListener('push', event => {
+  let data = { title: 'Servis Paneli', body: 'Yeni bildirim', icon: '/logo192.png', badge: '/logo192.png', tag: 'default' };
+
+  if (event.data) {
+    try { Object.assign(data, event.data.json()); }
+    catch { data.body = event.data.text(); }
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body:    data.body,
+      icon:    data.icon || '/logo192.png',
+      badge:   data.badge || '/logo192.png',
+      tag:     data.tag,
+      data:    data,
+      requireInteraction: data.requireInteraction || false,
+      vibrate: [200, 100, 200],
+      actions: data.actions || [],
+    })
+  );
+});
+
+// ── BİLDİRİM TIKLANMASI ───────────────────────────────────────────
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+
+  const url = event.notification.data?.url || '/';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      // Zaten açık pencere varsa odaklan
+      for (const client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.postMessage({ type: 'NOTIFICATION_CLICK', data: event.notification.data });
+          return client.focus();
+        }
+      }
+      // Yoksa yeni sekme aç
+      return clients.openWindow(url);
+    })
+  );
+});
+
+// ── BİLDİRİM KAPATMA ─────────────────────────────────────────────
+self.addEventListener('notificationclose', event => {
+  console.log('[SW] Bildirim kapatıldı:', event.notification.tag);
+});
+
+// ── PUSH ABONE DEĞIŞIMI ───────────────────────────────────────────
+self.addEventListener('pushsubscriptionchange', event => {
+  console.log('[SW] Push aboneliği değişti, yenileniyor...');
+  event.waitUntil(
+    self.registration.pushManager.subscribe(event.oldSubscription.options)
+  );
+});
+
+// ── SYNC (arka plan senkronizasyon) ──────────────────────────────
+self.addEventListener('sync', event => {
+  if (event.tag === 'sync-incidents') {
+    console.log('[SW] Arka plan senkronizasyonu: arızalar');
+  }
 });

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Icon from '../components/Icon';
 
 function ClientDetailPage({ client, incidents, clients, onBack, addClientNote, showToast }) {
   const [noteText, setNoteText] = useState('');
@@ -85,18 +86,18 @@ function ClientDetailPage({ client, incidents, clients, onBack, addClientNote, s
           <div style={{ flex: 1 }}>
             <h1 style={{ margin: 0, fontSize: '22px', display: 'flex', alignItems: 'center', gap: '10px' }}>
               {client.name}
-              {client.favorite && <span title="Favori">⭐</span>}
+                {client.favorite && <span title="Favori"><Icon name="star" size={18} /></span>}
             </h1>
             <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-              {client.city && <span>📍 {client.city}</span>}
-              {client.phone && <span>📞 {client.phone}</span>}
-              {client.email && <span>✉️ {client.email}</span>}
-              {client.createdAt && <span>📅 Kayıt: {new Date(client.createdAt).toLocaleDateString('tr-TR')}</span>}
+              {client.city && <span><Icon name="pin" size={14} /> {client.city}</span>}
+              {client.phone && <span><Icon name="phone" size={14} /> {client.phone}</span>}
+              {client.email && <span><Icon name="mail" size={14} /> {client.email}</span>}
+              {client.createdAt && <span><Icon name="calendar" size={14} /> Kayıt: {new Date(client.createdAt).toLocaleDateString('tr-TR')}</span>}
             </div>
           </div>
           {overdue.length > 0 && (
-            <div style={{ padding: '8px 14px', borderRadius: '10px', background: '#ef444415', border: '1px solid #ef444430', color: '#ef4444', fontSize: '13px', fontWeight: '600' }}>
-              ⚠️ {overdue.length} gecikmiş arıza
+            <div style={{ padding: '8px 14px', borderRadius: '10px', background: '#ef444415', border: '1px solid #ef444430', color: '#ef4444', fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Icon name="alert" size={16} /> {overdue.length} gecikmiş arıza
             </div>
           )}
         </div>
@@ -114,9 +115,9 @@ function ClientDetailPage({ client, incidents, clients, onBack, addClientNote, s
       {/* Sekmeler */}
       <div className="card">
         <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
-          {tabBtn('incidents', `🔧 Arızalar (${clientIncidents.length})`)}
-          {tabBtn('notes',     `📝 Notlar (${(client.notes || []).length})`)}
-          {tabBtn('info',      'ℹ️ Bilgiler')}
+          {tabBtn('incidents', (<><Icon name="bolt" size={14} /> Arızalar ({clientIncidents.length})</>))}
+          {tabBtn('notes',     (<><Icon name="clipboard" size={14} /> Notlar ({(client.notes || []).length})</>))}
+          {tabBtn('info',      (<><Icon name="grid" size={14} /> Bilgiler</>))}
         </div>
 
         {/* Arıza sekmesi */}
@@ -149,10 +150,10 @@ function ClientDetailPage({ client, incidents, clients, onBack, addClientNote, s
                         }}>
                           <td style={{ fontSize: '12px' }}>{new Date(inc.startTime).toLocaleDateString('tr-TR')}</td>
                           <td style={{ textAlign: 'center', fontSize: '18px' }}>
-                            {inc.category === 'software' && '💻'}
-                            {inc.category === 'hardware' && '🖥️'}
-                            {inc.category === 'network'  && '🌐'}
-                            {inc.category === 'other'    && '📦'}
+                            {inc.category === 'software' && <Icon name="bolt" size={18} />}
+                            {inc.category === 'hardware' && <Icon name="grid" size={18} />}
+                            {inc.category === 'network'  && <Icon name="grid" size={18} />}
+                            {inc.category === 'other'    && <Icon name="clipboard" size={18} />}
                           </td>
                           <td style={{ fontSize: '13px', maxWidth: '240px' }}>{inc.description}</td>
                           <td>

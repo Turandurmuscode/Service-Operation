@@ -31,7 +31,7 @@
   padding: 24px 28px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   border-right: 1px solid var(--border);
 }
 
@@ -42,15 +42,23 @@
 }
 
 .hero-greeting-text {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.4px;
+  letter-spacing: -0.3px;
+}
+
+.dark-mode .hero-greeting-text {
+  color: var(--text-primary);
 }
 
 .hero-greeting-sub {
-  font-size: 12px;
-  color: var(--text-muted);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.dark-mode .hero-greeting-sub {
+  color: var(--text-secondary);
 }
 
 .hero-clock {
@@ -60,17 +68,17 @@
 }
 
 .hero-time {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -1.5px;
+  letter-spacing: -1px;
   font-variant-numeric: tabular-nums;
   font-family: var(--font-mono);
   line-height: 1;
 }
 
 .hero-date {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
   text-transform: capitalize;
 }
@@ -92,22 +100,23 @@
 
 .health-bar-track {
   flex: 1;
-  height: 4px;
-  background: var(--bg-elevated);
-  border-radius: 2px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 1px;
   overflow: hidden;
 }
 
 .health-bar-fill {
   height: 100%;
-  border-radius: 2px;
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1px;
+  transition: width 1s ease;
 }
 
 .health-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   white-space: nowrap;
+  color: var(--text-secondary);
 }
 
 .health-score {
@@ -142,24 +151,22 @@
 }
 
 .hero-stat-value {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 800;
-  letter-spacing: -1px;
+  letter-spacing: -0.8px;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
-.hero-stat-value.danger   { color: var(--danger); }
-.hero-stat-value.critical { color: var(--danger); }
-.hero-stat-value.success  { color: var(--success); }
-.hero-stat-value.info     { color: var(--info); }
-.hero-stat-value.warning  { color: var(--warning); }
-
 .hero-stat-label {
-  font-size: 11px;
-  color: var(--text-muted);
+  font-size: 10px;
+  color: var(--text-secondary);
   font-weight: 500;
   white-space: nowrap;
+}
+
+.dark-mode .hero-stat-label {
+  color: var(--text-secondary);
 }
 
 .hero-stat-divider {
@@ -178,24 +185,25 @@
 }
 
 .hero-actions-title {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.5px;
   margin-bottom: 4px;
 }
+
 
 .hero-action-btn {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
+  padding: 9px 12px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: 4px;
   background: var(--bg-elevated);
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   font-family: var(--font-sans);
   cursor: pointer;
@@ -204,10 +212,10 @@
 }
 
 .hero-action-btn svg {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
-  color: var(--text-muted);
+  color: currentColor;
 }
 
 .hero-action-btn:hover {
@@ -218,18 +226,19 @@
 
 .hero-action-btn.primary {
   background: var(--accent-dim);
-  border-color: rgba(232,160,32,0.3);
+  border-color: var(--accent-border, var(--accent-dim));
   color: var(--accent);
 }
 
 .hero-action-btn.primary svg {
-  color: var(--accent);
+  color: currentColor;
 }
 
 .hero-action-btn.primary:hover {
-  background: rgba(232,160,32,0.2);
-  box-shadow: 0 0 0 1px rgba(232,160,32,0.2);
+  background: var(--accent-hover);
+  box-shadow: none;
 }
+
 
 .hero-sla-alert {
   display: flex;
@@ -237,13 +246,13 @@
   gap: 8px;
   padding: 8px 12px;
   background: var(--danger-dim);
-  border: 1px solid rgba(239,68,68,0.2);
-  border-radius: var(--radius-md);
-  font-size: 12px;
+  border: 1px solid var(--danger-border, var(--danger-dim));
+  border-radius: 4px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--danger);
   margin-top: 4px;
-  animation: pulse 2s infinite;
+  animation: none;
 }
 
 .hero-sla-alert svg {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './CalendarPage.css';
+import Icon from '../components/Icon';
 
 function CalendarPage({ incidents, clients }) {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -56,7 +57,7 @@ function CalendarPage({ incidents, clients }) {
     <div className="page-content">
       <div className="page-header">
         <div>
-          <h1>📅 Arıza Takvimi</h1>
+          <h1><Icon name="calendar" size={20} style={{ marginRight: 8 }} /> Arıza Takvimi</h1>
           <p>Arızaları takvim görünümünde takip et</p>
         </div>
       </div>
@@ -107,7 +108,7 @@ function CalendarPage({ incidents, clients }) {
                       )}
                     </div>
                     {criticalCount > 0 && (
-                      <div className="critical-badge">🔴 {criticalCount}</div>
+                      <div className="critical-badge"><span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ width: 10, height: 10, borderRadius: 10, background: '#ef4444', display: 'inline-block' }}></span> {criticalCount}</span></div>
                     )}
                   </div>
                 )}

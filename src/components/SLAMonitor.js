@@ -1,25 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import './SLAMonitor.css';
+import { getSLALimit, getSLAWarningThreshold } from '../utils/slaTiers';
+
+const loadJSON = (key, fallback) => {
+  try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+  catch { return fallback; }
+};
 
 function SLAMonitor({ incidents }) {
   const [warnings, setWarnings] = useState([]);
 
   useEffect(() => {
     const check = () => {
-      const now = new Date();
-      const lim = { critical: 120, medium: 480, low: 1440 };
+      const now     = new Date();
+      const clients = loadJSON('clients', []);
       const w = [];
 
       incidents.forEach(inc => {
-        if (inc.status === 'resolved') return;
-        const elapsed = Math.floor((now - new Date(inc.startTime)) / 60000);
-        const sla = inc.slaDeadline || lim[inc.priority] || 1440;
-        const remaining = sla - elapsed;
+        if (inc.status === 'resolved' || inc.status === 'cancelled') return;
+        const elapsed    = Math.floor((now - new Date(inc.startTime)) / 60000);
+        const sla        = getSLALimit(inc, clients);
+        const warnAt     = getSLAWarningThreshold(inc, clients); // % threshold
+        const remaining  = sla - elapsed;
+        const pct        = (elapsed / sla) * 100;
 
         if (remaining <= 0) {
           w.push({ ...inc, slaStatus: 'violated', msg: `SLA ihlali — ${Math.abs(remaining)}dk geçti` });
-        } else if (remaining <= 30) {
-          w.push({ ...inc, slaStatus: 'warning', msg: `${remaining}dk kaldı` });
+        } else if (pct >= warnAt) {
+          w.push({ ...inc, slaStatus: 'warning', msg: `${remaining}dk kaldı (%${Math.round(pct)} doldu)` });
         }
       });
 

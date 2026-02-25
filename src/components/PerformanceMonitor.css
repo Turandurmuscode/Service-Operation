@@ -4,12 +4,17 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-strong);
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
   background: var(--bg-elevated);
   cursor: pointer;
   transition: all 0.15s;
+}
+
+.dark-mode .performance-trigger {
+  border-color: var(--border);
+  background: var(--bg-surface);
 }
 
 .performance-trigger:hover {
@@ -17,18 +22,18 @@
 }
 
 .performance-indicator {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  animation: pulse 2s infinite;
+  animation: none;
 }
 
 .performance-fps {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--text-primary);
   font-family: var(--font-mono);
-  min-width: 24px;
+  min-width: 22px;
   text-align: right;
 }
 
@@ -36,14 +41,20 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  width: 280px;
+  width: 270px;
   background: var(--bg-surface);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 10px 36px rgba(0,0,0,0.12);
   z-index: 1000;
   animation: slideDown 0.2s;
   overflow: hidden;
+}
+
+.dark-mode .performance-panel {
+  background: var(--bg-surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-lg);
 }
 
 .performance-header {
@@ -55,18 +66,18 @@
 }
 
 .performance-header h3 {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
 }
 
 .performance-close {
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-sm);
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
   border: 1px solid var(--border);
-  background: var(--bg-elevated);
+  background: var(--bg-surface);
   color: var(--text-muted);
   cursor: pointer;
   display: flex;
@@ -95,26 +106,26 @@
 }
 
 .metric-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-hover);
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  background: none;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.metric-icon svg { width: 15px; height: 15px; color: var(--text-secondary); }
+.metric-icon svg { width: 14px; height: 14px; }
 
 .metric-label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
   margin-bottom: 2px;
 }
 
 .metric-value {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   font-family: var(--font-mono);

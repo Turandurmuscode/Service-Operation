@@ -1,4 +1,7 @@
 import React, { useRef, useState } from 'react';
+import { useI18n } from '../context/i18nContext';
+import AuditLogViewer from '../components/AuditLogViewer';
+import { ROUTING_MODES, SKILL_OPTIONS, getRoutingMode, setRoutingMode } from '../utils/autoRouter';
 
 const loadJSON = (key, fallback) => {
   try { return JSON.parse(localStorage.getItem(key)) || fallback; }
@@ -38,11 +41,28 @@ function SettingsPage({
   setClients, setIncidents, setActivities,
 }) {
   const importRef = useRef(null);
+  const { language, setLanguage } = useI18n();
 
   // ── Teknisyenler ──
   const [technicians, setTechnicians] = useState(() => loadJSON('technicians', []));
-  const [techName, setTechName] = useState('');
-  const [techRole, setTechRole] = useState('Teknisyen');
+  const [techName,  setTechName]  = useState('');
+  const [techRole,  setTechRole]  = useState('Teknisyen');
+  const [techSkills, setTechSkills] = useState([]);
+
+  // ── Routing mode ──
+  const [routingMode, setRoutingModeState] = useState(() => getRoutingMode());
+
+  const handleRoutingModeChange = (mode) => {
+    setRoutingMode(mode);
+    setRoutingModeState(mode);
+    if (showToast) showToast(`✅ Atama modu: ${ROUTING_MODES[mode]?.label}`, 'success');
+  };
+
+  const toggleTechSkill = (skill) => {
+    setTechSkills(prev =>
+      prev.includes(skill) ? prev.filter(s => s !== skill) : [...prev, skill]
+    );
+  };
 
   const saveTechnicians = (list) => {
     setTechnicians(list);
@@ -51,8 +71,8 @@ function SettingsPage({
 
   const addTechnician = () => {
     if (!techName.trim()) return;
-    saveTechnicians([...technicians, { id: Date.now(), name: techName.trim(), role: techRole }]);
-    setTechName('');
+    saveTechnicians([...technicians, { id: Date.now(), name: techName.trim(), role: techRole, skills: techSkills }]);
+    setTechName(''); setTechSkills([]);
     if (showToast) showToast('✅ Teknisyen eklendi!', 'success');
   };
 
@@ -176,6 +196,22 @@ function SettingsPage({
             {darkMode ? '☀️ Aydınlık' : '🌙 Karanlık'}
           </button>
         </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderTop: '1px solid var(--border)' }}>
+          <div>
+            <div style={{ fontWeight: '600', marginBottom: '4px' }}>Dil / Language</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Uygulama dilini seçin</div>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              className={`btn ${language === 'tr' ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => setLanguage('tr')}
+            >🇹🇷 Türkce</button>
+            <button
+              className={`btn ${language === 'en' ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => setLanguage('en')}
+            >🇬🇧 English</button>
+          </div>
+        </div>
       </div>
 
       {/* Teknisyen Yönetimi */}
@@ -184,7 +220,7 @@ function SettingsPage({
         <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '14px' }}>
           Arızalara atanabilecek teknisyenleri buradan yönetin.
         </p>
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
           <input
             style={inputStyle}
             placeholder="Ad Soyad..."
@@ -201,6 +237,19 @@ function SettingsPage({
           </select>
           <button className="btn btn-primary" onClick={addTechnician}>+ Ekle</button>
         </div>
+        <div style={{ display: 'flex', gap: '6px', marginBottom: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '600' }}>Yetenekler:</span>
+          {SKILL_OPTIONS.map(s => (
+            <button key={s.value} type="button" onClick={() => toggleTechSkill(s.value)} style={{
+              padding: '3px 10px', borderRadius: '20px', fontSize: '11px', cursor: 'pointer',
+              border: '1px solid var(--border-strong)',
+              background: techSkills.includes(s.value) ? 'var(--accent)' : 'var(--bg-elevated)',
+              color: techSkills.includes(s.value) ? '#000' : 'var(--text-secondary)',
+              fontWeight: techSkills.includes(s.value) ? '700' : '400',
+            }}>{s.label}</button>
+          ))}
+          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>(boş = tümüne uygun)</span>
+        </div>
 
         {technicians.length === 0 ? (
           <p style={{ fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '12px 0' }}>Henüz teknisyen eklenmedi.</p>
@@ -216,6 +265,19 @@ function SettingsPage({
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: '600' }}>{tech.name}</div>
               <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{tech.role}</div>
+              {tech.skills?.length > 0 && (
+                <div style={{ display: 'flex', gap: '4px', marginTop: '4px', flexWrap: 'wrap' }}>
+                  {tech.skills.map(s => {
+                    const label = SKILL_OPTIONS.find(o => o.value === s)?.label || s;
+                    return (
+                      <span key={s} style={{
+                        padding: '1px 6px', borderRadius: '10px', fontSize: '10px', fontWeight: '600',
+                        background: 'var(--accent)', color: '#000',
+                      }}>{label}</span>
+                    );
+                  })}
+                </div>
+              )}
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginRight: '8px' }}>
               {(incidents || []).filter(i => i.technicianId === tech.id && i.status !== 'resolved').length} aktif arıza
@@ -223,6 +285,40 @@ function SettingsPage({
             <button style={xBtn} onClick={() => deleteTechnician(tech.id)}>✕</button>
           </div>
         ))}
+      </div>
+
+      {/* Otomatik Atama */}
+      <div className="card" style={{ marginTop: '16px' }}>
+        <h2>🎯 Otomatik Atama (Auto-Routing)</h2>
+        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+          Yeni arıza oluşturulunca teknisyen otomatik atama modu.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '12px' }}>
+          {Object.entries(ROUTING_MODES).map(([key, mode]) => {
+            const active = routingMode === key;
+            return (
+              <button key={key} type="button" onClick={() => handleRoutingModeChange(key)} style={{
+                padding: '14px 12px', borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
+                border: `2px solid ${active ? 'var(--primary)' : 'var(--border-strong)'}`,
+                background: active ? 'var(--primary)15' : 'var(--bg-elevated)',
+                color: 'var(--text-primary)', transition: 'all 0.15s',
+                boxShadow: active ? '0 0 0 2px var(--primary)30' : 'none',
+              }}>
+                <div style={{ fontSize: '20px', marginBottom: '6px' }}>{mode.icon}</div>
+                <div style={{ fontWeight: active ? '700' : '600', fontSize: '13px' }}>{mode.label}</div>
+                <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: '1.4' }}>{mode.desc}</div>
+              </button>
+            );
+          })}
+        </div>
+        {routingMode === 'skill_based' && (
+          <div style={{
+            padding: '10px 14px', borderRadius: '8px', fontSize: '12px',
+            background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)', color: '#8b5cf6',
+          }}>
+            ℹ️ Teknisyene yetenek eklemediyseniz tüm arızalara atanabilir (zayıf eşleşme). Yukarıdan teknisyenlerin yeteneklerini ayarlayın.
+          </div>
+        )}
       </div>
 
       {/* Şablon Açıklamalar */}
@@ -289,6 +385,12 @@ function SettingsPage({
           <strong>📊 Depolama:</strong> &nbsp;
           {(clients || []).length} müşteri · {(incidents || []).length} arıza · {technicians.length} teknisyen · ~{storageSizeKB()} KB
         </div>
+      </div>
+
+      {/* Denetim Logu */}
+      <div className="card" style={{ marginTop: '16px' }}>
+        <h2>📋 Denetim Logu</h2>
+        <AuditLogViewer />
       </div>
 
       {/* Hakkında */}

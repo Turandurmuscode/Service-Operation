@@ -4,18 +4,22 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  gap: 28px;
-  background: var(--bg-base, #f8fafc);
+  gap: 24px;
+  background: var(--bg-elevated);
+}
+
+.dark-mode .loading-spinner {
+  background: var(--bg-base);
 }
 
 .spinner-ring {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: 3px solid var(--border, #e2e8f0);
-  border-top-color: var(--accent, #f59e0b);
+  border: 3px solid var(--border-strong);
+  border-top-color: var(--accent);
   animation: spin 0.9s linear infinite;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
 }
 
 @keyframes spin {
@@ -23,9 +27,13 @@
 }
 
 .loading-spinner p {
-  font-size: 14px;
-  color: var(--text-muted, #64748b);
+  font-size: 13px;
+  color: var(--text-muted);
   font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   font-weight: 500;
+}
+
+.dark-mode .loading-spinner p {
+  color: var(--text-muted);
 }

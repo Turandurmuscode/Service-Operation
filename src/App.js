@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -11,6 +11,12 @@ import PerformanceMonitor from './components/PerformanceMonitor';
 import QuickNotes from './components/QuickNotes';
 import Breadcrumb from './components/Breadcrumb';
 import PWAInstallBanner from './components/PWAInstallBanner';
+import LoginScreen from './components/LoginScreen';
+
+// Contexts
+import { AuthProvider, useAuth, ROLE_PERMISSIONS } from './context/AuthContext';
+import { I18nProvider, useI18n } from './context/i18nContext';
+import { AuditProvider, useAudit } from './context/AuditContext';
 
 // Pages
 import DashboardPage from './pages/DashboardPage';
@@ -22,18 +28,26 @@ import CalendarPage from './pages/CalendarPage';
 import ReportsPage from './pages/ReportsPage';
 import SettingsPage from './pages/SettingsPage';
 
-function App() {
-  const [clients, setClients] = useState([]);
-  const [incidents, setIncidents] = useState([]);
+function AppContent() {
+  const { currentUser, logout, canAccessPage } = useAuth();
+  const { t } = useI18n();
+  const { addAuditEntry } = useAudit();
+  const [clients,    setClients]    = useState([]);
+  const [incidents,  setIncidents]  = useState([]);
   const [activities, setActivities] = useState([]);
-  const [darkMode, setDarkMode] = useState(false);
-  const [toast, setToast] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [darkMode,   setDarkMode]   = useState(false);
+  const [toast,      setToast]      = useState(null);
+  const [loading,    setLoading]    = useState(true);
+  const [activeTab,  setActiveTab]  = useState('dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false); // mobil sidebar
+  const [sidebarOpen,      setSidebarOpen]      = useState(false);
 
-  // LocalStorage'dan veri yükle
+  // Bildirim gönderilen ID'leri tut — aynı arıza için tekrar bildirme
+  const notifiedRef = useRef(
+    new Set(JSON.parse(sessionStorage.getItem('notifiedDeadlines') || '[]'))
+  );
+
+  // ── VERİ YÜKLE ──────────────────────────────────────────────────
   useEffect(() => {
     setTimeout(() => {
       const savedClients    = localStorage.getItem('clients');
@@ -52,98 +66,173 @@ function App() {
     }, 800);
   }, []);
 
-  // Sidebar collapsed state'i kaydet
+  // ── BİLDİRİM İZNİ ───────────────────────────────────────────────
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      const t = setTimeout(() => Notification.requestPermission(), 3000);
+      return () => clearTimeout(t);
+    }
+  }, []);
+
+  // ── DEADLINE BİLDİRİM KONTROLÜ (her 60 saniye) ──────────────────
+  useEffect(() => {
+    if (!incidents.length) return;
+
+    const checkDeadlines = () => {
+      const now     = new Date();
+      const oneHour = 60 * 60 * 1000;
+
+      incidents.forEach(inc => {
+        if (!inc.deadline) return;
+        if (inc.status === 'resolved' || inc.status === 'cancelled') return;
+        if (notifiedRef.current.has(inc.id)) return;
+
+        const diff      = new Date(inc.deadline) - now;
+        const isOverdue = diff < 0;
+
+        // Sadece 1 saat içinde veya geçmiş olanları bildir
+        if (diff > oneHour) return;
+
+        const client = clients.find(c => c.id === inc.clientId);
+        const timeLabel = isOverdue
+          ? `${Math.floor(Math.abs(diff) / 60000)} dakika gecikmiş`
+          : `${Math.ceil(diff / 60000)} dakika kaldı`;
+
+        // Tarayıcı push bildirimi
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification(
+            isOverdue ? 'Gecikmiş Arıza' : 'Deadline Yaklaşıyor',
+            {
+              body: `${client?.name || 'Müşteri'}: ${inc.description} — ${timeLabel}`,
+              icon: '/logo192.png',
+              tag: `deadline-${inc.id}`,
+              requireInteraction: isOverdue, // gecikmiş olanlar otomatik kapanmasın
+            }
+          );
+        }
+
+        // Uygulama içi toast
+        showToast(
+          `${isOverdue ? 'Gecikmiş' : 'Yaklaşan deadline'}: ${client?.name} — ${timeLabel}`,
+          isOverdue ? 'error' : 'warning'
+        );
+
+        // Bir kez bildir, tekrarlama
+        notifiedRef.current.add(inc.id);
+        sessionStorage.setItem(
+          'notifiedDeadlines',
+          JSON.stringify([...notifiedRef.current])
+        );
+      });
+    };
+
+    checkDeadlines(); // sayfa açılınca hemen kontrol et
+    const interval = setInterval(checkDeadlines, 60 * 1000);
+    return () => clearInterval(interval);
+  }, [incidents, clients]); // eslint-disable-line
+
+  // ── SIDEBAR ─────────────────────────────────────────────────────
   useEffect(() => {
     localStorage.setItem('sidebarCollapsed', JSON.stringify(sidebarCollapsed));
   }, [sidebarCollapsed]);
 
-  // Activity ekle
+  // ── ACTIVITY ────────────────────────────────────────────────────
   const addActivity = useCallback((type, message) => {
     const newActivity = { type, message, timestamp: new Date().toISOString() };
-    const updatedActivities = [newActivity, ...activities].slice(0, 50);
-    setActivities(updatedActivities);
-    localStorage.setItem('activities', JSON.stringify(updatedActivities));
+    const updated = [newActivity, ...activities].slice(0, 50);
+    setActivities(updated);
+    localStorage.setItem('activities', JSON.stringify(updated));
   }, [activities]);
 
-  // Toast göster
+  // ── TOAST ───────────────────────────────────────────────────────
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type });
   }, []);
 
-  // Müşteri ekle
+  // ── MÜŞTERİ EKLE ────────────────────────────────────────────────
   const addClient = useCallback((client) => {
     const newClient = {
-      id: Date.now(),
-      ...client,
-      createdAt: new Date().toISOString(),
-      notes: [],
-      favorite: false,
+      id: Date.now(), ...client,
+      createdAt: new Date().toISOString(), notes: [], favorite: false,
     };
-    const updatedClients = [...clients, newClient];
-    setClients(updatedClients);
-    localStorage.setItem('clients', JSON.stringify(updatedClients));
+    const updated = [...clients, newClient];
+    setClients(updated);
+    localStorage.setItem('clients', JSON.stringify(updated));
     addActivity('client_added', `Yeni müşteri eklendi: ${client.name}`);
-    showToast('✓ Müşteri eklendi!', 'success');
-  }, [clients, addActivity, showToast]);
+    addAuditEntry(currentUser, 'CREATE', 'client', newClient.id, `Müşteri oluşturuldu: ${client.name}`);
+    showToast(t('toast.clientAdded'), 'success');
+  }, [clients, addActivity, addAuditEntry, currentUser, showToast, t]);
 
-  // Müşteriye not ekle
+  // ── MÜŞTERİYE NOT ───────────────────────────────────────────────
   const addClientNote = useCallback((clientId, noteText) => {
-    const updatedClients = clients.map(client => {
-      if (client.id === clientId) {
-        return { ...client, notes: [...(client.notes || []), { text: noteText, timestamp: new Date().toISOString() }] };
-      }
-      return client;
-    });
-    setClients(updatedClients);
-    localStorage.setItem('clients', JSON.stringify(updatedClients));
-    showToast('✓ Not eklendi!', 'success');
-  }, [clients, showToast]);
+    const updated = clients.map(c =>
+      c.id === clientId
+        ? { ...c, notes: [...(c.notes || []), { text: noteText, timestamp: new Date().toISOString() }] }
+        : c
+    );
+    setClients(updated);
+    localStorage.setItem('clients', JSON.stringify(updated));
+    addAuditEntry(currentUser, 'UPDATE', 'client', clientId, 'Not eklendi');
+    showToast('Not eklendi!', 'success');
+  }, [clients, addAuditEntry, currentUser, showToast]);
 
-  // Incident ekle
+  // ── ARIZA EKLE ──────────────────────────────────────────────────
   const addIncident = useCallback((incident) => {
     const newIncident = {
-      id: Date.now(),
-      ...incident,
-      status: 'new',
-      startTime: new Date().toISOString(),
-      endTime: null,
-      duration: null,
-      notes: [],
+      id: Date.now(), ...incident,
+      status: 'new', startTime: new Date().toISOString(),
+      endTime: null, duration: null, notes: [],
     };
-    const updatedIncidents = [...incidents, newIncident];
-    setIncidents(updatedIncidents);
-    localStorage.setItem('incidents', JSON.stringify(updatedIncidents));
+    const updated = [...incidents, newIncident];
+    setIncidents(updated);
+    localStorage.setItem('incidents', JSON.stringify(updated));
     const client = clients.find(c => c.id === incident.clientId);
     addActivity('incident_created', `${client?.name || 'Müşteri'} için yeni arıza kaydı oluşturuldu`);
-    showToast('✓ Arıza kaydı oluşturuldu!', 'warning');
-  }, [incidents, clients, addActivity, showToast]);
+    addAuditEntry(currentUser, 'CREATE', 'incident', newIncident.id, `Arıza oluşturuldu: ${incident.description}`);
+    showToast(t('toast.incidentCreated'), 'warning');
+  }, [incidents, clients, addActivity, addAuditEntry, currentUser, showToast, t]);
 
-  // Incident durumu güncelle
+  // ── ARIZA GÜNCELLE (YENİ) ───────────────────────────────────────
+  const updateIncident = useCallback((updatedIncident) => {
+    const updated = incidents.map(inc =>
+      inc.id === updatedIncident.id ? { ...inc, ...updatedIncident } : inc
+    );
+    setIncidents(updated);
+    localStorage.setItem('incidents', JSON.stringify(updated));
+    // Deadline değiştiyse bildirim sayacını sıfırla
+    notifiedRef.current.delete(updatedIncident.id);
+    sessionStorage.setItem('notifiedDeadlines', JSON.stringify([...notifiedRef.current]));
+    addActivity('incident_updated', `Arıza güncellendi: ${updatedIncident.description}`);
+    addAuditEntry(currentUser, 'UPDATE', 'incident', updatedIncident.id, `Arıza güncellendi: ${updatedIncident.description}`);
+    showToast(t('toast.incidentUpdated'), 'success');
+  }, [incidents, addActivity, addAuditEntry, currentUser, showToast, t]);
+
+  // ── DURUM GÜNCELLE ──────────────────────────────────────────────
   const updateIncidentStatus = useCallback((id, newStatus) => {
-    const updatedIncidents = incidents.map(inc =>
+    const updated = incidents.map(inc =>
       inc.id === id ? { ...inc, status: newStatus } : inc
     );
-    setIncidents(updatedIncidents);
-    localStorage.setItem('incidents', JSON.stringify(updatedIncidents));
-    showToast('✓ Durum güncellendi!', 'success');
-  }, [incidents, showToast]);
+    setIncidents(updated);
+    localStorage.setItem('incidents', JSON.stringify(updated));
+    addAuditEntry(currentUser, 'UPDATE', 'incident', id, `Durum güncellendi: ${newStatus}`);
+    showToast('Durum güncellendi!', 'success');
+  }, [incidents, addAuditEntry, currentUser, showToast]);
 
-  // Incident'e not ekle
+  // ── ARIZA NOTU ──────────────────────────────────────────────────
   const addIncidentNote = useCallback((incidentId, noteText) => {
-    const updatedIncidents = incidents.map(inc => {
-      if (inc.id === incidentId) {
-        return { ...inc, notes: [...(inc.notes || []), { text: noteText, timestamp: new Date().toISOString() }] };
-      }
-      return inc;
-    });
-    setIncidents(updatedIncidents);
-    localStorage.setItem('incidents', JSON.stringify(updatedIncidents));
-    showToast('✓ Not eklendi!', 'success');
+    const updated = incidents.map(inc =>
+      inc.id === incidentId
+        ? { ...inc, notes: [...(inc.notes || []), { text: noteText, timestamp: new Date().toISOString() }] }
+        : inc
+    );
+    setIncidents(updated);
+    localStorage.setItem('incidents', JSON.stringify(updated));
+    showToast('Not eklendi!', 'success');
   }, [incidents, showToast]);
 
-  // Incident'i çöz
+  // ── ARIZA ÇÖZDÜ ─────────────────────────────────────────────────
   const resolveIncident = useCallback((id) => {
-    const updatedIncidents = incidents.map(inc => {
+    const updated = incidents.map(inc => {
       if (inc.id === id && inc.status !== 'resolved') {
         const endTime  = new Date().toISOString();
         const duration = Math.floor((new Date(endTime) - new Date(inc.startTime)) / 1000 / 60);
@@ -155,53 +244,70 @@ function App() {
       }
       return inc;
     });
-    setIncidents(updatedIncidents);
-    localStorage.setItem('incidents', JSON.stringify(updatedIncidents));
-    showToast('🎉 Arıza çözüldü!', 'success');
-  }, [incidents, clients, addActivity, showToast]);
+    setIncidents(updated);
+    localStorage.setItem('incidents', JSON.stringify(updated));
+    addAuditEntry(currentUser, 'UPDATE', 'incident', id, 'Arıza çözüldü');
+    showToast('Arıza çözüldü!', 'success');
+  }, [incidents, clients, addActivity, addAuditEntry, currentUser, showToast]);
 
-  // Dark mode toggle
+  // ── DARK MODE ───────────────────────────────────────────────────
   const toggleDarkMode = useCallback(() => {
     const newMode = !darkMode;
     setDarkMode(newMode);
     localStorage.setItem('darkMode', JSON.stringify(newMode));
   }, [darkMode]);
 
-  // Render active page
+  // ── RENDER ──────────────────────────────────────────────────────
   const renderPage = () => {
     const commonProps = {
       incidents, clients, activities,
       addIncident, resolveIncident, updateIncidentStatus, addIncidentNote,
+      updateIncident,
       addClient, setClients, setIncidents, setActivities,
       addClientNote, showToast, darkMode, toggleDarkMode,
+      currentUser,
     };
-
+    // Sayfa erişim kontrolü
+    if (activeTab !== 'dashboard' && !canAccessPage(activeTab)) {
+      return (
+        <div className="page-content">
+          <div className="empty-state" style={{ height: '60vh' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="48" height="48" style={{ opacity: 0.25 }}>
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+            <p>{t('auth.accessDenied')}</p>
+          </div>
+        </div>
+      );
+    }
     switch (activeTab) {
-      case 'dashboard':
-        return <DashboardPage {...commonProps} onNavigate={setActiveTab} />;
-      case 'incidents':
-        return <IncidentsPage {...commonProps} />;
-      case 'clients':
-        return <ClientsPage {...commonProps} />;
-      case 'kanban':
-        return <KanbanPage {...commonProps} />;
-      case 'analytics':
-        return <AnalyticsPage {...commonProps} />;
-      case 'calendar':
-        return <CalendarPage {...commonProps} />;
-      case 'reports':
-        return <ReportsPage {...commonProps} />;
-      case 'settings':
-        return <SettingsPage {...commonProps} />;
-      default:
-        return <DashboardPage {...commonProps} />;
+      case 'dashboard': return <DashboardPage {...commonProps} onNavigate={handleSetActiveTab} />;
+      case 'incidents': return <IncidentsPage {...commonProps} />;
+      case 'clients':   return <ClientsPage   {...commonProps} />;
+      case 'kanban':    return <KanbanPage     {...commonProps} />;
+      case 'analytics': return <AnalyticsPage  {...commonProps} />;
+      case 'calendar':  return <CalendarPage   {...commonProps} />;
+      case 'reports':   return <ReportsPage    {...commonProps} />;
+      case 'settings':  return <SettingsPage   {...commonProps} />;
+      default:          return <DashboardPage {...commonProps} onNavigate={handleSetActiveTab} />;
     }
   };
+
+  const handleSetActiveTab = useCallback((tab) => {
+    if (!canAccessPage(tab)) {
+      showToast(t('auth.accessDenied'), 'error');
+      return;
+    }
+    setActiveTab(tab);
+  }, [canAccessPage, showToast, t]);
+
+  if (!currentUser) return <LoginScreen />;
 
   if (loading) {
     return (
       <div className={`App ${darkMode ? 'dark-mode' : ''}`}>
-        <LoadingSpinner message="Panel yükleniyor..." />
+        <LoadingSpinner message={t('app.loading')} />
       </div>
     );
   }
@@ -209,48 +315,51 @@ function App() {
   return (
     <div className={`App ${darkMode ? 'dark-mode' : ''}`}>
       <Sidebar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        incidentCount={incidents.filter(inc => inc.status !== 'resolved' && inc.status !== 'cancelled').length}
+        activeTab={activeTab} setActiveTab={handleSetActiveTab}
+        incidentCount={incidents.filter(i => i.status !== 'resolved' && i.status !== 'cancelled').length}
         clientCount={clients.length}
-        collapsed={sidebarCollapsed}
-        setCollapsed={setSidebarCollapsed}
-        mobileOpen={sidebarOpen}
-        setMobileOpen={setSidebarOpen}
+        collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed}
+        mobileOpen={sidebarOpen} setMobileOpen={setSidebarOpen}
+        currentUser={currentUser}
+        onLogout={() => { logout(); addAuditEntry(currentUser, 'LOGOUT', 'auth', currentUser?.id, `${currentUser?.name} çıkış yaptı`); }}
       />
 
       <div className={`main-layout ${sidebarCollapsed ? 'collapsed' : ''}`}>
         <Header
-          darkMode={darkMode}
-          toggleDarkMode={toggleDarkMode}
+          darkMode={darkMode} toggleDarkMode={toggleDarkMode}
           notifications={<NotificationCenter incidents={incidents} clients={clients} />}
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
           searchComponent={
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', width: '100%' }}>
-              <GlobalSearch incidents={incidents} clients={clients} onNavigate={setActiveTab} />
+              <GlobalSearch incidents={incidents} clients={clients} onNavigate={handleSetActiveTab} />
             </div>
           }
           performanceMonitor={<PerformanceMonitor />}
           quickNotes={<QuickNotes />}
           breadcrumb={<Breadcrumb activeTab={activeTab} setActiveTab={setActiveTab} />}
         />
-
-        <main className="main-content">
-          {renderPage()}
-        </main>
+        <main className="main-content">{renderPage()}</main>
       </div>
 
-      <QuickActions onAction={setActiveTab} />
+      <QuickActions onAction={handleSetActiveTab} />
       <PWAInstallBanner />
 
       {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
+        <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <I18nProvider>
+      <AuthProvider>
+        <AuditProvider>
+          <AppContent />
+        </AuditProvider>
+      </AuthProvider>
+    </I18nProvider>
   );
 }
 

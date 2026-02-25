@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './KanbanPage.css';
+import Icon from '../components/Icon';
 
 function useNow() {
   const [now, setNow] = useState(new Date());
@@ -21,12 +22,12 @@ function DeadlineBadge({ deadline, status }) {
   const minutes = Math.floor((absMs / 1000 / 60) % 60);
 
   const label = isOverdue
-    ? `🔴 ${hours}s ${minutes}dk gecikti`
+    ? `${hours}s ${minutes}dk gecikti`
     : hours < 1
-    ? `🟠 ${minutes}dk kaldı`
+    ? `${minutes}dk kaldı`
     : hours < 3
-    ? `🟡 ${hours}s ${minutes}dk kaldı`
-    : `🟢 ${hours}s ${minutes}dk kaldı`;
+    ? `${hours}s ${minutes}dk kaldı`
+    : `${hours}s ${minutes}dk kaldı`;
 
   const color = isOverdue ? '#ef4444' : hours < 1 ? '#f97316' : hours < 3 ? '#f59e0b' : '#10b981';
   const bg   = isOverdue ? 'rgba(239,68,68,0.13)' : hours < 1 ? 'rgba(249,115,22,0.13)' : hours < 3 ? 'rgba(245,158,11,0.13)' : 'rgba(16,185,129,0.12)';
@@ -40,19 +41,20 @@ function DeadlineBadge({ deadline, status }) {
       fontWeight: '600',
       background: bg,
       color,
-      display: 'inline-block',
+      display: 'inline-flex', alignItems: 'center', gap: 8,
     }}>
-      {label}
+      <span style={{ width: 10, height: 10, borderRadius: 10, background: color, display: 'inline-block' }} />
+      <span>{label}</span>
     </div>
   );
 }
 
 function KanbanPage({ incidents, clients, updateIncidentStatus }) {
   const columns = [
-    { id: 'new',         title: '🆕 Yeni',          status: 'new',         color: '#3b82f6' },
-    { id: 'in_progress', title: '🔄 Devam Ediyor',   status: 'in_progress', color: '#f59e0b' },
-    { id: 'on_hold',     title: '⏸️ Beklemede',      status: 'on_hold',     color: '#a855f7' },
-    { id: 'resolved',    title: '✅ Çözüldü',        status: 'resolved',    color: '#10b981' },
+    { id: 'new',         title: 'Yeni',          status: 'new',         color: '#3b82f6' },
+    { id: 'in_progress', title: 'Devam Ediyor',   status: 'in_progress', color: '#f59e0b' },
+    { id: 'on_hold',     title: 'Beklemede',      status: 'on_hold',     color: '#a855f7' },
+    { id: 'resolved',    title: 'Çözüldü',        status: 'resolved',    color: '#10b981' },
   ];
 
   const [draggedItem, setDraggedItem] = useState(null);
@@ -94,7 +96,7 @@ function KanbanPage({ incidents, clients, updateIncidentStatus }) {
     <div className="page-content">
       <div className="page-header">
         <div>
-          <h1>📋 Kanban Board</h1>
+          <h1>Kanban Board</h1>
           <p>Arızaları sürükle bırak ile yönet</p>
         </div>
       </div>
@@ -118,7 +120,7 @@ function KanbanPage({ incidents, clients, updateIncidentStatus }) {
               <div className="kanban-cards">
                 {columnIncidents.length === 0 ? (
                   <div className="kanban-empty">
-                    <span style={{ fontSize: '32px', opacity: 0.3 }}>📭</span>
+                    <span style={{ fontSize: '32px', opacity: 0.3 }}><svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.2"/></svg></span>
                     <p>Arıza yok</p>
                   </div>
                 ) : (
@@ -138,13 +140,15 @@ function KanbanPage({ incidents, clients, updateIncidentStatus }) {
                             color: getPriorityColor(incident.priority),
                           }}
                         >
-                          {incident.priority === 'critical' ? '🔴 Kritik' : incident.priority === 'medium' ? '🟡 Orta' : '🟢 Düşük'}
+                          {incident.priority === 'critical' && 'Kritik'}
+                          {incident.priority === 'medium'   && 'Orta'}
+                          {incident.priority === 'low'      && 'Düşük'}
                         </span>
                         <span className="kanban-card-category">
-                          {incident.category === 'software' && '💻'}
-                          {incident.category === 'hardware' && '🖥️'}
-                          {incident.category === 'network' && '🌐'}
-                          {incident.category === 'other' && '📦'}
+                          {incident.category === 'software' && <Icon name="laptop" size={16} />}
+                          {incident.category === 'hardware' && <Icon name="desktop" size={16} />}
+                          {incident.category === 'network' && <Icon name="network" size={16} />}
+                          {incident.category === 'other' && <Icon name="box" size={16} />}
                         </span>
                       </div>
 
@@ -155,8 +159,8 @@ function KanbanPage({ incidents, clients, updateIncidentStatus }) {
 
                       {/* Çözüldüyse deadline yerine tarih göster */}
                       {incident.deadline && (incident.status === 'resolved' || incident.status === 'cancelled') && (
-                        <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
-                          📅 {new Date(incident.deadline).toLocaleString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                        <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                          <Icon name="calendar" size={14} /> {new Date(incident.deadline).toLocaleString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                         </div>
                       )}
 

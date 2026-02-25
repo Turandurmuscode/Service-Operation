@@ -14,17 +14,23 @@
 }
 
 .calendar-nav-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-strong);
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
   background: var(--bg-elevated);
-  color: var(--text-secondary);
+  color: var(--text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.15s;
+}
+
+.dark-mode .calendar-nav-btn {
+  border-color: var(--border);
+  background: var(--bg-surface);
+  color: var(--text-muted);
 }
 
 .calendar-nav-btn:hover {
@@ -54,11 +60,11 @@
 }
 
 .calendar-day {
-  min-height: 76px;
-  background: var(--bg-elevated);
+  min-height: 74px;
+  background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 7px;
+  border-radius: 4px;
+  padding: 6px;
   display: flex;
   flex-direction: column;
   cursor: pointer;
@@ -67,7 +73,7 @@
 
 .calendar-day:hover {
   border-color: var(--border-strong);
-  background: var(--bg-hover);
+  background: var(--bg-elevated);
 }
 
 .calendar-day.empty {
@@ -77,8 +83,8 @@
 }
 
 .calendar-day.today {
-  background: var(--accent-dim);
-  border-color: rgba(232,160,32,0.3);
+  background: var(--warning-dim);
+  border-color: var(--warning-border);
 }
 
 .calendar-day.has-incidents {
@@ -86,15 +92,15 @@
 }
 
 .calendar-day-number {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 4px;
+  color: var(--text-muted);
+  margin-bottom: 3px;
   font-variant-numeric: tabular-nums;
 }
 
 .calendar-day.today .calendar-day-number {
-  color: var(--accent);
+  color: var(--warning);
 }
 
 .incident-dots {
@@ -122,23 +128,23 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   background: var(--danger-dim);
   color: var(--danger);
   padding: 1px 5px;
-  border-radius: 3px;
+  border-radius: 2px;
   margin-top: 3px;
 }
 
 .calendar-legend {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   justify-content: center;
-  margin-top: 16px;
-  padding: 12px;
+  margin-top: 14px;
+  padding: 11px;
   background: var(--bg-elevated);
-  border-radius: var(--radius-md);
+  border-radius: 4px;
   border: 1px solid var(--border);
 }
 

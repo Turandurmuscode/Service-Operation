@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './QuickNotes.css';
+import Icon from './Icon';
 
 function QuickNotes() {
   const [notes, setNotes] = useState([]);
@@ -52,7 +53,7 @@ function QuickNotes() {
         onClick={() => setIsOpen(!isOpen)}
         title="Hızlı Notlar"
       >
-        📝
+        <Icon name="clipboard" size={18} />
         {notes.length > 0 && (
           <span className="notes-badge">{notes.length}</span>
         )}
@@ -61,8 +62,8 @@ function QuickNotes() {
       {isOpen && (
         <div className="notes-panel">
           <div className="notes-header">
-            <h3>📝 Hızlı Notlar</h3>
-            <button onClick={() => setIsOpen(false)} className="notes-close">✕</button>
+            <h3><Icon name="clipboard" size={16} /> Hızlı Notlar</h3>
+            <button onClick={() => setIsOpen(false)} className="notes-close"><Icon name="close" size={16} /></button>
           </div>
 
           <form onSubmit={addNote} className="notes-form">
@@ -81,7 +82,7 @@ function QuickNotes() {
           <div className="notes-list">
             {notes.length === 0 ? (
               <div className="notes-empty">
-                <span style={{ fontSize: '48px' }}>📋</span>
+                <Icon name="clipboard" size={48} />
                 <p>Henüz not yok</p>
               </div>
             ) : (
@@ -98,20 +99,20 @@ function QuickNotes() {
                       })}
                     </div>
                   </div>
-                  <div className="note-actions">
+                    <div className="note-actions">
                     <button 
                       onClick={() => togglePin(note.id)}
                       className="note-action-btn"
                       title={note.pinned ? 'Sabitlemeyi Kaldır' : 'Sabitle'}
                     >
-                      {note.pinned ? '📌' : '📍'}
+                      {note.pinned ? <Icon name="pin" size={16} /> : <Icon name="pin" size={16} />}
                     </button>
                     <button 
                       onClick={() => deleteNote(note.id)}
                       className="note-action-btn delete"
                       title="Sil"
                     >
-                      🗑️
+                      <Icon name="trash" size={16} />
                     </button>
                   </div>
                 </div>

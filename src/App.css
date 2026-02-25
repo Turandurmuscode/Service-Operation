@@ -10,49 +10,49 @@
 /* ─── DESIGN TOKENS — DARK (default) ─────────────── */
 :root {
   /* Surfaces */
-  --bg-base:      #0d0d10;
-  --bg-surface:   #111114;
-  --bg-elevated:  #17171c;
-  --bg-overlay:   #1c1c22;
-  --bg-hover:     #1f1f26;
+  --bg-base:      #0a0a0d;
+  --bg-surface:   #0e0e12;
+  --bg-elevated:  #131318;
+  --bg-overlay:   #18181d;
+  --bg-hover:     #1a1a22;
 
   /* Borders */
-  --border:        rgba(255,255,255,0.055);
-  --border-strong: rgba(255,255,255,0.10);
-  --border-focus:  rgba(255,255,255,0.20);
+  --border:        rgba(255,255,255,0.04);
+  --border-strong: rgba(255,255,255,0.08);
+  --border-focus:  rgba(255,255,255,0.16);
 
   /* Text */
-  --text-primary:   #ededf0;
-  --text-secondary: #7a7a8c;
-  --text-muted:     #4a4a5e;
-  --text-inverse:   #0d0d10;
+  --text-primary:   #e8e8ec;
+  --text-secondary: #9a9aaa;
+  --text-muted:     #6a6a7e;
+  --text-inverse:   #0a0a0d;
 
   /* Accent — single brand blue */
   --accent:        #4f7fff;
   --accent-hover:  #6690ff;
-  --accent-dim:    rgba(79,127,255,0.12);
-  --accent-glow:   rgba(79,127,255,0.22);
-  --accent-border: rgba(79,127,255,0.28);
+  --accent-dim:    rgba(79,127,255,0.10);
+  --accent-glow:   rgba(79,127,255,0.18);
+  --accent-border: rgba(79,127,255,0.24);
 
   /* Semantic */
   --success:        #34c16a;
-  --success-dim:    rgba(52,193,106,0.10);
-  --success-border: rgba(52,193,106,0.22);
+  --success-dim:    rgba(52,193,106,0.08);
+  --success-border: rgba(52,193,106,0.18);
 
   --warning:        #f0a332;
-  --warning-dim:    rgba(240,163,50,0.10);
-  --warning-border: rgba(240,163,50,0.22);
+  --warning-dim:    rgba(240,163,50,0.08);
+  --warning-border: rgba(240,163,50,0.18);
 
   --danger:         #f05252;
-  --danger-dim:     rgba(240,82,82,0.10);
-  --danger-border:  rgba(240,82,82,0.22);
+  --danger-dim:     rgba(240,82,82,0.08);
+  --danger-border:  rgba(240,82,82,0.18);
 
   --info:           #4f7fff;
-  --info-dim:       rgba(79,127,255,0.10);
+  --info-dim:       rgba(79,127,255,0.08);
 
   --purple:         #a855f7;
-  --purple-dim:     rgba(168,85,247,0.10);
-  --purple-border:  rgba(168,85,247,0.22);
+  --purple-dim:     rgba(168,85,247,0.08);
+  --purple-border:  rgba(168,85,247,0.18);
 
   /* Typography */
   --font-sans: 'Geist', system-ui, sans-serif;
@@ -66,38 +66,50 @@
   --radius-xl: 16px;
 
   /* Shadows */
-  --shadow-xs:     0 1px 2px rgba(0,0,0,0.35);
-  --shadow-sm:     0 1px 4px rgba(0,0,0,0.45);
-  --shadow-md:     0 4px 16px rgba(0,0,0,0.55);
-  --shadow-lg:     0 8px 32px rgba(0,0,0,0.65);
-  --shadow-accent: 0 2px 16px rgba(79,127,255,0.20);
+  --shadow-xs:     0 1px 2px rgba(0,0,0,0.40);
+  --shadow-sm:     0 1px 4px rgba(0,0,0,0.48);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.58);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.68);
+  --shadow-accent: 0 2px 16px rgba(79,127,255,0.18);
+
+  /* Aliases / compatibility */
+  --primary:              #4f7fff;
+  --primary-dim:          rgba(79,127,255,0.10);
+  --shadow-elevated:      0 4px 20px rgba(0,0,0,0.55);
+  --shadow-elevated-dark: 0 8px 28px rgba(0,0,0,0.75);
+  --shadow-popover:       0 12px 36px rgba(0,0,0,0.60);
 }
 
 /* ─── LIGHT MODE ──────────────────────────────────── */
 .App:not(.dark-mode) {
-  --bg-base:      #f5f5f7;
+  --bg-base:      #ffffff;
   --bg-surface:   #ffffff;
-  --bg-elevated:  #f8f8fa;
-  --bg-overlay:   #f1f1f4;
-  --bg-hover:     #ededf1;
+  --bg-elevated:  #f8f9fb;
+  --bg-overlay:   #f1f3f6;
+  --bg-hover:     #f0f2f5;
 
-  --border:        rgba(0,0,0,0.068);
-  --border-strong: rgba(0,0,0,0.115);
-  --border-focus:  rgba(0,0,0,0.22);
+  --border:        rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.12);
+  --border-focus:  rgba(0,0,0,0.20);
 
-  --text-primary:   #111116;
-  --text-secondary: #555568;
-  --text-muted:     #8c8ca0;
+  --text-primary:   #1a1a2e;
+  --text-secondary: #4a4a64;
+  --text-muted:     #8a8a96;
   --text-inverse:   #ffffff;
 
-  --accent-dim:    rgba(79,127,255,0.08);
-  --accent-glow:   rgba(79,127,255,0.14);
+  --accent-dim:    rgba(79,127,255,0.06);
+  --accent-glow:   rgba(79,127,255,0.12);
 
-  --shadow-xs:     0 1px 2px rgba(0,0,0,0.06);
-  --shadow-sm:     0 1px 4px rgba(0,0,0,0.08);
-  --shadow-md:     0 4px 16px rgba(0,0,0,0.10);
-  --shadow-lg:     0 8px 32px rgba(0,0,0,0.12);
-  --shadow-accent: 0 2px 16px rgba(79,127,255,0.12);
+  --shadow-xs:     0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm:     0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.10);
+  --shadow-accent: 0 2px 16px rgba(79,127,255,0.10);
+  --shadow-elevated:      0 4px 16px rgba(0,0,0,0.08);
+  --shadow-elevated-dark: 0 8px 24px rgba(0,0,0,0.12);
+  --shadow-popover:       0 8px 24px rgba(0,0,0,0.10);
+  --primary:              #4f7fff;
+  --primary-dim:          rgba(79,127,255,0.06);
 }
 
 /* ─── BASE ────────────────────────────────────────── */
@@ -202,6 +214,98 @@ body {
   border-radius: var(--radius-md);
   padding: 14px 16px;
 }
+
+/* ─── ICONS — Professional / Corporate defaults ───── */
+/* Make SVGs inherit color and ensure icons are neutral and scalable */
+.icon,
+.widget-icon,
+.notification-icon,
+.metric-icon,
+.quick-action-icon,
+.timeline-dot,
+.notification-badge,
+.sla-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  color: var(--text-secondary);
+  padding: 4px;
+  box-shadow: none;
+}
+
+.App svg,
+.App svg * {
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+.widget-icon,
+.notification-icon,
+.metric-icon,
+.quick-action-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+
+/* Icon button utilities */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 6px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, box-shadow 0.12s, transform 0.12s;
+}
+
+.icon-btn.round { border-radius: 50%; }
+
+.icon-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-xs);
+}
+
+.icon-btn svg { width: 18px; height: 18px; color: currentColor; }
+.icon-btn img { width: 18px; height: 18px; display: block; }
+
+/* Friendly alias for older classnames used across components */
+.btn-icon { composes: icon-btn; }
+
+.notification-badge,
+.sla-count {
+  background: var(--danger);
+  color: var(--text-inverse);
+  border-radius: 8px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.timeline-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-base);
+  background: var(--text-muted);
+}
+
+/* Prefer neutral icon colors for professional look; accents may be applied where semantically needed */
+.icon-accent { color: var(--accent); }
+.icon-success { color: var(--success); }
+.icon-warning { color: var(--warning); }
+.icon-danger  { color: var(--danger); }
+
 
 /* ─── DIVIDER ─────────────────────────────────────── */
 .divider {
@@ -564,6 +668,8 @@ tbody tr:last-child td {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: none !important;
+  color: var(--text-muted) !important;
 }
 
 .widget-icon svg {
@@ -594,12 +700,12 @@ tbody tr:last-child td {
   margin-top: 1px;
 }
 
-.widget-success .widget-icon { background: var(--success-dim);  color: var(--success); }
-.widget-warning .widget-icon { background: var(--warning-dim);  color: var(--warning); }
-.widget-danger  .widget-icon { background: var(--danger-dim);   color: var(--danger);  }
-.widget-info    .widget-icon { background: var(--accent-dim);   color: var(--accent);  }
-.widget-accent  .widget-icon { background: var(--accent-dim);   color: var(--accent);  }
-.widget-purple  .widget-icon { background: var(--purple-dim);   color: var(--purple);  }
+.widget-success .widget-icon { background: none;  color: var(--text-secondary); }
+.widget-warning .widget-icon { background: none;  color: var(--text-secondary); }
+.widget-danger  .widget-icon { background: none;   color: var(--text-secondary);  }
+.widget-info    .widget-icon { background: none;   color: var(--text-secondary);  }
+.widget-accent  .widget-icon { background: none;   color: var(--text-secondary);  }
+.widget-purple  .widget-icon { background: none;   color: var(--text-secondary);  }
 
 /* ─── FILTERS ─────────────────────────────────────── */
 .filters-container {
@@ -1152,4 +1258,34 @@ tbody tr:last-child td {
 
 @media (max-width: 480px) {
   .sidebar { width: 220px !important; }
+}
+
+/* ─── UNIVERSAL THEME ENFORCEMENT ────────────── */
+/* Ensure all custom components use theme colors */
+.App {
+  color-scheme: dark light;
+}
+
+.App:not(.dark-mode) {
+  color-scheme: light;
+}
+
+/* Light mode overrides - ensure no dark/children elements slip through */
+.App:not(.dark-mode) [style*="background"],
+.App:not(.dark-mode) [style*="color"] {
+  /* Allow inline styles but they'll be visible */
+}
+
+/* Fix all text in light mode to be dark */
+.App:not(.dark-mode) {
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a64;
+  --text-muted: #8a8a96;
+}
+
+/* Dark mode - ensure pure dark */
+.App.dark-mode {
+  --text-primary: #e8e8ec;
+  --text-secondary: #9a9aaa;
+  --text-muted: #6a6a7e;
 }

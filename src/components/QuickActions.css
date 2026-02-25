@@ -6,36 +6,38 @@
 }
 
 .quick-actions-btn {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   border: none;
   background: var(--accent);
-  color: #0a0a0f;
+  color: var(--text-inverse);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 20px var(--accent-glow);
+  box-shadow: var(--shadow-md);
   transition: all 0.2s;
 }
 
 .quick-actions-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 24px var(--accent-glow);
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
 
 .quick-actions-btn.active {
-  background: var(--bg-elevated);
+  background: var(--bg-surface);
   color: var(--text-primary);
-  border: 1px solid var(--border-strong);
-  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .quick-actions-icon svg {
   width: 22px;
   height: 22px;
   display: block;
+  fill: currentColor !important;
+  stroke: currentColor !important;
 }
 
 .quick-actions-menu {
@@ -53,12 +55,12 @@
   gap: 10px;
   padding: 10px 16px;
   background: var(--bg-surface);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   animation: slideInRight 0.25s cubic-bezier(0.4,0,0.2,1) both;
   font-family: var(--font-sans);
 }
@@ -70,29 +72,31 @@
 
 .quick-action-item:hover {
   background: var(--bg-hover);
-  transform: translateX(-4px);
-  border-color: var(--accent);
+  transform: translateX(-2px);
+  border-color: var(--border-strong);
 }
 
 .quick-action-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-elevated);
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: var(--bg-surface);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-}
-
-.quick-action-icon svg {
-  width: 15px;
-  height: 15px;
   color: var(--text-secondary);
 }
 
+.quick-action-icon svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
 .quick-action-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
 }

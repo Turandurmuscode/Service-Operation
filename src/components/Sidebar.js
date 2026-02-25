@@ -68,8 +68,16 @@ function Sidebar({
   incidentCount, clientCount,
   collapsed, setCollapsed,
   mobileOpen, setMobileOpen,
+  currentUser, onLogout,
 }) {
-  const sections = [
+  const ROLE_PAGES = {
+    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','settings'],
+    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports'],
+    technician: ['dashboard','incidents','calendar'],
+  };
+  const allowedPages = currentUser ? (ROLE_PAGES[currentUser.role] || []) : Object.values(ROLE_PAGES).flat();
+
+  const allSections = [
     {
       label: 'Genel',
       items: [
@@ -99,7 +107,10 @@ function Sidebar({
       ],
     },
   ];
-
+  // Filter sections based on role
+  const sections = allSections
+    .map(s => ({ ...s, items: s.items.filter(i => allowedPages.includes(i.id)) }))
+    .filter(s => s.items.length > 0);
   // Mobil: dışarıya tıklayınca kapat
   useEffect(() => {
     if (!mobileOpen) return;
@@ -186,12 +197,12 @@ function Sidebar({
         </nav>
 
         <div className="sidebar-footer">
-          <div className="sidebar-user">
-            <div className="user-avatar">A</div>
+          <div className="sidebar-user" onClick={onLogout} title="Çıkış Yap">
+            <div className="user-avatar">{currentUser?.avatar || 'A'}</div>
             {!collapsed && (
               <div className="user-info">
-                <div className="user-name">Admin</div>
-                <div className="user-role">Sistem Yöneticisi</div>
+                <div className="user-name">{currentUser?.name || 'Admin'}</div>
+                <div className="user-role">{currentUser?.role === 'admin' ? 'Admin' : currentUser?.role === 'manager' ? 'Yönetici' : 'Teknisyen'}</div>
               </div>
             )}
           </div>
