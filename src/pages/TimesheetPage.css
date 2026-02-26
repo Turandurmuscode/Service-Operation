@@ -1,0 +1,273 @@
+.ts-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.ts-stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.ts-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.ts-stat-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+/* Filters */
+.ts-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ts-filter-group {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ts-filter-btn {
+  padding: 7px 14px;
+  border: none;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ts-filter-btn + .ts-filter-btn {
+  border-left: 1px solid var(--border);
+}
+
+.ts-filter-btn.active {
+  background: var(--accent, #3b82f6);
+  color: #fff;
+}
+
+.ts-filter-btn:hover:not(.active) {
+  background: var(--bg-elevated);
+}
+
+.ts-filters .filter-select {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+/* Layout */
+.ts-layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 16px;
+  align-items: start;
+}
+
+/* Entries */
+.ts-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ts-day-group {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ts-day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+}
+
+.ts-day-date {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: capitalize;
+}
+
+.ts-day-total {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent, #3b82f6);
+  background: rgba(59, 130, 246, 0.1);
+  padding: 2px 10px;
+  border-radius: 10px;
+}
+
+.ts-entry-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ts-entry-card:last-child {
+  border-bottom: none;
+}
+
+.ts-entry-duration {
+  flex-shrink: 0;
+  width: 70px;
+}
+
+.ts-duration-value {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.ts-entry-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ts-entry-desc {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+}
+
+.ts-entry-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.ts-entry-incident {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ts-entry-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.ts-entry-card:hover .ts-entry-actions {
+  opacity: 1;
+}
+
+/* Sidebar */
+.ts-sidebar {
+  position: sticky;
+  top: 20px;
+}
+
+.ts-sidebar-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.ts-sidebar-card h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 14px 0;
+}
+
+.ts-tech-row {
+  margin-bottom: 12px;
+}
+
+.ts-tech-row:last-child {
+  margin-bottom: 0;
+}
+
+.ts-tech-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.ts-tech-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ts-tech-time {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.ts-tech-bar {
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ts-tech-bar-fill {
+  height: 100%;
+  background: var(--accent, #3b82f6);
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+/* Form Modal */
+.ts-form-modal {
+  max-width: 520px;
+}
+
+.ts-form {
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .ts-layout {
+    grid-template-columns: 1fr;
+  }
+  .ts-sidebar {
+    position: static;
+  }
+  .ts-entry-actions {
+    opacity: 1;
+  }
+}

@@ -400,7 +400,7 @@ function SettingsPage({
           <p><strong>Servis Operasyon Paneli</strong></p>
           <p>Versiyon: 1.1.0</p>
           <p>Müşteri destek ve arıza takip sistemi</p>
-          <p style={{ marginTop: '12px' }}>© 2024 Tüm hakları saklıdır.</p>
+          <p style={{ marginTop: '12px' }}>©Sphenyx 2026 Tüm hakları saklıdır.</p>
         </div>
       </div>
     </div>

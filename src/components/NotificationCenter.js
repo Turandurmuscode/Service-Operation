@@ -104,7 +104,7 @@ function NotificationCenter({ incidents, clients }) {
   return (
     <div className="notification-center">
       <button 
-        className="notification-bell"
+        className="notification-trigger"
         onClick={() => setIsOpen(!isOpen)}
       >
         🔔
@@ -116,14 +116,23 @@ function NotificationCenter({ incidents, clients }) {
       {isOpen && (
         <>
           <div className="notification-overlay" onClick={() => setIsOpen(false)} />
-          <div className="notification-dropdown">
+          <div className="notification-panel">
             <div className="notification-header">
               <h3>Bildirimler</h3>
-              {unreadCount > 0 && (
-                <button onClick={markAllAsRead} className="mark-all-read">
-                  Tümünü Okundu İşaretle
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {unreadCount > 0 && (
+                  <button onClick={markAllAsRead} className="mark-all-btn">
+                    Tümünü Okundu
+                  </button>
+                )}
+                <button 
+                  onClick={() => setIsOpen(false)} 
+                  className="notification-close-btn"
+                  title="Kapat"
+                >
+                  ✕
                 </button>
-              )}
+              </div>
             </div>
 
             <div className="notification-list">
@@ -142,7 +151,7 @@ function NotificationCenter({ incidents, clients }) {
                     <div className="notification-icon">{notif.icon}</div>
                     <div className="notification-content">
                       <div className="notification-title">{notif.title}</div>
-                      <div className="notification-message">{notif.message}</div>
+                      <div className="notification-body">{notif.message}</div>
                       <div className="notification-time">{formatTime(notif.timestamp)}</div>
                     </div>
                     {!notif.read && <div className="notification-dot"></div>}

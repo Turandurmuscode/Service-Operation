@@ -12,6 +12,7 @@ import QuickNotes from './components/QuickNotes';
 import Breadcrumb from './components/Breadcrumb';
 import PWAInstallBanner from './components/PWAInstallBanner';
 import LoginScreen from './components/LoginScreen';
+import ThemeCustomizer from './components/ThemeCustomizer';
 
 // Contexts
 import { AuthProvider, useAuth, ROLE_PERMISSIONS } from './context/AuthContext';
@@ -27,6 +28,15 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import CalendarPage from './pages/CalendarPage';
 import ReportsPage from './pages/ReportsPage';
 import SettingsPage from './pages/SettingsPage';
+import AssetsPage from './pages/AssetsPage';
+import TimesheetPage from './pages/TimesheetPage';
+import MessagingPage from './pages/MessagingPage';
+import ChecklistsPage from './pages/ChecklistsPage';
+import CostTrackingPage from './pages/CostTrackingPage';
+import AnnouncementsPage from './pages/AnnouncementsPage';
+import ContactLogPage from './pages/ContactLogPage';
+import ActivityFeedPage from './pages/ActivityFeedPage';
+import WorkflowRulesPage from './pages/WorkflowRulesPage';
 
 function AppContent() {
   const { currentUser, logout, canAccessPage } = useAuth();
@@ -290,6 +300,15 @@ function AppContent() {
       case 'calendar':  return <CalendarPage   {...commonProps} />;
       case 'reports':   return <ReportsPage    {...commonProps} />;
       case 'settings':  return <SettingsPage   {...commonProps} />;
+      case 'assets':    return <AssetsPage     {...commonProps} />;
+      case 'timesheet': return <TimesheetPage  {...commonProps} />;
+      case 'messaging': return <MessagingPage  {...commonProps} />;
+      case 'checklists': return <ChecklistsPage {...commonProps} />;
+      case 'costtracking': return <CostTrackingPage {...commonProps} />;
+      case 'announcements': return <AnnouncementsPage {...commonProps} />;
+      case 'contactlog': return <ContactLogPage {...commonProps} />;
+      case 'activityfeed': return <ActivityFeedPage {...commonProps} />;
+      case 'workflowrules': return <WorkflowRulesPage {...commonProps} />;
       default:          return <DashboardPage {...commonProps} onNavigate={handleSetActiveTab} />;
     }
   };
@@ -338,10 +357,15 @@ function AppContent() {
           quickNotes={<QuickNotes />}
           breadcrumb={<Breadcrumb activeTab={activeTab} setActiveTab={setActiveTab} />}
         />
-        <main className="main-content">{renderPage()}</main>
+        <main className="main-content">
+          <div className="page-transition" key={activeTab}>
+            {renderPage()}
+          </div>
+        </main>
       </div>
 
       <QuickActions onAction={handleSetActiveTab} />
+      <ThemeCustomizer darkMode={darkMode} />
       <PWAInstallBanner />
 
       {toast && (

@@ -198,6 +198,44 @@
   font-size: 13px;
 }
 
+.notification-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+}
+
+.notification-close-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.15s;
+  font-family: var(--font-sans);
+  line-height: 1;
+}
+
+.notification-close-btn:hover {
+  background: var(--danger-dim);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.notification-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  align-self: center;
+}
+
 .notification-footer {
   padding: 10px 16px;
   border-top: 1px solid var(--border);

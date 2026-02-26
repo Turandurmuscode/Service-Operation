@@ -1,7 +1,7 @@
 {
-  "short_name": "ServisPanel",
-  "name": "Servis Operasyon Paneli",
-  "description": "Müşteri destek ve arıza takip sistemi",
+  "short_name": "Pi-Logix",
+  "name": "Pi-Logix — Servis Operasyon Yönetimi",
+  "description": "Akıllı servis yönetimi ve arıza takip platformu",
   "icons": [
     {
       "src": "favicon.ico",

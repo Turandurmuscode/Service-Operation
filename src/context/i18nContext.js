@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 const translations = {
   tr: {
     // Genel
-    'app.name': 'Servis Operasyon Paneli',
+    'app.name': 'Pi-Logix',
     'app.loading': 'Panel yükleniyor...',
     'lang.tr': 'Türkçe',
     'lang.en': 'English',
@@ -18,8 +18,18 @@ const translations = {
     'nav.calendar': 'Takvim',
     'nav.reports': 'Raporlar',
     'nav.settings': 'Ayarlar',
+    'nav.assets': 'Envanter',
+    'nav.timesheet': 'Saat Takibi',
+    'nav.messaging': 'Mesajlar',
+    'nav.checklists': 'Kontrol Listeleri',
+    'nav.costtracking': 'Maliyet Takibi',
+    'nav.announcements': 'Duyurular',
+    'nav.contactlog': 'İletişim Geçmişi',
+    'nav.activityfeed': 'Canlı Akış',
+    'nav.workflowrules': 'Otomasyon',
     'nav.general': 'Genel',
     'nav.workManagement': 'İş Yönetimi',
+    'nav.resources': 'Kaynaklar',
     'nav.reporting': 'Raporlama',
 
     // Dashboard
@@ -118,11 +128,62 @@ const translations = {
     'toast.noteAdded': 'Not eklendi!',
     'toast.saved': 'Kaydedildi!',
     'toast.permissionDenied': 'Bu işlem için yetkiniz yok.',
+
+    // Varlık Yönetimi
+    'assets.title': 'Varlık / Envanter Yönetimi',
+    'assets.subtitle': 'Cihaz ve ekipman envanterini takip edin',
+    'assets.new': 'Yeni Varlık',
+    'assets.search': 'Varlık ara...',
+    'assets.noData': 'Varlık bulunamadı.',
+
+    // Hizmet Saati
+    'timesheet.title': 'Hizmet Saati Takibi',
+    'timesheet.subtitle': 'Teknisyen çalışma saatlerini kayıt edin',
+    'timesheet.new': 'Süre Kaydet',
+    'timesheet.noData': 'Henüz kayıt yok.',
+
+    // Mesajlaşma
+    'messaging.title': 'Dahili Mesajlaşma',
+    'messaging.subtitle': 'Ekip içi iletişim',
+    'messaging.newChannel': 'Yeni Kanal',
+    'messaging.send': 'Gönder',
+
+    // Kontrol Listeleri
+    'checklists.title': 'Kontrol Listeleri',
+    'checklists.subtitle': 'Şablonlardan kontrol listesi oluşturun ve takip edin',
+    'checklists.new': 'Yeni Kontrol Listesi',
+    'checklists.noData': 'Kontrol listesi bulunamadı.',
+
+    // Maliyet Takibi
+    'costtracking.title': 'Maliyet / Fatura Takibi',
+    'costtracking.subtitle': 'Arıza maliyetlerini takip edin, fatura oluşturun',
+    'costtracking.new': 'Maliyet Ekle',
+    'costtracking.noData': 'Maliyet kaydı bulunamadı.',
+
+    // Duyurular
+    'announcements.title': 'Duyuru / İlan Panosu',
+    'announcements.subtitle': 'Şirket içi duyuruları ve ilanları yönetin',
+    'announcements.new': 'Yeni Duyuru',
+    'announcements.noData': 'Duyuru bulunamadı.',
+
+    // İletişim Geçmişi
+    'contactlog.title': 'İletişim Geçmişi',
+    'contactlog.subtitle': 'Müşteri iletişim kayıtlarını takip edin',
+    'contactlog.new': 'Yeni İletişim',
+    'contactlog.noData': 'İletişim kaydı bulunamadı.',
+
+    // Canlı Akış
+    'activityfeed.title': 'Canlı Akış',
+    'activityfeed.subtitle': 'Tüm sistem olaylarını ve ekip paylaşımlarını takip edin',
+
+    // İş Akışı Otomasyonu
+    'workflowrules.title': 'İş Akışı Otomasyonu',
+    'workflowrules.subtitle': 'If-then kurallarıyla otomatik bildirim ve aksiyonlar',
   },
 
   en: {
     // General
-    'app.name': 'Service Operations Dashboard',
+    'app.name': 'Pi-Logix',
     'app.loading': 'Loading dashboard...',
     'lang.tr': 'Türkçe',
     'lang.en': 'English',
@@ -136,8 +197,18 @@ const translations = {
     'nav.calendar': 'Calendar',
     'nav.reports': 'Reports',
     'nav.settings': 'Settings',
+    'nav.assets': 'Assets',
+    'nav.timesheet': 'Timesheet',
+    'nav.messaging': 'Messages',
+    'nav.checklists': 'Checklists',
+    'nav.costtracking': 'Cost Tracking',
+    'nav.announcements': 'Announcements',
+    'nav.contactlog': 'Contact Log',
+    'nav.activityfeed': 'Activity Feed',
+    'nav.workflowrules': 'Automation',
     'nav.general': 'General',
     'nav.workManagement': 'Work Management',
+    'nav.resources': 'Resources',
     'nav.reporting': 'Reporting',
 
     // Dashboard
@@ -236,6 +307,57 @@ const translations = {
     'toast.noteAdded': 'Note added!',
     'toast.saved': 'Saved!',
     'toast.permissionDenied': 'You do not have permission for this action.',
+
+    // Asset Management
+    'assets.title': 'Asset / Inventory Management',
+    'assets.subtitle': 'Track devices and equipment inventory',
+    'assets.new': 'New Asset',
+    'assets.search': 'Search assets...',
+    'assets.noData': 'No assets found.',
+
+    // Timesheet
+    'timesheet.title': 'Timesheet',
+    'timesheet.subtitle': 'Track technician work hours',
+    'timesheet.new': 'Log Time',
+    'timesheet.noData': 'No entries yet.',
+
+    // Messaging
+    'messaging.title': 'Internal Messaging',
+    'messaging.subtitle': 'Team communication',
+    'messaging.newChannel': 'New Channel',
+    'messaging.send': 'Send',
+
+    // Checklists
+    'checklists.title': 'Checklists',
+    'checklists.subtitle': 'Create and track checklists from templates',
+    'checklists.new': 'New Checklist',
+    'checklists.noData': 'No checklists found.',
+
+    // Cost Tracking
+    'costtracking.title': 'Cost / Invoice Tracking',
+    'costtracking.subtitle': 'Track incident costs and generate invoices',
+    'costtracking.new': 'Add Cost',
+    'costtracking.noData': 'No cost entries found.',
+
+    // Announcements
+    'announcements.title': 'Announcements Board',
+    'announcements.subtitle': 'Manage company announcements and notices',
+    'announcements.new': 'New Announcement',
+    'announcements.noData': 'No announcements found.',
+
+    // Contact Log
+    'contactlog.title': 'Contact Log',
+    'contactlog.subtitle': 'Track client communication history',
+    'contactlog.new': 'New Contact',
+    'contactlog.noData': 'No contact records found.',
+
+    // Activity Feed
+    'activityfeed.title': 'Activity Feed',
+    'activityfeed.subtitle': 'Track all system events and team updates',
+
+    // Workflow Automation
+    'workflowrules.title': 'Workflow Automation',
+    'workflowrules.subtitle': 'Define if-then rules for automatic notifications and actions',
   },
 };
 

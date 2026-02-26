@@ -11,47 +11,55 @@ function PerformanceMonitor() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Sayfa yükleme süresi
-    const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+    // Sayfa yükleme süresi (Navigation Timing API Level 2)
+    let loadTime = 0;
+    try {
+      const navEntries = performance.getEntriesByType('navigation');
+      if (navEntries && navEntries.length > 0) {
+        loadTime = navEntries[0].loadEventEnd - navEntries[0].startTime;
+      }
+    } catch(e) {
+      // fallback
+    }
     
     // Memory kullanımı (sadece Chrome'da çalışır)
     const updateMemory = () => {
       if (performance.memory) {
         const used = (performance.memory.usedJSHeapSize / 1048576).toFixed(2);
         setMetrics(prev => ({ ...prev, memoryUsage: used, loadTime: loadTime }));
+      } else {
+        setMetrics(prev => ({ ...prev, loadTime: loadTime }));
       }
     };
 
     // FPS hesaplama
-    let fps = 0;
-    let lastTime = performance.now();
     let frames = 0;
+    let lastTime = performance.now();
+    let rafId;
 
     const measureFPS = () => {
       frames++;
       const currentTime = performance.now();
       
       if (currentTime >= lastTime + 1000) {
-        fps = Math.round((frames * 1000) / (currentTime - lastTime));
+        const fps = Math.round((frames * 1000) / (currentTime - lastTime));
         setMetrics(prev => ({ ...prev, fps }));
         frames = 0;
         lastTime = currentTime;
       }
       
-      requestAnimationFrame(measureFPS);
+      rafId = requestAnimationFrame(measureFPS);
     };
 
     updateMemory();
-    measureFPS();
+    rafId = requestAnimationFrame(measureFPS);
     
     const interval = setInterval(updateMemory, 2000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
-
-  // Render sayısını artır
-  useEffect(() => {
-    setMetrics(prev => ({ ...prev, renderCount: prev.renderCount + 1 }));
-  });
 
   const getPerformanceLevel = () => {
     if (metrics.fps >= 55) return { text: 'Mükemmel', color: '#10b981' };
