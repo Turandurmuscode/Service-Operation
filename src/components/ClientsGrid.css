@@ -74,6 +74,7 @@
   font-size: 13px;
   color: var(--text-primary);
   width: 200px;
+  max-width: 100%;
 }
 .clients-search::placeholder { color: var(--text-muted); }
 
@@ -704,4 +705,43 @@
 
 .clients-empty p {
   font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .clients-grid-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .clients-grid-actions {
+    flex-wrap: wrap;
+  }
+
+  .clients-search {
+    width: 100%;
+  }
+
+  .clients-search-wrap {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .clients-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .client-list-header {
+    display: none;
+  }
+
+  .client-card-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .clients-action-btn span:not(.clients-action-btn svg) {
+    display: none;
+  }
 }

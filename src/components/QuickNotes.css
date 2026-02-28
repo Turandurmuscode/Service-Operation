@@ -49,7 +49,7 @@
   border: 1px solid var(--border);
   border-radius: 6px;
   box-shadow: var(--shadow-popover);
-  z-index: 1000;
+  z-index: 1200;
   animation: slideDown 0.2s;
   display: flex;
   flex-direction: column;
@@ -222,3 +222,15 @@
 }
 
 .notes-empty svg { width: 36px; height: 36px; opacity: 0.3; }
+
+@media (max-width: 768px) {
+  .notes-panel {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-height: calc(100vh - 60px);
+    border-radius: 0;
+  }
+}

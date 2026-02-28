@@ -32,7 +32,7 @@ export const DEMO_USERS = [
 export const ROLE_PERMISSIONS = {
   admin: {
     label: 'Admin',
-    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'settings', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules'],
+    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'settings', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules', 'spareparts', 'contracts', 'knowledgebase', 'scheduledmaintenance', 'csat', 'remoteaccess', 'techperformance', 'sladashboard'],
     canCreate: true,
     canEdit: true,
     canDelete: true,
@@ -41,7 +41,7 @@ export const ROLE_PERMISSIONS = {
   },
   manager: {
     label: 'Yönetici',
-    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules'],
+    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules', 'spareparts', 'contracts', 'knowledgebase', 'scheduledmaintenance', 'csat', 'remoteaccess', 'techperformance', 'sladashboard'],
     canCreate: true,
     canEdit: true,
     canDelete: false,
@@ -50,7 +50,7 @@ export const ROLE_PERMISSIONS = {
   },
   technician: {
     label: 'Teknisyen',
-    pages: ['dashboard', 'incidents', 'calendar', 'timesheet', 'messaging', 'checklists', 'announcements', 'activityfeed'],
+    pages: ['dashboard', 'incidents', 'calendar', 'timesheet', 'messaging', 'checklists', 'announcements', 'activityfeed', 'spareparts', 'knowledgebase', 'techperformance'],
     canCreate: false,
     canEdit: true,   // sadece durum güncelleyebilir
     canDelete: false,
@@ -63,14 +63,24 @@ const AuthContext = createContext(null);
 
 const SESSION_KEY = 'auth_user';
 
+// Otomatik admin girişi – her zaman admin olarak başla
+const AUTO_LOGIN_USER = {
+  id: DEMO_USERS[0].id,
+  name: DEMO_USERS[0].name,
+  username: DEMO_USERS[0].username,
+  role: DEMO_USERS[0].role,
+  avatar: DEMO_USERS[0].avatar,
+};
+
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const saved = sessionStorage.getItem(SESSION_KEY);
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
+      if (saved) return JSON.parse(saved);
+    } catch { /* ignore */ }
+    // Kayıtlı oturum yoksa otomatik admin girişi
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(AUTO_LOGIN_USER));
+    return AUTO_LOGIN_USER;
   });
 
   const login = useCallback((username, password) => {

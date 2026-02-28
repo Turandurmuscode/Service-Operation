@@ -8,7 +8,7 @@
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 1000;
+  z-index: 1100;
   transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
   overflow: hidden;
 }
@@ -69,6 +69,10 @@
   letter-spacing: -0.2px;
 }
 
+.sidebar.collapsed .logo-text {
+  display: none;
+}
+
 .dark-mode .logo-text {
   color: var(--text-primary);
 }
@@ -106,15 +110,24 @@
 
 .sidebar.collapsed .collapse-btn {
   position: absolute;
-  right: -14px;
+  right: -16px;
   top: 16px;
   background: var(--bg-surface);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-md);
   z-index: 1001;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+.sidebar.collapsed .collapse-btn:hover {
+  background: var(--accent);
+  color: var(--text-inverse);
+  border-color: var(--accent);
+  transform: scale(1.1);
 }
 
 .sidebar-nav {
@@ -217,6 +230,15 @@
 .sidebar.collapsed .nav-label,
 .sidebar.collapsed .nav-badge {
   display: none;
+}
+
+/* Badge dot only visible when collapsed (desktop) */
+.nav-badge-dot {
+  display: none;
+}
+
+.sidebar.collapsed .nav-badge-dot {
+  display: block;
 }
 
 .nav-badge {
@@ -334,6 +356,60 @@
 
 @media (max-width: 1024px) {
   .sidebar.collapsed {
-    width: 240px;
+    width: 240px !important;
+  }
+
+  .sidebar.collapsed .nav-section-label {
+    opacity: 1 !important;
+    height: auto !important;
+    padding: 8px 10px 4px !important;
+  }
+
+  .sidebar.collapsed .nav-label,
+  .sidebar.collapsed .nav-badge {
+    display: flex !important;
+  }
+
+  .sidebar.collapsed .nav-badge {
+    display: inline-flex !important;
+  }
+
+  .sidebar.collapsed .user-info {
+    display: block !important;
+  }
+
+  .sidebar.collapsed .sidebar-user {
+    justify-content: flex-start;
+    padding: 8px 10px;
+  }
+
+  .sidebar.collapsed .collapse-btn {
+    position: static;
+    width: 26px;
+    height: 26px;
+    border-radius: 3px;
+    box-shadow: none;
+    color: var(--text-muted);
+    border-color: var(--border);
+    background: var(--bg-elevated);
+  }
+
+  .sidebar.collapsed .collapse-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    transform: none;
+  }
+
+  /* Disable tooltips on mobile */
+  .sidebar.collapsed .nav-item::after {
+    display: none !important;
+  }
+
+  .sidebar.collapsed .nav-badge-dot {
+    display: none !important;
+  }
+
+  .sidebar .logo-text {
+    display: inline !important;
   }
 }

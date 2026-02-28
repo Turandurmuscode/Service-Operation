@@ -237,3 +237,32 @@
   border: 1px solid var(--border);
   font-weight: 600;
 }
+
+@media (max-width: 768px) {
+  .search-modal {
+    top: 16px;
+    width: calc(100% - 24px);
+    max-width: none;
+    max-height: calc(100vh - 32px);
+  }
+
+  .search-results {
+    max-height: calc(100vh - 200px);
+  }
+
+  .search-shortcut {
+    display: none;
+  }
+
+  .search-footer {
+    display: none;
+  }
+
+  .search-input-wrapper {
+    padding: 12px 16px;
+  }
+
+  .search-modal-input {
+    font-size: 16px; /* prevent iOS zoom */
+  }
+}

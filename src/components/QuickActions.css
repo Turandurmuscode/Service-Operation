@@ -2,7 +2,7 @@
   position: fixed;
   bottom: 28px;
   right: 28px;
-  z-index: 999;
+  z-index: 1050;
 }
 
 .quick-actions-btn {
@@ -99,4 +99,26 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .quick-actions {
+    bottom: 20px;
+    right: 16px;
+  }
+
+  .quick-actions-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .quick-actions-menu {
+    bottom: 56px;
+    right: 0;
+    max-width: calc(100vw - 32px);
+  }
+
+  .quick-action-item {
+    padding: 8px 12px;
+  }
 }

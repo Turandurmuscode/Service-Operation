@@ -19,7 +19,7 @@ function ReportGenerator({ incidents, clients }) {
     doc.text('Genel Istatistikler', 14, 40);
     
     const totalIncidents = incidents.length;
-    const activeIncidents = incidents.filter(inc => inc.status === 'active').length;
+    const activeIncidents = incidents.filter(inc => inc.status === 'new' || inc.status === 'in_progress' || inc.status === 'on_hold').length;
     const resolvedIncidents = incidents.filter(inc => inc.status === 'resolved').length;
     const criticalIncidents = incidents.filter(inc => inc.priority === 'critical').length;
     
@@ -42,7 +42,7 @@ function ReportGenerator({ incidents, clients }) {
     
     const clientAnalysis = clients.map(client => {
       const clientIncidents = incidents.filter(inc => inc.clientId === client.id);
-      const clientActive = clientIncidents.filter(inc => inc.status === 'active').length;
+      const clientActive = clientIncidents.filter(inc => inc.status === 'new' || inc.status === 'in_progress' || inc.status === 'on_hold').length;
       
       return [
         client.name,
@@ -81,7 +81,10 @@ function ReportGenerator({ incidents, clients }) {
       },
       byStatus: {
         resolved: weeklyIncidents.filter(inc => inc.status === 'resolved').length,
-        active: weeklyIncidents.filter(inc => inc.status === 'active').length
+        active: weeklyIncidents.filter(inc => inc.status === 'new' || inc.status === 'in_progress' || inc.status === 'on_hold').length,
+        new: weeklyIncidents.filter(inc => inc.status === 'new').length,
+        in_progress: weeklyIncidents.filter(inc => inc.status === 'in_progress').length,
+        on_hold: weeklyIncidents.filter(inc => inc.status === 'on_hold').length
       }
     };
     

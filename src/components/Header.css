@@ -107,4 +107,28 @@
 @media (max-width: 1024px) {
   .mobile-menu-btn { display: flex; }
   .header-search { display: none; }
+
+  .top-header {
+    padding: 0 12px;
+    height: 56px;
+  }
+
+  .header-actions {
+    gap: 4px;
+  }
+
+  .theme-toggle-btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-header {
+    padding: 0 8px;
+  }
+
+  .header-actions {
+    gap: 2px;
+  }
 }

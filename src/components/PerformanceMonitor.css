@@ -46,7 +46,7 @@
   border: 1px solid var(--border);
   border-radius: 6px;
   box-shadow: 0 10px 36px rgba(0,0,0,0.12);
-  z-index: 1000;
+  z-index: 1200;
   animation: slideDown 0.2s;
   overflow: hidden;
 }
@@ -146,4 +146,24 @@
   font-size: 11.5px;
   color: var(--text-muted);
   line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .performance-panel {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 0;
+    max-height: calc(100vh - 60px);
+  }
+
+  .performance-trigger {
+    padding: 4px 6px;
+  }
+
+  .performance-fps {
+    font-size: 10px;
+  }
 }

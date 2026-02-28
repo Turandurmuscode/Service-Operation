@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 const translations = {
   tr: {
     // Genel
-    'app.name': 'Pi-Logix',
+    'app.name': 'Scor-Pi',
     'app.loading': 'Panel yükleniyor...',
     'lang.tr': 'Türkçe',
     'lang.en': 'English',
@@ -183,7 +183,7 @@ const translations = {
 
   en: {
     // General
-    'app.name': 'Pi-Logix',
+    'app.name': 'Scor-Pi',
     'app.loading': 'Loading dashboard...',
     'lang.tr': 'Türkçe',
     'lang.en': 'English',

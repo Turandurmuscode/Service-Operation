@@ -8,6 +8,7 @@
   border-radius: 4px;
   margin-bottom: 20px;
   box-shadow: none;
+  flex-wrap: wrap;
 }
 
 .dark-mode .bulk-actions-toolbar {
@@ -44,6 +45,7 @@
   align-items: center;
   gap: 10px;
   flex: 1;
+  flex-wrap: wrap;
 }
 
 .bulk-selected-count {

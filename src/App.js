@@ -37,6 +37,15 @@ import AnnouncementsPage from './pages/AnnouncementsPage';
 import ContactLogPage from './pages/ContactLogPage';
 import ActivityFeedPage from './pages/ActivityFeedPage';
 import WorkflowRulesPage from './pages/WorkflowRulesPage';
+import SparePartsPage from './pages/SparePartsPage';
+import ContractsPage from './pages/ContractsPage';
+import KnowledgeBasePage from './pages/KnowledgeBasePage';
+import ScheduledMaintenancePage from './pages/ScheduledMaintenancePage';
+import CSATPage from './pages/CSATPage';
+import RemoteAccessPage from './pages/RemoteAccessPage';
+import TechPerformancePage from './pages/TechPerformancePage';
+import SLADashboardPage from './pages/SLADashboardPage';
+import { processWorkflowRules } from './utils/workflowEngine';
 
 function AppContent() {
   const { currentUser, logout, canAccessPage } = useAuth();
@@ -200,7 +209,13 @@ function AppContent() {
     addActivity('incident_created', `${client?.name || 'Müşteri'} için yeni arıza kaydı oluşturuldu`);
     addAuditEntry(currentUser, 'CREATE', 'incident', newIncident.id, `Arıza oluşturuldu: ${incident.description}`);
     showToast(t('toast.incidentCreated'), 'warning');
-  }, [incidents, clients, addActivity, addAuditEntry, currentUser, showToast, t]);
+    // Workflow engine: trigger on new incident
+    const wfClient = clients.find(c => c.id === incident.clientId);
+    processWorkflowRules('incident_created', newIncident, wfClient, { showToast, addIncidentNote });
+    if (newIncident.priority === 'critical') {
+      processWorkflowRules('incident_critical', newIncident, wfClient, { showToast, addIncidentNote });
+    }
+  }, [incidents, clients, addActivity, addAuditEntry, currentUser, showToast, t]); // eslint-disable-line
 
   // ── ARIZA GÜNCELLE (YENİ) ───────────────────────────────────────
   const updateIncident = useCallback((updatedIncident) => {
@@ -258,7 +273,13 @@ function AppContent() {
     localStorage.setItem('incidents', JSON.stringify(updated));
     addAuditEntry(currentUser, 'UPDATE', 'incident', id, 'Arıza çözüldü');
     showToast('Arıza çözüldü!', 'success');
-  }, [incidents, clients, addActivity, addAuditEntry, currentUser, showToast]);
+    // Workflow engine: trigger on resolve
+    const resolvedInc = updated.find(i => i.id === id);
+    if (resolvedInc) {
+      const wfClient = clients.find(c => c.id === resolvedInc.clientId);
+      processWorkflowRules('incident_resolved', resolvedInc, wfClient, { showToast, addIncidentNote });
+    }
+  }, [incidents, clients, addActivity, addAuditEntry, currentUser, showToast]); // eslint-disable-line
 
   // ── DARK MODE ───────────────────────────────────────────────────
   const toggleDarkMode = useCallback(() => {
@@ -309,6 +330,14 @@ function AppContent() {
       case 'contactlog': return <ContactLogPage {...commonProps} />;
       case 'activityfeed': return <ActivityFeedPage {...commonProps} />;
       case 'workflowrules': return <WorkflowRulesPage {...commonProps} />;
+      case 'spareparts': return <SparePartsPage {...commonProps} />;
+      case 'contracts': return <ContractsPage {...commonProps} />;
+      case 'knowledgebase': return <KnowledgeBasePage {...commonProps} />;
+      case 'scheduledmaintenance': return <ScheduledMaintenancePage {...commonProps} />;
+      case 'csat': return <CSATPage {...commonProps} />;
+      case 'remoteaccess': return <RemoteAccessPage {...commonProps} />;
+      case 'techperformance': return <TechPerformancePage {...commonProps} />;
+      case 'sladashboard': return <SLADashboardPage {...commonProps} />;
       default:          return <DashboardPage {...commonProps} onNavigate={handleSetActiveTab} />;
     }
   };

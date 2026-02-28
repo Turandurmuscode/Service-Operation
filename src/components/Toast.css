@@ -93,3 +93,13 @@
 .toast-close:hover {
   opacity: 1;
 }
+
+@media (max-width: 768px) {
+  .toast {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+  }
+}

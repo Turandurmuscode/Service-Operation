@@ -54,14 +54,22 @@ const Icons = {
   ),
   logo: (
     <svg viewBox="0 0 18 18" fill="none" strokeLinecap="round" strokeLinejoin="round">
-      {/* π symbol */}
-      <path d="M4 6h10" stroke="currentColor" strokeWidth="2"/>
-      <path d="M7 6v8" stroke="currentColor" strokeWidth="2"/>
-      <path d="M12 6v6c0 1.1-.9 2-2 2" stroke="currentColor" strokeWidth="2"/>
-      {/* circuit dots */}
-      <circle cx="4" cy="6" r="1.2" fill="currentColor"/>
-      <circle cx="14" cy="6" r="1.2" fill="currentColor"/>
-      <circle cx="7" cy="14" r="1.2" fill="currentColor"/>
+      {/* Scorpion body */}
+      <ellipse cx="9" cy="10.5" rx="3" ry="2" stroke="currentColor" strokeWidth="1.4"/>
+      {/* Tail curving up like } bracket */}
+      <path d="M12 9.5C13.5 8.5 14 7 14 5.5S13.2 2.8 12.8 2.5" stroke="currentColor" strokeWidth="1.5"/>
+      {/* Stinger dot */}
+      <circle cx="12.8" cy="2.5" r="1" fill="currentColor"/>
+      {/* Left claw < */}
+      <path d="M6 8.5L3.5 6.8 6 5.2" stroke="currentColor" strokeWidth="1.4"/>
+      {/* Right claw > */}
+      <path d="M12 5.2L14.5 6.8 12 8.5" stroke="currentColor" strokeWidth="1.4"/>
+      {/* Legs - left */}
+      <path d="M7 12L5 14.5" stroke="currentColor" strokeWidth="1"/>
+      <path d="M8 12.2L6.5 15" stroke="currentColor" strokeWidth="1"/>
+      {/* Legs - right */}
+      <path d="M11 12L13 14.5" stroke="currentColor" strokeWidth="1"/>
+      <path d="M10 12.2L11.5 15" stroke="currentColor" strokeWidth="1"/>
     </svg>
   ),
   assets: (
@@ -122,6 +130,59 @@ const Icons = {
       <path d="M5 6v2h0M11 6v2l-2 2M5 8h2l1 2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
+  spareparts: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="8" cy="8" r="6"/>
+      <circle cx="8" cy="8" r="2"/>
+      <path d="M8 2v2M8 12v2M2 8h2M12 8h2" strokeLinecap="round"/>
+    </svg>
+  ),
+  contracts: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M3 2h7l3 3v9H3V2Z" strokeLinejoin="round"/>
+      <path d="M10 2v3h3" strokeLinecap="round"/>
+      <path d="M5.5 8h5M5.5 10.5h3" strokeLinecap="round"/>
+      <circle cx="6" cy="12.5" r="1"/>
+    </svg>
+  ),
+  knowledgebase: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M2 3h5v10H2zM7 3h5v10H7z" strokeLinejoin="round"/>
+      <path d="M12 5h2v8h-2" strokeLinejoin="round"/>
+    </svg>
+  ),
+  scheduledmaintenance: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="8" cy="8" r="6.5"/>
+      <path d="M8 4.5v4l2 2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M12 2l1.5 1.5M4 2L2.5 3.5" strokeLinecap="round"/>
+    </svg>
+  ),
+  csat: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  remoteaccess: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+      <path d="M8 21h8M12 17v4"/>
+      <path d="M7 10h.01M12 10h.01M17 10h.01" strokeLinecap="round"/>
+    </svg>
+  ),
+  techperformance: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="8.5" cy="7" r="4"/>
+      <path d="M17 11l2 2 4-4" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  sladashboard: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M12 6v6l4 2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
   chevronLeft:  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 4L6 8l4 4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   chevronRight: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   close: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round"/></svg>,
@@ -134,10 +195,20 @@ function Sidebar({
   mobileOpen, setMobileOpen,
   currentUser, onLogout,
 }) {
+  // Track mobile viewport — collapsed state is ignored on mobile
+  const [isMobile, setIsMobile] = React.useState(
+    typeof window !== 'undefined' && window.innerWidth <= 1024
+  );
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
   const ROLE_PAGES = {
-    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings'],
-    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules'],
-    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed'],
+    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard'],
+    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard'],
+    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','knowledgebase','techperformance'],
   };
   const allowedPages = currentUser ? (ROLE_PAGES[currentUser.role] || []) : Object.values(ROLE_PAGES).flat();
 
@@ -160,12 +231,16 @@ function Sidebar({
         { id: 'calendar', icon: Icons.calendar, label: 'Takvim' },
         { id: 'timesheet', icon: Icons.timesheet, label: 'Saat Takibi' },
         { id: 'checklists', icon: Icons.checklists, label: 'Kontrol Listeleri' },
+        { id: 'scheduledmaintenance', icon: Icons.scheduledmaintenance, label: 'Periyodik Bakım' },
       ],
     },
     {
       label: 'Kaynaklar',
       items: [
         { id: 'assets',        icon: Icons.assets,        label: 'Envanter' },
+        { id: 'spareparts',    icon: Icons.spareparts,    label: 'Yedek Parça' },
+        { id: 'knowledgebase', icon: Icons.knowledgebase, label: 'Bilgi Bankası' },
+        { id: 'remoteaccess',  icon: Icons.remoteaccess,  label: 'Uzak Erişim' },
         { id: 'messaging',     icon: Icons.messaging,     label: 'Mesajlar' },
       ],
     },
@@ -175,6 +250,10 @@ function Sidebar({
         { id: 'analytics',    icon: Icons.analytics,    label: 'Analiz' },
         { id: 'reports',      icon: Icons.reports,      label: 'Raporlar' },
         { id: 'costtracking', icon: Icons.costtracking, label: 'Maliyet Takibi' },
+        { id: 'contracts',    icon: Icons.contracts,    label: 'Sözleşmeler' },
+        { id: 'csat',         icon: Icons.csat,          label: 'Müşteri Memnuniyeti' },
+        { id: 'techperformance', icon: Icons.techperformance, label: 'Teknisyen Performans' },
+        { id: 'sladashboard', icon: Icons.sladashboard,  label: 'SLA Analizi' },
       ],
     },
     {
@@ -219,29 +298,26 @@ function Sidebar({
         <div className="sidebar-overlay" />
       )}
 
-      <div className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
+      <div className={`sidebar ${collapsed && !isMobile ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-logo">
             <div className="logo-icon">{Icons.logo}</div>
-            {!collapsed && <span className="logo-text">Pi-Logix</span>}
+            <span className="logo-text">Scor-Pi</span>
           </div>
 
-          {/* Desktop collapse butonu */}
+          {/* Sidebar aç/kapat butonu */}
           <button
-            className="collapse-btn desktop-only"
-            onClick={() => setCollapsed(!collapsed)}
-            title={collapsed ? 'Genişlet' : 'Daralt'}
+            className="collapse-btn"
+            onClick={() => {
+              if (isMobile) {
+                setMobileOpen(false);
+              } else {
+                setCollapsed(!collapsed);
+              }
+            }}
+            title={isMobile ? 'Menüyü Kapat' : (collapsed ? 'Menüyü Aç' : 'Menüyü Kapat')}
           >
-            {collapsed ? Icons.chevronRight : Icons.chevronLeft}
-          </button>
-
-          {/* Mobil kapat butonu */}
-          <button
-            className="collapse-btn mobile-only"
-            onClick={() => setMobileOpen(false)}
-            title="Kapat"
-          >
-            {Icons.close}
+            {isMobile ? Icons.close : (collapsed ? Icons.chevronRight : Icons.chevronLeft)}
           </button>
         </div>
 
@@ -254,18 +330,14 @@ function Sidebar({
                   key={item.id}
                   className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
                   onClick={() => handleNavClick(item.id)}
-                  title={collapsed ? item.label : ''}
+                  title={item.label}
                 >
                   <span className="nav-icon">{item.icon}</span>
-                  {!collapsed && (
-                    <>
-                      <span className="nav-label">{item.label}</span>
-                      {item.badge > 0 && (
-                        <span className="nav-badge">{item.badge}</span>
-                      )}
-                    </>
+                  <span className="nav-label">{item.label}</span>
+                  {item.badge > 0 && (
+                    <span className="nav-badge">{item.badge}</span>
                   )}
-                  {collapsed && item.badge > 0 && (
+                  {item.badge > 0 && (
                     <span className="nav-badge-dot"></span>
                   )}
                 </button>
@@ -277,12 +349,10 @@ function Sidebar({
         <div className="sidebar-footer">
           <div className="sidebar-user" onClick={onLogout} title="Çıkış Yap">
             <div className="user-avatar">{currentUser?.avatar || 'A'}</div>
-            {!collapsed && (
-              <div className="user-info">
-                <div className="user-name">{currentUser?.name || 'Admin'}</div>
-                <div className="user-role">{currentUser?.role === 'admin' ? 'Admin' : currentUser?.role === 'manager' ? 'Yönetici' : 'Teknisyen'}</div>
-              </div>
-            )}
+            <div className="user-info">
+              <div className="user-name">{currentUser?.name || 'Admin'}</div>
+              <div className="user-role">{currentUser?.role === 'admin' ? 'Admin' : currentUser?.role === 'manager' ? 'Yönetici' : 'Teknisyen'}</div>
+            </div>
           </div>
         </div>
       </div>

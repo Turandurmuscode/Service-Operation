@@ -196,3 +196,50 @@
   border-color: var(--warning);
   box-shadow: 0 0 0 2px var(--warning-dim);
 }
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 10px;
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    max-height: 90vh;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .modal-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .modal-stat {
+    padding: 8px;
+  }
+
+  .modal-stat-value {
+    font-size: 16px;
+  }
+
+  .modal-body {
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    max-height: 95vh;
+  }
+
+  .modal-stats {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .modal-stat-value {
+    font-size: 14px;
+  }
+
+  .modal-stat-label {
+    font-size: 9px;
+  }
+}

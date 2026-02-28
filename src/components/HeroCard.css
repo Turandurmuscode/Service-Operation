@@ -305,3 +305,39 @@
     font-size: 28px;
   }
 }
+
+@media (max-width: 480px) {
+  .hero-card {
+    margin: 10px 10px 0;
+    border-radius: 8px;
+  }
+
+  .hero-left {
+    padding: 16px;
+  }
+
+  .hero-greeting-text {
+    font-size: 15px;
+  }
+
+  .hero-time {
+    font-size: 24px;
+  }
+
+  .hero-stat {
+    padding: 8px 12px;
+    min-width: 80px;
+  }
+
+  .hero-stat-value {
+    font-size: 18px;
+  }
+
+  .hero-stat-label {
+    font-size: 9px;
+  }
+
+  .hero-right {
+    padding: 12px;
+  }
+}

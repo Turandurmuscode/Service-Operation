@@ -109,5 +109,10 @@
 }
 
 @media (max-width: 768px) {
-  .dashboard-widgets { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-widgets { grid-template-columns: repeat(2, 1fr); padding: 12px 12px 0; }
+}
+
+@media (max-width: 480px) {
+  .dashboard-widgets { grid-template-columns: 1fr; padding: 10px 10px 0; }
+  .widget { padding: 12px; }
 }

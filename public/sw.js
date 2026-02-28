@@ -68,7 +68,7 @@ self.addEventListener('fetch', event => {
 
 // ── PUSH BİLDİRİMLERİ ────────────────────────────────────────────
 self.addEventListener('push', event => {
-  let data = { title: 'Pi-Logix', body: 'Yeni bildirim', icon: '/logo192.png', badge: '/logo192.png', tag: 'default' };
+  let data = { title: 'Scor-Pi', body: 'Yeni bildirim', icon: '/logo192.png', badge: '/logo192.png', tag: 'default' };
 
   if (event.data) {
     try { Object.assign(data, event.data.json()); }

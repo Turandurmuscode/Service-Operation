@@ -1,0 +1,82 @@
+.remote-access-page { padding: 24px; }
+.remote-access-page h2 { margin: 0 0 4px; font-size: 1.5rem; }
+.remote-access-page .page-subtitle { color: #64748b; margin-bottom: 20px; }
+
+/* Toolbar */
+.ra-toolbar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.ra-toolbar input { padding: 8px 14px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: .9rem; min-width: 250px; }
+.dark .ra-toolbar input { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+.ra-toolbar button { padding: 8px 16px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-size: .85rem; }
+.dark .ra-toolbar button { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+.ra-toolbar button.primary { background: #3b82f6; color: white; border-color: #3b82f6; }
+
+/* Client cards grid */
+.ra-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+.ra-card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.08); overflow: hidden; }
+.dark .ra-card { background: #1e293b; }
+
+.ra-card-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px 12px; border-bottom: 1px solid #f1f5f9; }
+.dark .ra-card-header { border-color: #334155; }
+.ra-card-header h3 { margin: 0; font-size: 1rem; }
+.ra-card-header .client-badge { font-size: .75rem; padding: 3px 8px; border-radius: 12px; background: #dbeafe; color: #1e40af; }
+.dark .ra-card-header .client-badge { background: #1e3a5f; color: #93c5fd; }
+
+.ra-card-body { padding: 16px 18px; }
+.ra-conn-list { display: flex; flex-direction: column; gap: 10px; }
+
+.ra-conn-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: #f8fafc; border-radius: 8px; }
+.dark .ra-conn-item { background: #0f172a; }
+
+.ra-conn-icon { font-size: 1.5rem; width: 36px; text-align: center; }
+.ra-conn-details { flex: 1; }
+.ra-conn-details .conn-type { font-weight: 600; font-size: .85rem; }
+.ra-conn-details .conn-id { font-size: .9rem; font-family: 'Courier New', monospace; color: #3b82f6; }
+.ra-conn-details .conn-note { font-size: .78rem; color: #94a3b8; }
+.ra-conn-actions { display: flex; gap: 4px; }
+.ra-conn-actions button { border: none; background: none; cursor: pointer; font-size: 1rem; padding: 4px; border-radius: 4px; }
+.ra-conn-actions button:hover { background: #e2e8f0; }
+.dark .ra-conn-actions button:hover { background: #334155; }
+
+.ra-add-conn { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border: 2px dashed #e2e8f0; border-radius: 8px; background: none; cursor: pointer; color: #94a3b8; font-size: .85rem; width: 100%; justify-content: center; margin-top: 8px; }
+.dark .ra-add-conn { border-color: #334155; }
+.ra-add-conn:hover { border-color: #3b82f6; color: #3b82f6; }
+
+/* Connection form (inline) */
+.ra-conn-form { padding: 12px; background: #f0f9ff; border-radius: 8px; margin-top: 8px; }
+.dark .ra-conn-form { background: #0c1a2e; }
+.ra-conn-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.ra-conn-form .form-row.full { grid-template-columns: 1fr; }
+.ra-conn-form label { display: block; font-size: .78rem; font-weight: 600; margin-bottom: 3px; }
+.ra-conn-form input, .ra-conn-form select, .ra-conn-form textarea { width: 100%; padding: 8px 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: .85rem; }
+.dark .ra-conn-form input, .dark .ra-conn-form select, .dark .ra-conn-form textarea { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+.ra-conn-form textarea { min-height: 50px; resize: vertical; }
+.ra-conn-form-actions { display: flex; gap: 6px; margin-top: 8px; }
+.ra-conn-form-actions button { padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer; font-size: .85rem; }
+.ra-conn-form-actions .btn-save { background: #3b82f6; color: white; }
+.ra-conn-form-actions .btn-cancel { background: #e2e8f0; color: #475569; }
+.dark .ra-conn-form-actions .btn-cancel { background: #334155; color: #e2e8f0; }
+
+/* Password field */
+.password-field { display: flex; align-items: center; gap: 6px; }
+.password-field .masked { font-family: 'Courier New', monospace; color: #64748b; letter-spacing: 2px; }
+.password-field button { border: none; background: none; cursor: pointer; font-size: .9rem; }
+
+/* Quick connect button */
+.btn-quick-connect { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; border: 1px solid #10b981; background: #ecfdf5; color: #059669; font-size: .78rem; cursor: pointer; font-weight: 600; }
+.dark .btn-quick-connect { background: #064e3b; color: #6ee7b7; border-color: #059669; }
+
+.empty-state { text-align: center; padding: 40px 20px; color: #94a3b8; }
+.empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+
+/* Stats bar */
+.ra-stats { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.ra-stat { background: white; border-radius: 10px; padding: 14px 20px; box-shadow: 0 1px 3px rgba(0,0,0,.06); display: flex; align-items: center; gap: 10px; }
+.dark .ra-stat { background: #1e293b; }
+.ra-stat .stat-icon { font-size: 1.5rem; }
+.ra-stat .stat-info .val { font-size: 1.3rem; font-weight: 700; }
+.ra-stat .stat-info .lbl { font-size: .78rem; color: #94a3b8; }
+
+@media (max-width: 768px) {
+  .ra-cards { grid-template-columns: 1fr; }
+  .ra-conn-form .form-row { grid-template-columns: 1fr; }
+}
