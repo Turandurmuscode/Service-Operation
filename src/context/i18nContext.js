@@ -179,6 +179,35 @@ const translations = {
     // İş Akışı Otomasyonu
     'workflowrules.title': 'İş Akışı Otomasyonu',
     'workflowrules.subtitle': 'If-then kurallarıyla otomatik bildirim ve aksiyonlar',
+
+    // Doküman Yönetimi
+    'documents.title': 'Doküman Yönetimi',
+    'documents.subtitle': 'Dosya ve dokümanları yükleyin, kategorileyin ve yönetin',
+    'documents.upload': 'Doküman Yükle',
+    'documents.newFolder': 'Yeni Klasör',
+    'documents.search': 'Doküman ara...',
+    'documents.noData': 'Doküman bulunamadı.',
+    'nav.documents': 'Dokümanlar',
+
+    // Proje Yönetimi
+    'projects.title': 'Proje Yönetimi',
+    'projects.subtitle': 'Projeleri, görevleri ve zaman çizelgelerini yönetin',
+    'nav.projects': 'Proje Yönetimi',
+
+    // Teklif Yönetimi
+    'quotations.title': 'Teklif Yönetimi',
+    'quotations.subtitle': 'Teklifleri oluşturun, takip edin ve faturaya dönüştürün',
+    'nav.quotations': 'Teklifler',
+
+    // Modül Yönetimi
+    'modules.title': 'Modül Yönetimi',
+    'modules.subtitle': 'Modülleri açıp kapatarak sistemi özelleştirin',
+    'nav.modules': 'Modüller',
+
+    // Kümes Hesaplayıcı
+    'kumescalculator.title': 'Kümes Hesaplayıcı',
+    'kumescalculator.subtitle': 'Kümes boyutlarına göre malzeme ve maliyet hesaplayın',
+    'nav.kumescalculator': 'Kümes Hesaplayıcı',
   },
 
   en: {
@@ -358,6 +387,35 @@ const translations = {
     // Workflow Automation
     'workflowrules.title': 'Workflow Automation',
     'workflowrules.subtitle': 'Define if-then rules for automatic notifications and actions',
+
+    // Document Management
+    'documents.title': 'Document Management',
+    'documents.subtitle': 'Upload, categorize and manage your documents',
+    'documents.upload': 'Upload Document',
+    'documents.newFolder': 'New Folder',
+    'documents.search': 'Search documents...',
+    'documents.noData': 'No documents found.',
+    'nav.documents': 'Documents',
+
+    // Project Management
+    'projects.title': 'Project Management',
+    'projects.subtitle': 'Manage projects, tasks and timelines',
+    'nav.projects': 'Project Management',
+
+    // Quotation Management
+    'quotations.title': 'Quotation Management',
+    'quotations.subtitle': 'Create, track and convert quotations to invoices',
+    'nav.quotations': 'Quotations',
+
+    // Module Management
+    'modules.title': 'Module Management',
+    'modules.subtitle': 'Customize the system by enabling or disabling modules',
+    'nav.modules': 'Modules',
+
+    // Poultry House Calculator
+    'kumescalculator.title': 'Poultry House Calculator',
+    'kumescalculator.subtitle': 'Calculate materials and costs based on house dimensions',
+    'nav.kumescalculator': 'House Calculator',
   },
 };
 

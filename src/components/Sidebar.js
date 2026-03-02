@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './Sidebar.css';
+import { getEnabledModules } from '../pages/ModulesPage';
 
 const Icons = {
   dashboard: (
@@ -151,6 +152,45 @@ const Icons = {
       <path d="M12 5h2v8h-2" strokeLinejoin="round"/>
     </svg>
   ),
+  documents: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M3 1.5h6.5L13 5v9.5H3V1.5Z" strokeLinejoin="round"/>
+      <path d="M9.5 1.5v3.5H13" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M5.5 8h5M5.5 10.5h5M5.5 13h3" strokeLinecap="round"/>
+    </svg>
+  ),
+  projects: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="1" y="3" width="14" height="3" rx="1"/>
+      <rect x="3" y="7.5" width="10" height="2" rx="0.5"/>
+      <rect x="5" y="11" width="7" height="2" rx="0.5"/>
+      <path d="M1 4.5h14" strokeLinecap="round"/>
+    </svg>
+  ),
+  quotations: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M3 2h7l3 3v9H3V2Z" strokeLinejoin="round"/>
+      <path d="M10 2v3h3" strokeLinecap="round"/>
+      <path d="M6 8h4M6 10h2" strokeLinecap="round"/>
+      <circle cx="10" cy="11" r="2"/>
+      <path d="M9 11h2M10 10v2" strokeLinecap="round"/>
+    </svg>
+  ),
+  modules: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="1" y="1" width="5" height="5" rx="1"/>
+      <rect x="10" y="1" width="5" height="5" rx="1"/>
+      <rect x="1" y="10" width="5" height="5" rx="1"/>
+      <rect x="10" y="10" width="5" height="5" rx="1" strokeDasharray="2 1"/>
+    </svg>
+  ),
+  kumescalculator: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M2 4l6-2.5L14 4v5l-6 2.5L2 9V4Z" strokeLinejoin="round"/>
+      <path d="M2 4l6 2.5 6-2.5M8 6.5V14" strokeLinecap="round"/>
+      <path d="M2 9v2.5l6 2.5 6-2.5V9" strokeLinejoin="round"/>
+    </svg>
+  ),
   scheduledmaintenance: (
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
       <circle cx="8" cy="8" r="6.5"/>
@@ -185,6 +225,7 @@ const Icons = {
   ),
   chevronLeft:  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 4L6 8l4 4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   chevronRight: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  chevronDown:  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   close: <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round"/></svg>,
 };
 
@@ -200,15 +241,47 @@ function Sidebar({
     typeof window !== 'undefined' && window.innerWidth <= 1024
   );
 
+  // ── Collapsible section state (persisted in localStorage) ──
+  const [openSections, setOpenSections] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sidebar_sections');
+      return saved ? JSON.parse(saved) : {};  // {} means all open by default
+    } catch { return {}; }
+  });
+
+  const toggleSection = useCallback((label) => {
+    setOpenSections(prev => {
+      const isOpen = prev[label] === undefined ? true : !!prev[label];
+      const next = { ...prev, [label]: !isOpen };
+      localStorage.setItem('sidebar_sections', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  // A section is open if it has no explicit entry (default open) or explicitly true
+  const isSectionOpen = (label, state) => {
+    const s = state || openSections;
+    return s[label] === undefined ? true : !!s[label];
+  };
+
   useEffect(() => {
     const handler = () => setIsMobile(window.innerWidth <= 1024);
     window.addEventListener('resize', handler);
     return () => window.removeEventListener('resize', handler);
   }, []);
+  // ── Module on/off filtering ──
+  const [enabledMods, setEnabledMods] = useState(() => getEnabledModules());
+
+  useEffect(() => {
+    const handler = () => setEnabledMods(getEnabledModules());
+    window.addEventListener('modules-changed', handler);
+    return () => window.removeEventListener('modules-changed', handler);
+  }, []);
+
   const ROLE_PAGES = {
-    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard'],
-    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard'],
-    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','knowledgebase','techperformance'],
+    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard','documents','projects','quotations','modules','kumescalculator'],
+    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard','documents','projects','quotations','kumescalculator'],
+    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','knowledgebase','techperformance','documents','projects'],
   };
   const allowedPages = currentUser ? (ROLE_PAGES[currentUser.role] || []) : Object.values(ROLE_PAGES).flat();
 
@@ -231,6 +304,7 @@ function Sidebar({
         { id: 'calendar', icon: Icons.calendar, label: 'Takvim' },
         { id: 'timesheet', icon: Icons.timesheet, label: 'Saat Takibi' },
         { id: 'checklists', icon: Icons.checklists, label: 'Kontrol Listeleri' },
+        { id: 'projects', icon: Icons.projects, label: 'Proje Yönetimi' },
         { id: 'scheduledmaintenance', icon: Icons.scheduledmaintenance, label: 'Periyodik Bakım' },
       ],
     },
@@ -240,6 +314,7 @@ function Sidebar({
         { id: 'assets',        icon: Icons.assets,        label: 'Envanter' },
         { id: 'spareparts',    icon: Icons.spareparts,    label: 'Yedek Parça' },
         { id: 'knowledgebase', icon: Icons.knowledgebase, label: 'Bilgi Bankası' },
+        { id: 'documents',     icon: Icons.documents,     label: 'Dokümanlar' },
         { id: 'remoteaccess',  icon: Icons.remoteaccess,  label: 'Uzak Erişim' },
         { id: 'messaging',     icon: Icons.messaging,     label: 'Mesajlar' },
       ],
@@ -251,22 +326,30 @@ function Sidebar({
         { id: 'reports',      icon: Icons.reports,      label: 'Raporlar' },
         { id: 'costtracking', icon: Icons.costtracking, label: 'Maliyet Takibi' },
         { id: 'contracts',    icon: Icons.contracts,    label: 'Sözleşmeler' },
+        { id: 'quotations',  icon: Icons.quotations,  label: 'Teklifler' },
         { id: 'csat',         icon: Icons.csat,          label: 'Müşteri Memnuniyeti' },
         { id: 'techperformance', icon: Icons.techperformance, label: 'Teknisyen Performans' },
         { id: 'sladashboard', icon: Icons.sladashboard,  label: 'SLA Analizi' },
       ],
     },
     {
+      label: 'Sektörel',
+      items: [
+        { id: 'kumescalculator', icon: Icons.kumescalculator, label: 'Kümes Hesaplayıcı' },
+      ],
+    },
+    {
       label: 'Sistem',
       items: [
         { id: 'workflowrules', icon: Icons.workflowrules, label: 'Otomasyon' },
+        { id: 'modules', icon: Icons.modules, label: 'Modüller' },
         { id: 'settings', icon: Icons.settings, label: 'Ayarlar' },
       ],
     },
   ];
-  // Filter sections based on role
+  // Filter sections based on role AND enabled modules
   const sections = allSections
-    .map(s => ({ ...s, items: s.items.filter(i => allowedPages.includes(i.id)) }))
+    .map(s => ({ ...s, items: s.items.filter(i => allowedPages.includes(i.id) && enabledMods.includes(i.id)) }))
     .filter(s => s.items.length > 0);
   // Mobil: dışarıya tıklayınca kapat
   useEffect(() => {
@@ -322,28 +405,44 @@ function Sidebar({
         </div>
 
         <nav className="sidebar-nav">
-          {sections.map((section) => (
-            <div key={section.label}>
-              <div className="nav-section-label">{section.label}</div>
-              {section.items.map(item => (
-                <button
-                  key={item.id}
-                  className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
-                  onClick={() => handleNavClick(item.id)}
-                  title={item.label}
-                >
-                  <span className="nav-icon">{item.icon}</span>
-                  <span className="nav-label">{item.label}</span>
-                  {item.badge > 0 && (
-                    <span className="nav-badge">{item.badge}</span>
-                  )}
-                  {item.badge > 0 && (
-                    <span className="nav-badge-dot"></span>
-                  )}
-                </button>
-              ))}
+          {sections.map((section) => {
+            const isOpen = isSectionOpen(section.label);
+            const hasActiveItem = section.items.some(i => i.id === activeTab);
+            return (
+            <div key={section.label} className="nav-section">
+              <button
+                className={`nav-section-label ${hasActiveItem ? 'has-active' : ''}`}
+                onClick={() => toggleSection(section.label)}
+                title={section.label}
+              >
+                <span className="nav-section-text">{section.label}</span>
+                <span className={`nav-section-chevron ${isOpen ? 'open' : ''}`}>
+                  {Icons.chevronDown}
+                </span>
+              </button>
+              <div className={`nav-section-items ${isOpen ? 'expanded' : 'collapsed-section'}`}>
+                <div className="nav-section-inner">
+                  {section.items.map(item => (
+                    <button
+                      key={item.id}
+                      className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                      onClick={() => handleNavClick(item.id)}
+                      title={item.label}
+                    >
+                      <span className="nav-icon">{item.icon}</span>
+                      <span className="nav-label">{item.label}</span>
+                      {item.badge > 0 && (
+                        <span className="nav-badge">{item.badge}</span>
+                      )}
+                      {item.badge > 0 && (
+                        <span className="nav-badge-dot"></span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
-          ))}
+          );})}
         </nav>
 
         <div className="sidebar-footer">

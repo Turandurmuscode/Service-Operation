@@ -1,0 +1,679 @@
+/* ════════════════════════════════════════════════════════════
+   KÜMES HESAPLAYICI STYLES
+   ════════════════════════════════════════════════════════════ */
+
+.kumes-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Page Header ───────────────────────────────────────── */
+.km-page-header {
+  margin-bottom: 24px;
+}
+
+.km-page-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
+}
+
+.km-page-header p {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* ── Tabs ──────────────────────────────────────────────── */
+.km-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 24px;
+}
+
+.km-tab {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.15s ease;
+}
+
+.km-tab:hover { color: #1a1a2e; }
+
+.km-tab.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+/* ── Buttons ───────────────────────────────────────────── */
+.km-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.km-btn:hover { border-color: #9ca3af; }
+
+.km-btn-primary {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+.km-btn-primary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.km-btn-secondary {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+.km-btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.km-btn-sm { padding: 5px 10px; font-size: 0.8rem; }
+.km-btn-lg { padding: 12px 28px; font-size: 0.95rem; }
+
+.km-icon-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #64748b;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+.km-icon-btn:hover { background: #f1f5f9; color: #1a1a2e; }
+.km-icon-btn-danger:hover { background: #fef2f2; color: #ef4444; }
+
+/* ── Dims Card ─────────────────────────────────────────── */
+.km-dims-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.km-dims-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.km-dims-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.km-dim-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.km-dim-group input,
+.km-dim-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #1a1a2e;
+  background: #fff;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.km-dim-group input:focus,
+.km-dim-group select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Quick info / dimension summary */
+.km-quick-info {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.km-quick-info strong { color: #1a1a2e; }
+
+/* ── Result Card ───────────────────────────────────────── */
+.km-result-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.km-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.km-result-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.km-result-actions { display: flex; gap: 8px; }
+
+.km-result-customer {
+  font-size: 0.9rem;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.km-result-dims {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+.km-result-area {
+  margin-left: 8px;
+  color: #94a3b8;
+}
+
+/* Items table */
+.km-items-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.km-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.km-items-table th {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 2px solid #e2e8f0;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.km-items-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #374151;
+}
+
+.km-items-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.km-right { text-align: right; }
+.km-table-num { color: #94a3b8; width: 30px; }
+.km-table-name { font-weight: 500; }
+.km-table-formula { font-size: 0.78rem; color: #64748b; }
+.km-table-bold { font-weight: 600; }
+
+/* Totals */
+.km-totals {
+  border-top: 2px solid #e2e8f0;
+  padding-top: 12px;
+  max-width: 360px;
+  margin-left: auto;
+}
+
+.km-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.km-total-row.km-discount { color: #ef4444; }
+
+.km-total-row.km-grand-total {
+  border-top: 2px solid #1a1a2e;
+  padding-top: 10px;
+  margin-top: 6px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+/* ── Materials Tab ─────────────────────────────────────── */
+.km-mat-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.km-mat-count { font-size: 0.85rem; color: #64748b; }
+
+.km-mat-list {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.km-mat-header {
+  display: grid;
+  grid-template-columns: 2fr 2fr 80px 100px 80px;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.km-mat-row {
+  display: grid;
+  grid-template-columns: 2fr 2fr 80px 100px 80px;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  align-items: center;
+  font-size: 0.85rem;
+  transition: background 0.1s;
+}
+
+.km-mat-row:last-child { border-bottom: none; }
+.km-mat-row:hover { background: #f8fafc; }
+
+.km-mat-col-name strong { color: #1a1a2e; }
+.km-mat-cat {
+  display: inline-block;
+  font-size: 0.7rem;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-left: 6px;
+}
+
+.km-formula-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.km-formula-detail {
+  display: block;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.km-mat-col-price { font-weight: 600; color: #1a1a2e; }
+
+.km-mat-col-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+/* ── History Tab ───────────────────────────────────────── */
+.km-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.km-history-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.km-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.km-history-header strong {
+  color: #1a1a2e;
+  font-size: 0.9rem;
+}
+
+.km-history-date {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-left: 10px;
+}
+
+.km-history-actions { display: flex; gap: 6px; align-items: center; }
+
+.km-history-body {
+  display: flex;
+  gap: 20px;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.km-history-total {
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-left: auto;
+}
+
+/* ── Empty State ───────────────────────────────────────── */
+.km-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+}
+
+.km-empty-state p {
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+/* ── Modal ─────────────────────────────────────────────── */
+.km-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.km-modal {
+  background: #fff;
+  border-radius: 12px;
+  width: 520px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.km-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.km-modal-header h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.km-modal-close {
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  color: #94a3b8;
+  cursor: pointer;
+  line-height: 1;
+}
+.km-modal-close:hover { color: #ef4444; }
+
+.km-modal-body { padding: 24px; }
+
+.km-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Form */
+.km-form-group {
+  margin-bottom: 16px;
+}
+
+.km-form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.km-form-group input,
+.km-form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #1a1a2e;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.km-form-group input:focus,
+.km-form-group select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.km-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   DARK MODE
+   ════════════════════════════════════════════════════════════ */
+.dark-mode .km-page-header h1 { color: #e2e8f0; }
+.dark-mode .km-page-header p { color: #94a3b8; }
+
+.dark-mode .km-tabs { border-bottom-color: #334155; }
+.dark-mode .km-tab { color: #94a3b8; }
+.dark-mode .km-tab:hover { color: #e2e8f0; }
+.dark-mode .km-tab.active { color: #60a5fa; border-bottom-color: #60a5fa; }
+
+.dark-mode .km-btn {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-color: #334155;
+}
+.dark-mode .km-btn:hover { border-color: #475569; }
+.dark-mode .km-btn-primary { background: #2563eb; color: #fff; border-color: #2563eb; }
+.dark-mode .km-btn-primary:hover { background: #1d4ed8; }
+.dark-mode .km-btn-secondary { background: #334155; border-color: #475569; }
+.dark-mode .km-btn-secondary:hover { background: #475569; }
+
+.dark-mode .km-icon-btn { color: #94a3b8; }
+.dark-mode .km-icon-btn:hover { background: #334155; color: #e2e8f0; }
+.dark-mode .km-icon-btn-danger:hover { background: #3b1a1a; color: #ef4444; }
+
+.dark-mode .km-dims-card,
+.dark-mode .km-result-card,
+.dark-mode .km-mat-list,
+.dark-mode .km-history-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.dark-mode .km-dims-card h3,
+.dark-mode .km-result-header h3 {
+  color: #e2e8f0;
+}
+
+.dark-mode .km-dim-group label,
+.dark-mode .km-form-group label {
+  color: #94a3b8;
+}
+
+.dark-mode .km-dim-group input,
+.dark-mode .km-dim-group select,
+.dark-mode .km-form-group input,
+.dark-mode .km-form-group select {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+.dark-mode .km-dim-group input:focus,
+.dark-mode .km-dim-group select:focus,
+.dark-mode .km-form-group input:focus,
+.dark-mode .km-form-group select:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+
+.dark-mode .km-quick-info {
+  background: #0f172a;
+  color: #94a3b8;
+}
+.dark-mode .km-quick-info strong { color: #e2e8f0; }
+
+.dark-mode .km-result-customer { color: #94a3b8; }
+.dark-mode .km-result-dims { color: #94a3b8; }
+.dark-mode .km-result-area { color: #64748b; }
+
+.dark-mode .km-items-table th {
+  border-bottom-color: #334155;
+  color: #94a3b8;
+}
+
+.dark-mode .km-items-table td {
+  color: #e2e8f0;
+  border-bottom-color: #1a2436;
+}
+
+.dark-mode .km-items-table tbody tr:hover { background: #0f172a; }
+
+.dark-mode .km-table-num { color: #64748b; }
+.dark-mode .km-table-formula { color: #94a3b8; }
+
+.dark-mode .km-totals { border-top-color: #334155; }
+.dark-mode .km-total-row { color: #94a3b8; }
+.dark-mode .km-total-row.km-grand-total {
+  color: #e2e8f0;
+  border-top-color: #e2e8f0;
+}
+
+.dark-mode .km-mat-header {
+  background: #0f172a;
+  border-bottom-color: #334155;
+  color: #94a3b8;
+}
+
+.dark-mode .km-mat-row { border-bottom-color: #1a2436; }
+.dark-mode .km-mat-row:hover { background: #0f172a; }
+.dark-mode .km-mat-col-name strong { color: #e2e8f0; }
+.dark-mode .km-mat-cat { background: #334155; color: #94a3b8; }
+.dark-mode .km-formula-badge { background: #1e3a5f; color: #60a5fa; }
+.dark-mode .km-formula-detail { color: #64748b; }
+.dark-mode .km-mat-col-price { color: #e2e8f0; }
+.dark-mode .km-mat-count { color: #94a3b8; }
+
+.dark-mode .km-history-header strong { color: #e2e8f0; }
+.dark-mode .km-history-date { color: #64748b; }
+.dark-mode .km-history-body { color: #94a3b8; }
+.dark-mode .km-history-total { color: #e2e8f0; }
+
+.dark-mode .km-empty-state { color: #94a3b8; }
+
+.dark-mode .km-modal { background: #1e293b; }
+.dark-mode .km-modal-header { border-bottom-color: #334155; }
+.dark-mode .km-modal-header h2 { color: #e2e8f0; }
+.dark-mode .km-modal-close { color: #64748b; }
+.dark-mode .km-modal-footer { border-top-color: #334155; }
+
+/* ════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .kumes-page { padding: 16px; }
+
+  .km-dims-row {
+    grid-template-columns: 1fr;
+  }
+
+  .km-dims-extras {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .km-quick-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .km-mat-header,
+  .km-mat-row {
+    grid-template-columns: 1.5fr 1.5fr 60px 80px 60px;
+    font-size: 0.78rem;
+  }
+
+  .km-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .km-totals {
+    max-width: 100%;
+  }
+}

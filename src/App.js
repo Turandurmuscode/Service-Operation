@@ -45,6 +45,11 @@ import CSATPage from './pages/CSATPage';
 import RemoteAccessPage from './pages/RemoteAccessPage';
 import TechPerformancePage from './pages/TechPerformancePage';
 import SLADashboardPage from './pages/SLADashboardPage';
+import DocumentsPage from './pages/DocumentsPage';
+import ProjectsPage from './pages/ProjectsPage';
+import QuotationsPage from './pages/QuotationsPage';
+import ModulesPage from './pages/ModulesPage';
+import KumesCalculatorPage from './pages/KumesCalculatorPage';
 import { processWorkflowRules } from './utils/workflowEngine';
 
 function AppContent() {
@@ -338,6 +343,11 @@ function AppContent() {
       case 'remoteaccess': return <RemoteAccessPage {...commonProps} />;
       case 'techperformance': return <TechPerformancePage {...commonProps} />;
       case 'sladashboard': return <SLADashboardPage {...commonProps} />;
+      case 'documents': return <DocumentsPage {...commonProps} />;
+      case 'projects': return <ProjectsPage {...commonProps} />;
+      case 'quotations': return <QuotationsPage {...commonProps} />;
+      case 'modules': return <ModulesPage {...commonProps} />;
+      case 'kumescalculator': return <KumesCalculatorPage {...commonProps} />;
       default:          return <DashboardPage {...commonProps} onNavigate={handleSetActiveTab} />;
     }
   };

@@ -1,0 +1,79 @@
+/* ══════════════════════════════════════════════════════════════
+   MODULES PAGE – Minimal / Kurumsal
+   ══════════════════════════════════════════════════════════════ */
+
+.modules-page { padding: 0; animation: modFadeIn 0.3s ease; }
+@keyframes modFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Header ───────────────────────────────────────────────── */
+.mod-page-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.mod-header-left h1 { font-size: 1.35rem; font-weight: 700; margin: 0 0 2px; display: flex; align-items: center; gap: 8px; color: var(--text-primary, #1e293b); letter-spacing: -0.02em; }
+.mod-header-left p { margin: 0; color: var(--text-secondary, #64748b); font-size: 0.85rem; }
+.mod-counter { font-size: 0.85rem; font-weight: 700; color: var(--text-primary, #334155); background: var(--hover-bg, #f1f5f9); padding: 6px 14px; border-radius: 20px; }
+
+/* ── Toolbar ──────────────────────────────────────────────── */
+.mod-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.mod-search-box { display: flex; align-items: center; gap: 8px; padding: 7px 12px; background: var(--card-bg, #fff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; min-width: 200px; flex: 1; max-width: 320px; transition: border-color 0.15s; }
+.mod-search-box:focus-within { border-color: #6366f1; }
+.mod-search-box svg { color: var(--text-secondary, #94a3b8); flex-shrink: 0; }
+.mod-search-box input { border: none; background: none; outline: none; font-size: 0.83rem; width: 100%; color: var(--text-primary, #334155); }
+.mod-search-clear { border: none; background: none; cursor: pointer; font-size: 1rem; color: var(--text-secondary, #94a3b8); padding: 0; }
+.mod-select { padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border-color, #e2e8f0); background: var(--card-bg, #fff); font-size: 0.82rem; color: var(--text-primary, #334155); cursor: pointer; outline: none; }
+.mod-toolbar-actions { display: flex; gap: 6px; margin-left: auto; }
+
+.mod-btn { display: inline-flex; align-items: center; gap: 4px; padding: 7px 14px; border-radius: 7px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.15s; }
+.mod-btn-sm { padding: 6px 12px; font-size: 0.78rem; }
+.mod-btn-success { background: #d1fae5; color: #059669; }
+.mod-btn-success:hover { background: #a7f3d0; }
+.mod-btn-danger { background: #fee2e2; color: #dc2626; }
+.mod-btn-danger:hover { background: #fecaca; }
+.mod-btn-secondary { background: var(--card-bg, #fff); color: var(--text-primary, #334155); border: 1px solid var(--border-color, #e2e8f0); }
+.mod-btn-secondary:hover { background: var(--hover-bg, #f8fafc); }
+
+/* ── Category Section ─────────────────────────────────────── */
+.mod-category-section { margin-bottom: 24px; }
+.mod-category-title { font-size: 0.78rem; font-weight: 700; color: var(--text-secondary, #94a3b8); text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 10px; padding-left: 2px; }
+
+/* ── Module Grid ──────────────────────────────────────────── */
+.mod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+
+.mod-card { padding: 14px 16px; background: var(--card-bg, #fff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 10px; cursor: pointer; transition: all 0.15s; user-select: none; }
+.mod-card:hover { border-color: #c7d2fe; box-shadow: 0 1px 6px rgba(99,102,241,0.08); }
+.mod-card.disabled { opacity: 0.55; }
+.mod-card.disabled:hover { opacity: 0.75; }
+.mod-card.core { cursor: default; }
+
+.mod-card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.mod-card-name { font-size: 0.9rem; font-weight: 700; color: var(--text-primary, #1e293b); }
+.mod-card-desc { font-size: 0.78rem; color: var(--text-secondary, #64748b); margin: 0 0 8px; line-height: 1.4; }
+.mod-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.mod-card-cat { font-size: 0.68rem; font-weight: 600; color: var(--text-secondary, #94a3b8); text-transform: uppercase; letter-spacing: 0.03em; }
+.mod-card-core { font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: #eef2ff; color: #6366f1; }
+
+/* ── Toggle Switch ────────────────────────────────────────── */
+.mod-toggle { width: 38px; height: 22px; border-radius: 12px; position: relative; transition: background 0.2s; flex-shrink: 0; }
+.mod-toggle.on { background: #10b981; }
+.mod-toggle.off { background: #cbd5e1; }
+.mod-toggle.locked { opacity: 0.6; cursor: not-allowed; }
+.mod-toggle-knob { width: 16px; height: 16px; border-radius: 50%; background: #fff; position: absolute; top: 3px; left: 3px; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+.mod-toggle.on .mod-toggle-knob { transform: translateX(16px); }
+
+/* ── Empty State ──────────────────────────────────────────── */
+.mod-empty { text-align: center; padding: 40px 20px; color: var(--text-secondary, #94a3b8); font-size: 0.9rem; }
+
+/* ── Dark Mode ────────────────────────────────────────────── */
+.dark-mode .mod-card { background: var(--card-bg, #1e293b); border-color: var(--border-color, #334155); }
+.dark-mode .mod-card:hover { border-color: #4338ca; }
+.dark-mode .mod-search-box, .dark-mode .mod-select { background: var(--card-bg, #1e293b); border-color: var(--border-color, #334155); color: var(--text-primary, #e2e8f0); }
+.dark-mode .mod-btn-secondary { background: var(--card-bg, #1e293b); border-color: var(--border-color, #334155); color: var(--text-primary, #e2e8f0); }
+.dark-mode .mod-counter { background: var(--card-bg, #1e293b); color: var(--text-primary, #e2e8f0); }
+.dark-mode .mod-toggle.off { background: #475569; }
+.dark-mode .mod-card-core { background: #1e1b4b; color: #818cf8; }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .mod-page-header { flex-direction: column; align-items: stretch; }
+  .mod-toolbar { flex-direction: column; }
+  .mod-toolbar-actions { margin-left: 0; width: 100%; justify-content: flex-start; }
+  .mod-grid { grid-template-columns: 1fr; }
+}

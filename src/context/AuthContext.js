@@ -32,7 +32,7 @@ export const DEMO_USERS = [
 export const ROLE_PERMISSIONS = {
   admin: {
     label: 'Admin',
-    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'settings', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules', 'spareparts', 'contracts', 'knowledgebase', 'scheduledmaintenance', 'csat', 'remoteaccess', 'techperformance', 'sladashboard'],
+    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'settings', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules', 'spareparts', 'contracts', 'knowledgebase', 'scheduledmaintenance', 'csat', 'remoteaccess', 'techperformance', 'sladashboard', 'documents', 'projects', 'quotations', 'modules', 'kumescalculator'],
     canCreate: true,
     canEdit: true,
     canDelete: true,
@@ -41,7 +41,7 @@ export const ROLE_PERMISSIONS = {
   },
   manager: {
     label: 'Yönetici',
-    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules', 'spareparts', 'contracts', 'knowledgebase', 'scheduledmaintenance', 'csat', 'remoteaccess', 'techperformance', 'sladashboard'],
+    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules', 'spareparts', 'contracts', 'knowledgebase', 'scheduledmaintenance', 'csat', 'remoteaccess', 'techperformance', 'sladashboard', 'documents', 'projects', 'quotations', 'kumescalculator'],
     canCreate: true,
     canEdit: true,
     canDelete: false,
@@ -50,7 +50,7 @@ export const ROLE_PERMISSIONS = {
   },
   technician: {
     label: 'Teknisyen',
-    pages: ['dashboard', 'incidents', 'calendar', 'timesheet', 'messaging', 'checklists', 'announcements', 'activityfeed', 'spareparts', 'knowledgebase', 'techperformance'],
+    pages: ['dashboard', 'incidents', 'calendar', 'timesheet', 'messaging', 'checklists', 'announcements', 'activityfeed', 'spareparts', 'knowledgebase', 'techperformance', 'documents', 'projects'],
     canCreate: false,
     canEdit: true,   // sadece durum güncelleyebilir
     canDelete: false,
