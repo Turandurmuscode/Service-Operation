@@ -26,7 +26,7 @@ const PAGE_MATRIX = [
     { id: 'incidents',    label: 'Arızalar' },
     { id: 'clients',      label: 'Müşteriler' },
     { id: 'contactlog',   label: 'İletişim Geçmişi' },
-    { id: 'crmdeals',     label: 'CRM Fırsatlar' },
+    { id: 'crmdeals',     label: 'CRM Kanban' },
     { id: 'announcements',label: 'Duyurular' },
   ]},
   { section: 'İş & Gelir', pages: [
@@ -44,7 +44,6 @@ const PAGE_MATRIX = [
     { id: 'checklists',   label: 'Kontrol Listeleri' },
     { id: 'projects',     label: 'Proje Yönetimi' },
     { id: 'scheduledmaintenance', label: 'Periyodik Bakım' },
-    { id: 'techperformance', label: 'Teknisyen Performans' },
   ]},
   { section: 'Kaynaklar', pages: [
     { id: 'assets',       label: 'Envanter' },
@@ -57,8 +56,6 @@ const PAGE_MATRIX = [
   { section: 'Raporlama', pages: [
     { id: 'analytics',    label: 'Analiz' },
     { id: 'reports',      label: 'Raporlar' },
-    { id: 'csat',         label: 'Müşteri Memnuniyeti' },
-    { id: 'sladashboard', label: 'SLA Analizi' },
   ]},
   { section: 'Sistem', pages: [
     { id: 'workflowrules',label: 'Otomasyon' },
@@ -97,7 +94,7 @@ const DEFAULT_ROLES = [
     description: 'Departman yöneticisi, raporlama ve onay yetkisi',
     color: '#f59e0b',
     isSystem: true,
-    pages: ['dashboard','incidents','clients','contactlog','crmdeals','announcements','quotations','workorders','invoices','contracts','costtracking','fieldteam','timesheet','kanban','calendar','checklists','projects','scheduledmaintenance','techperformance','assets','spareparts','knowledgebase','documents','messaging','remoteaccess','analytics','reports','csat','sladashboard','workflowrules'],
+    pages: ['dashboard','incidents','clients','contactlog','crmdeals','announcements','quotations','workorders','invoices','contracts','costtracking','fieldteam','timesheet','kanban','calendar','checklists','projects','scheduledmaintenance','assets','spareparts','knowledgebase','documents','messaging','remoteaccess','analytics','reports','workflowrules'],
     canCreate: true, canEdit: true, canDelete: false, canExport: true,
     canManageUsers: false, canApprove: true, canAssignTech: true, canViewCost: true,
   },

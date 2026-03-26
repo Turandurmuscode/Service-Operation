@@ -253,8 +253,8 @@ export default function CRMDealsPage({ clients = [], currentUser, showToast, onN
     <div className="crm-page page-content">
       <div className="page-header">
         <div>
-          <h1>CRM Fırsat Takibi</h1>
-          <p>Potansiyelden kazanım/kayba kadar fırsat hattı yönetimi</p>
+          <h1>CRM Kanban</h1>
+          <p>Potansiyelden kazanım/kayba kadar fırsatları Kanban akışında yönetin</p>
         </div>
         <button className="btn btn-secondary crm-info-btn" onClick={openInfo}>
           CRM Bilgi

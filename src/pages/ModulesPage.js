@@ -21,7 +21,7 @@ const ALL_MODULES = [
   { id: 'contactlog',    label: 'İletişim Geçmişi',   category: 'Genel',        description: 'Müşteri iletişim kayıtları' },
   { id: 'announcements', label: 'Duyurular',          category: 'Genel',        description: 'Şirket içi duyuru paneli' },
   { id: 'activityfeed',  label: 'Canlı Akış',         category: 'Genel',        description: 'Gerçek zamanlı aktivite takibi' },
-  { id: 'crmdeals',      label: 'CRM Fırsat Takibi',  category: 'Genel',        description: 'Lead, teklif ve kazanım pipeline yönetimi' },
+  { id: 'crmdeals',      label: 'CRM Kanban',         category: 'İş Yönetimi',  description: 'Lead, teklif ve kazanım fırsatlarını Kanban akışında yönetim' },
   // İş Yönetimi
   { id: 'kanban',        label: 'Kanban Board',       category: 'İş Yönetimi',  description: 'Sürükle-bırak görev yönetimi' },
   { id: 'calendar',      label: 'Takvim',             category: 'İş Yönetimi',  description: 'Tarih bazlı planlama' },
@@ -42,9 +42,6 @@ const ALL_MODULES = [
   { id: 'costtracking',  label: 'Maliyet Takibi',     category: 'Raporlama',    description: 'Maliyet ve fatura takibi' },
   { id: 'contracts',     label: 'Sözleşmeler',        category: 'Raporlama',    description: 'Müşteri sözleşme yönetimi' },
   { id: 'quotations',    label: 'Teklifler',          category: 'Raporlama',    description: 'Teklif oluşturma ve takip' },
-  { id: 'csat',          label: 'Müşteri Memnuniyeti', category: 'Raporlama',   description: 'Memnuniyet anketleri' },
-  { id: 'techperformance', label: 'Teknisyen Performans', category: 'Raporlama', description: 'Teknisyen değerlendirme' },
-  { id: 'sladashboard',  label: 'SLA Analizi',        category: 'Raporlama',    description: 'SLA uyum takibi' },
   // Sektörel
   { id: 'kumescalculator', label: 'Kümes Hesaplayıcı', category: 'Sektörel',   description: 'Kümes boyut → malzeme → fiyat hesabı' },
   // Saha & Süreç Zinciri
@@ -70,7 +67,8 @@ export function getEnabledModules() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      const savedList = JSON.parse(saved);
+      const knownModuleIds = new Set(ALL_MODULES.map(m => m.id));
+      const savedList = (JSON.parse(saved) || []).filter(id => knownModuleIds.has(id));
       // Auto-enable any new modules not yet in the saved list (non-core defaults ON)
       const newModules = ALL_MODULES
         .filter(m => m.id !== 'kumescalculator' && !savedList.includes(m.id))

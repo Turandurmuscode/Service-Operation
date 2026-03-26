@@ -322,9 +322,9 @@ function Sidebar({
   }, []);
 
   const ROLE_PAGES = {
-    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard','documents','projects','quotations','modules','kumescalculator','crmdeals','workorders','invoices','rbac','fieldteam','integrations'],
-    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard','documents','projects','quotations','kumescalculator','crmdeals','workorders','invoices','fieldteam'],
-    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','knowledgebase','techperformance','documents','projects','fieldteam'],
+    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','modules','kumescalculator','crmdeals','workorders','invoices','rbac','fieldteam','integrations'],
+    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','kumescalculator','crmdeals','workorders','invoices','fieldteam'],
+    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','knowledgebase','documents','projects','fieldteam'],
   };
   const allowedPages = currentUser ? (ROLE_PAGES[currentUser.role] || []) : Object.values(ROLE_PAGES).flat();
 
@@ -338,13 +338,13 @@ function Sidebar({
         { id: 'contactlog', icon: Icons.contactlog, label: 'İletişim Geçmişi' },
         { id: 'announcements', icon: Icons.announcements, label: 'Duyurular' },
         { id: 'activityfeed', icon: Icons.activityfeed, label: 'Canlı Akış' },
-        { id: 'crmdeals', icon: Icons.crmdeals, label: 'CRM Fırsatlar' },
       ],
     },
     {
       label: 'İş Yönetimi',
       items: [
         { id: 'kanban',   icon: Icons.kanban,   label: 'Kanban Board' },
+        { id: 'crmdeals', icon: Icons.kanban, label: 'CRM Kanban' },
         { id: 'workorders', icon: Icons.workorders, label: 'İş Emirleri' },
         { id: 'fieldteam', icon: Icons.fieldteam, label: 'Saha Ekip Yönetimi' },
         { id: 'calendar', icon: Icons.calendar, label: 'Takvim' },
@@ -374,9 +374,6 @@ function Sidebar({
         { id: 'contracts',    icon: Icons.contracts,    label: 'Sözleşmeler' },
         { id: 'quotations',  icon: Icons.quotations,  label: 'Teklifler' },
         { id: 'invoices',     icon: Icons.invoices,     label: 'Faturalar' },
-        { id: 'csat',         icon: Icons.csat,          label: 'Müşteri Memnuniyeti' },
-        { id: 'techperformance', icon: Icons.techperformance, label: 'Teknisyen Performans' },
-        { id: 'sladashboard', icon: Icons.sladashboard,  label: 'SLA Analizi' },
       ],
     },
     {
