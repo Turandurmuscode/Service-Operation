@@ -1,4 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
+import Icon from '../components/Icon';
+import PageShell from '../components/PageShell';
+import MetricStrip from '../components/MetricStrip';
 import './CSATPage.css';
 
 const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
@@ -157,46 +160,31 @@ const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
     return 'danger';
   };
 
-  const getNPSClass = (nps) => {
-    if (nps > 50) return 'excellent';
-    if (nps > 0) return 'good';
-    if (nps > -30) return 'warning';
-    return 'danger';
-  };
+  const metricItems = [
+    { label: 'Ortalama Puan', value: stats.avgRating, valueColor: stats.avgRating >= 4 ? '#10b981' : stats.avgRating >= 3 ? '#f59e0b' : '#ef4444', meta: '5 üzerinden' },
+    { label: 'NPS', value: `${stats.nps > 0 ? '+' : ''}${stats.nps}`, valueColor: stats.nps > 50 ? '#10b981' : stats.nps > 0 ? '#3b82f6' : '#ef4444' },
+    { label: 'Toplam Anket', value: stats.totalSurveys },
+    { label: 'Yanıt Oranı', value: `%${stats.responseRate}`, valueColor: stats.responseRate >= 50 ? '#10b981' : '#f59e0b' },
+  ];
 
   return (
     <div className={`csat-page ${darkMode ? 'dark' : ''}`}>
-      <h2>📊 Müşteri Memnuniyeti (CSAT)</h2>
-      <p className="page-subtitle">Hizmet kalitesini ölçün, müşteri geri bildirimlerini takip edin</p>
+      <PageShell
+        title="Müşteri Memnuniyeti (CSAT)"
+        subtitle="Hizmet kalitesini ölçün, geri bildirimleri analiz edin"
+        icon="chart"
+      >
 
-      {/* Stats */}
-      <div className="csat-stats">
-        <div className="csat-stat-card">
-          <div className={`stat-value ${getRatingColor(stats.avgRating)}`}>⭐ {stats.avgRating}</div>
-          <div className="stat-label">Ortalama Puan (5 üzerinden)</div>
-        </div>
-        <div className="csat-stat-card">
-          <div className={`stat-value ${getNPSClass(stats.nps)}`}>{stats.nps > 0 ? '+' : ''}{stats.nps}</div>
-          <div className="stat-label">NPS Skoru</div>
-        </div>
-        <div className="csat-stat-card">
-          <div className="stat-value good">{stats.totalSurveys}</div>
-          <div className="stat-label">Toplam Anket</div>
-        </div>
-        <div className="csat-stat-card">
-          <div className={`stat-value ${stats.responseRate >= 50 ? 'good' : 'warning'}`}>%{stats.responseRate}</div>
-          <div className="stat-label">Yanıt Oranı</div>
-        </div>
-      </div>
+      <MetricStrip items={metricItems} />
 
       {/* Tabs */}
       <div className="csat-tabs">
         {[
-          { id: 'overview', label: '📋 Genel Bakış' },
-          { id: 'surveys', label: '📝 Anketler' },
-          { id: 'technicians', label: '👨‍🔧 Teknisyen Sıralaması' },
-          { id: 'clients', label: '🏢 Müşteri Sıralaması' },
-          { id: 'trends', label: '📈 Trendler' },
+          { id: 'overview', label: 'Genel Bakış' },
+          { id: 'surveys', label: 'Anketler' },
+          { id: 'technicians', label: 'Teknisyen Sıralaması' },
+          { id: 'clients', label: 'Müşteri Sıralaması' },
+          { id: 'trends', label: 'Trendler' },
         ].map(tab => (
           <button key={tab.id} className={activeTab === tab.id ? 'active' : ''} onClick={() => setActiveTab(tab.id)}>
             {tab.label}
@@ -207,9 +195,9 @@ const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
       {/* Actions bar */}
       <div className="csat-actions">
         <button className="primary" onClick={() => setShowForm(!showForm)}>
-          {showForm ? '✕ Kapat' : '+ Yeni Anket'}
+          {showForm ? 'Kapat' : 'Yeni Anket'}
         </button>
-        <button onClick={exportCSV}>📥 CSV İndir</button>
+        <button onClick={exportCSV}><Icon name="download" size={14} /> CSV İndir</button>
         <select value={filterPeriod} onChange={e => setFilterPeriod(e.target.value)}>
           <option value="all">Tüm Zamanlar</option>
           <option value="7d">Son 7 Gün</option>
@@ -325,7 +313,7 @@ const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
           </div>
 
           <div className="csat-form-actions">
-            <button className="btn-save" onClick={handleSubmit}>💾 Kaydet</button>
+            <button className="btn-save" onClick={handleSubmit}><Icon name="save" size={14} /> Kaydet</button>
             <button className="btn-cancel" onClick={() => setShowForm(false)}>İptal</button>
           </div>
         </div>
@@ -367,13 +355,13 @@ const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
                   </div>
                   <div className="survey-meta">
                     <div>{new Date(s.createdAt).toLocaleDateString('tr-TR')}</div>
-                    <button onClick={() => deleteSurvey(s.id)} style={{ marginTop: 8, border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer' }}>🗑️</button>
+                    <button onClick={() => deleteSurvey(s.id)} style={{ marginTop: 8, border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer' }}><Icon name="trash" size={14} /></button>
                   </div>
                 </div>
               );
             })}
             {filteredSurveys.length === 0 && (
-              <div className="empty-state"><div className="icon">📊</div><p>Henüz anket bulunmuyor</p></div>
+              <div className="empty-state"><div className="icon"><Icon name="chart" size={28} /></div><p>Henüz anket bulunmuyor</p></div>
             )}
           </div>
         </>
@@ -390,28 +378,28 @@ const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
                   <h4>{client?.name || 'Bilinmeyen Müşteri'}</h4>
                   <p>
                     Teknisyen: {s.technicianName || '-'} | NPS: {s.npsScore ?? '-'} | 
-                    Yanıt: {'⭐'.repeat(s.categories?.response || 0)} | 
-                    Kalite: {'⭐'.repeat(s.categories?.quality || 0)}
+                    Yanıt: {s.categories?.response || 0}/5 | 
+                    Kalite: {s.categories?.quality || 0}/5
                   </p>
                   {s.comment && <div className="survey-comment">"{s.comment}"</div>}
                 </div>
                 <div className="survey-meta">
                   <div>{new Date(s.createdAt).toLocaleDateString('tr-TR')}</div>
                   <div>#{s.incidentId || '-'}</div>
-                  <button onClick={() => deleteSurvey(s.id)} style={{ marginTop: 4, border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer' }}>🗑️</button>
+                  <button onClick={() => deleteSurvey(s.id)} style={{ marginTop: 4, border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer' }}><Icon name="trash" size={14} /></button>
                 </div>
               </div>
             );
           })}
           {filteredSurveys.length === 0 && (
-            <div className="empty-state"><div className="icon">📝</div><p>Filtreye uygun anket bulunamadı</p></div>
+            <div className="empty-state"><div className="icon"><Icon name="clipboard" size={28} /></div><p>Filtreye uygun anket bulunamadı</p></div>
           )}
         </div>
       )}
 
       {activeTab === 'technicians' && (
         <div className="csat-ranking">
-          <h3>👨‍🔧 Teknisyen Memnuniyet Sıralaması</h3>
+          <h3>Teknisyen Memnuniyet Sıralaması</h3>
           <table>
             <thead>
               <tr><th>#</th><th>Teknisyen</th><th>Ort. Puan</th><th>Anket Sayısı</th><th>Memnuniyet</th></tr>
@@ -419,9 +407,9 @@ const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
             <tbody>
               {techRanking.map((t, i) => (
                 <tr key={t.name}>
-                  <td><span className="rank-medal">{i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</span></td>
+                  <td><span className="rank-medal">{i + 1}</span></td>
                   <td><strong>{t.name}</strong></td>
-                  <td>⭐ {t.avg}</td>
+                  <td>{t.avg}</td>
                   <td>{t.count}</td>
                   <td>
                     <div className="satisfaction-bar">
@@ -438,7 +426,7 @@ const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
 
       {activeTab === 'clients' && (
         <div className="csat-ranking">
-          <h3>🏢 Müşteri Memnuniyet Sıralaması</h3>
+          <h3>Müşteri Memnuniyet Sıralaması</h3>
           <table>
             <thead>
               <tr><th>#</th><th>Müşteri</th><th>Ort. Puan</th><th>Anket Sayısı</th><th>Memnuniyet</th></tr>
@@ -446,9 +434,9 @@ const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
             <tbody>
               {clientRanking.map((c, i) => (
                 <tr key={c.name}>
-                  <td><span className="rank-medal">{i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</span></td>
+                  <td><span className="rank-medal">{i + 1}</span></td>
                   <td><strong>{c.name}</strong></td>
-                  <td>⭐ {c.avg}</td>
+                  <td>{c.avg}</td>
                   <td>{c.count}</td>
                   <td>
                     <div className="satisfaction-bar">
@@ -465,7 +453,7 @@ const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
 
       {activeTab === 'trends' && (
         <div className="csat-trend-chart">
-          <h3>📈 Memnuniyet Trendi (Son 6 Ay)</h3>
+          <h3>Memnuniyet Trendi (Son 6 Ay)</h3>
           {monthlyTrend.length > 0 ? (
             <div className="mini-bar-chart">
               {monthlyTrend.map(m => {
@@ -480,22 +468,22 @@ const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
               })}
             </div>
           ) : (
-            <div className="empty-state"><div className="icon">📈</div><p>Trend verisi için yeterli anket bulunamadı</p></div>
+            <div className="empty-state"><div className="icon"><Icon name="chart" size={28} /></div><p>Trend verisi için yeterli anket bulunamadı</p></div>
           )}
           <div style={{ marginTop: 24 }}>
             <h3>Kategori Ortalamaları</h3>
             <div className="csat-stats" style={{ marginTop: 12 }}>
               {[
-                { key: 'response', label: 'Yanıt Süresi', icon: '⏱️' },
-                { key: 'quality', label: 'Çözüm Kalitesi', icon: '✅' },
-                { key: 'communication', label: 'İletişim', icon: '💬' },
-                { key: 'professionalism', label: 'Profesyonellik', icon: '👔' },
+                { key: 'response', label: 'Yanıt Süresi' },
+                { key: 'quality', label: 'Çözüm Kalitesi' },
+                { key: 'communication', label: 'İletişim' },
+                { key: 'professionalism', label: 'Profesyonellik' },
               ].map(cat => {
                 const vals = filteredSurveys.filter(s => s.categories && s.categories[cat.key] > 0).map(s => s.categories[cat.key]);
                 const avg = vals.length > 0 ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) : '-';
                 return (
                   <div key={cat.key} className="csat-stat-card">
-                    <div className={`stat-value ${typeof avg === 'number' || !isNaN(avg) ? getRatingColor(avg) : ''}`}>{cat.icon} {avg}</div>
+                    <div className={`stat-value ${typeof avg === 'number' || !isNaN(avg) ? getRatingColor(avg) : ''}`}>{avg}</div>
                     <div className="stat-label">{cat.label}</div>
                   </div>
                 );
@@ -504,6 +492,7 @@ const CSATPage = ({ incidents, clients, currentUser, showToast, darkMode }) => {
           </div>
         </div>
       )}
+      </PageShell>
     </div>
   );
 };

@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import Icon from '../components/Icon';
+import PageShell from '../components/PageShell';
+import MetricStrip from '../components/MetricStrip';
 import './KnowledgeBasePage.css';
 
 const KB_CATEGORIES = [
-  { value: 'software', label: 'Yazılım', icon: '💻' },
-  { value: 'hardware', label: 'Donanım', icon: '🖥️' },
-  { value: 'network', label: 'Ağ', icon: '🌐' },
-  { value: 'printer', label: 'Yazıcı', icon: '🖨️' },
-  { value: 'security', label: 'Güvenlik', icon: '🛡️' },
-  { value: 'email', label: 'E-posta', icon: '✉️' },
-  { value: 'os', label: 'İşletim Sistemi', icon: '🖥️' },
-  { value: 'procedure', label: 'Prosedür', icon: '📋' },
-  { value: 'other', label: 'Diğer', icon: '📦' },
+  { value: 'software', label: 'Yazılım', icon: 'laptop' },
+  { value: 'hardware', label: 'Donanım', icon: 'desktop' },
+  { value: 'network', label: 'Ağ', icon: 'network' },
+  { value: 'printer', label: 'Yazıcı', icon: 'tool' },
+  { value: 'security', label: 'Güvenlik', icon: 'alert' },
+  { value: 'email', label: 'E-posta', icon: 'mail' },
+  { value: 'os', label: 'İşletim Sistemi', icon: 'desktop' },
+  { value: 'procedure', label: 'Prosedür', icon: 'clipboard' },
+  { value: 'other', label: 'Diğer', icon: 'box' },
 ];
 
 const DIFFICULTY_LEVELS = [
@@ -121,7 +124,7 @@ function KnowledgeBasePage({ currentUser, showToast }) {
     saveArticles(updated);
     const updatedArticle = updated.find(a => a.id === articleId);
     if (selectedArticle?.id === articleId) setSelectedArticle(updatedArticle);
-    showToast(isHelpful ? 'Teşekkürler! 👍' : 'Geri bildiriminiz alındı.', 'success');
+    showToast(isHelpful ? 'Teşekkürler, geri bildiriminiz kaydedildi.' : 'Geri bildiriminiz alındı.', 'success');
   };
 
   // ── FILTERS ────────────────────────
@@ -158,6 +161,13 @@ function KnowledgeBasePage({ currentUser, showToast }) {
     count: articles.filter(a => a.category === c.value).length,
   })).sort((a, b) => b.count - a.count);
 
+  const metricItems = [
+    { label: 'Toplam Makale', value: totalArticles },
+    { label: 'Toplam Görüntülenme', value: totalViews },
+    { label: 'Ortalama Faydalılık', value: `%${avgRating}` },
+    { label: 'En Yoğun Kategori', value: categoryCounts[0]?.label || '-', meta: `${categoryCounts[0]?.count || 0} makale` },
+  ];
+
   if (selectedArticle) {
     return (
       <div className="page-content">
@@ -174,39 +184,20 @@ function KnowledgeBasePage({ currentUser, showToast }) {
 
   return (
     <div className="page-content">
-      <div className="page-header-row">
-        <div>
-          <h1 className="page-title">📚 Bilgi Bankası</h1>
-          <p className="page-subtitle">Teknik çözümler, prosedürler ve rehberler</p>
-        </div>
-        <button className="btn btn-primary" onClick={() => { setEditingArticle(null); setShowForm(true); }}>
-          + Makale Ekle
-        </button>
-      </div>
+      <PageShell
+        title="Bilgi Bankası"
+        subtitle="Teknik çözümler, prosedürler ve operasyon rehberleri"
+        icon="clipboard"
+        actions={(
+          <button className="btn btn-primary" onClick={() => { setEditingArticle(null); setShowForm(true); }}>
+            Yeni Makale
+          </button>
+        )}
+      >
+      <MetricStrip items={metricItems} />
 
-      {/* Stats */}
-      <div className="kb-stats">
-        <div className="kb-stat-card">
-          <div className="kb-stat-value">{totalArticles}</div>
-          <div className="kb-stat-label">Toplam Makale</div>
-        </div>
-        <div className="kb-stat-card">
-          <div className="kb-stat-value">{totalViews}</div>
-          <div className="kb-stat-label">Toplam Görüntülenme</div>
-        </div>
-        <div className="kb-stat-card">
-          <div className="kb-stat-value">%{avgRating}</div>
-          <div className="kb-stat-label">Ort. Faydalılık</div>
-        </div>
-        <div className="kb-stat-card">
-          <div className="kb-stat-value">{categoryCounts[0]?.count || 0}</div>
-          <div className="kb-stat-label">En Çok: {categoryCounts[0]?.label || '-'}</div>
-        </div>
-      </div>
-
-      {/* Search & Filters */}
       <div className="kb-search-bar">
-        <div className="kb-search-icon">🔍</div>
+        <div className="kb-search-icon"><Icon name="search" size={16} /></div>
         <input
           type="text" className="kb-search-input"
           placeholder="Sorun, çözüm, anahtar kelime ara..."
@@ -217,7 +208,7 @@ function KnowledgeBasePage({ currentUser, showToast }) {
       <div className="kb-filters">
         <select className="filter-select" value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
           <option value="all">Tüm Kategoriler</option>
-          {KB_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.icon} {c.label}</option>)}
+          {KB_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
         </select>
         <select className="filter-select" value={filterDifficulty} onChange={e => setFilterDifficulty(e.target.value)}>
           <option value="all">Tüm Zorluklar</option>
@@ -230,19 +221,17 @@ function KnowledgeBasePage({ currentUser, showToast }) {
         </select>
       </div>
 
-      {/* Category quick filters */}
       <div className="kb-category-pills">
         {categoryCounts.filter(c => c.count > 0).map(c => (
           <button
             key={c.value}
             className={`kb-pill ${filterCategory === c.value ? 'active' : ''}`}
             onClick={() => setFilterCategory(filterCategory === c.value ? 'all' : c.value)}>
-            {c.icon} {c.label} ({c.count})
+            <Icon name={c.icon} size={12} /> {c.label} ({c.count})
           </button>
         ))}
       </div>
 
-      {/* Articles */}
       {sortedArticles.length === 0 ? (
         <div className="empty-state"><p>Arama kriterlerine uygun makale bulunamadı.</p></div>
       ) : (
@@ -253,7 +242,7 @@ function KnowledgeBasePage({ currentUser, showToast }) {
             return (
               <div key={article.id} className="kb-article-card" onClick={() => viewArticle(article)}>
                 <div className="kb-article-header">
-                  <span className="kb-cat-badge">{cat?.icon} {cat?.label}</span>
+                  <span className="kb-cat-badge"><Icon name={cat?.icon || 'box'} size={12} /> {cat?.label}</span>
                   {diff && <span className="kb-diff-badge" style={{ color: diff.color }}>{diff.label}</span>}
                 </div>
                 <h3 className="kb-article-title">{article.title}</h3>
@@ -264,10 +253,10 @@ function KnowledgeBasePage({ currentUser, showToast }) {
                   ))}
                 </div>
                 <div className="kb-article-meta">
-                  <span>👁️ {article.views || 0}</span>
-                  {article.ratingCount > 0 && <span>👍 %{article.rating}</span>}
-                  <span>📅 {new Date(article.createdAt).toLocaleDateString('tr-TR')}</span>
-                  <span>✍️ {article.createdBy}</span>
+                  <span><Icon name="chart" size={12} /> {article.views || 0}</span>
+                  {article.ratingCount > 0 && <span><Icon name="star" size={12} /> %{article.rating}</span>}
+                  <span><Icon name="calendar" size={12} /> {new Date(article.createdAt).toLocaleDateString('tr-TR')}</span>
+                  <span><Icon name="user" size={12} /> {article.createdBy}</span>
                 </div>
               </div>
             );
@@ -275,7 +264,6 @@ function KnowledgeBasePage({ currentUser, showToast }) {
         </div>
       )}
 
-      {/* Form Modal */}
       {showForm && (
         <ArticleFormModal
           article={editingArticle}
@@ -283,6 +271,7 @@ function KnowledgeBasePage({ currentUser, showToast }) {
           onClose={() => { setShowForm(false); setEditingArticle(null); }}
         />
       )}
+      </PageShell>
     </div>
   );
 }
@@ -297,32 +286,32 @@ function ArticleViewer({ article, onBack, onRate, onEdit, onDelete }) {
       <div className="kb-viewer-nav">
         <button className="btn btn-ghost" onClick={onBack}>← Geri</button>
         <div className="kb-viewer-actions">
-          <button className="btn btn-ghost" onClick={onEdit}>✏️ Düzenle</button>
-          <button className="btn btn-ghost" onClick={onDelete} style={{ color: '#ef4444' }}>🗑️ Sil</button>
+          <button className="btn btn-ghost" onClick={onEdit}><Icon name="edit" size={14} /> Düzenle</button>
+          <button className="btn btn-ghost" onClick={onDelete} style={{ color: '#ef4444' }}><Icon name="trash" size={14} /> Sil</button>
         </div>
       </div>
 
       <div className="kb-viewer-header">
         <div className="kb-viewer-badges">
-          <span className="kb-cat-badge">{cat?.icon} {cat?.label}</span>
+          <span className="kb-cat-badge"><Icon name={cat?.icon || 'box'} size={12} /> {cat?.label}</span>
           {diff && <span className="kb-diff-badge" style={{ color: diff.color, border: `1px solid ${diff.color}33` }}>{diff.label}</span>}
-          <span className="kb-meta-badge">👁️ {article.views || 0} görüntülenme</span>
-          {article.ratingCount > 0 && <span className="kb-meta-badge">👍 %{article.rating} faydalı</span>}
+          <span className="kb-meta-badge"><Icon name="chart" size={12} /> {article.views || 0} görüntülenme</span>
+          {article.ratingCount > 0 && <span className="kb-meta-badge"><Icon name="star" size={12} /> %{article.rating} faydalı</span>}
         </div>
         <h1 className="kb-viewer-title">{article.title}</h1>
         <div className="kb-viewer-meta">
-          ✍️ {article.createdBy} | 📅 {new Date(article.createdAt).toLocaleDateString('tr-TR')}
+          <Icon name="user" size={12} /> {article.createdBy} | <Icon name="calendar" size={12} /> {new Date(article.createdAt).toLocaleDateString('tr-TR')}
           {article.updatedAt !== article.createdAt && ` | Güncellendi: ${new Date(article.updatedAt).toLocaleDateString('tr-TR')}`}
         </div>
       </div>
 
       <div className="kb-viewer-section">
-        <h2>🔴 Problem</h2>
+        <h2><Icon name="alert" size={14} /> Problem</h2>
         <div className="kb-viewer-content">{article.problem}</div>
       </div>
 
       <div className="kb-viewer-section">
-        <h2>✅ Çözüm</h2>
+        <h2><Icon name="save" size={14} /> Çözüm</h2>
         <div className="kb-viewer-content kb-solution">
           {article.solution?.split('\n').map((line, i) => (
             <p key={i}>{line}</p>
@@ -332,7 +321,7 @@ function ArticleViewer({ article, onBack, onRate, onEdit, onDelete }) {
 
       {article.steps && (
         <div className="kb-viewer-section">
-          <h2>📝 Adımlar</h2>
+          <h2><Icon name="list" size={14} /> Adımlar</h2>
           <div className="kb-viewer-content">
             <ol className="kb-steps">
               {article.steps.split('\n').filter(Boolean).map((step, i) => (
@@ -345,7 +334,7 @@ function ArticleViewer({ article, onBack, onRate, onEdit, onDelete }) {
 
       {article.notes && (
         <div className="kb-viewer-section">
-          <h2>💡 Notlar</h2>
+          <h2><Icon name="clipboard" size={14} /> Notlar</h2>
           <div className="kb-viewer-content kb-notes">{article.notes}</div>
         </div>
       )}
@@ -359,8 +348,8 @@ function ArticleViewer({ article, onBack, onRate, onEdit, onDelete }) {
       <div className="kb-feedback">
         <p>Bu makale faydalı oldu mu?</p>
         <div className="kb-feedback-buttons">
-          <button className="btn btn-success" onClick={() => onRate(article.id, true)}>👍 Evet, Faydalı</button>
-          <button className="btn btn-ghost" onClick={() => onRate(article.id, false)}>👎 Hayır</button>
+          <button className="btn btn-success" onClick={() => onRate(article.id, true)}><Icon name="save" size={14} /> Evet, Faydalı</button>
+          <button className="btn btn-ghost" onClick={() => onRate(article.id, false)}><Icon name="close" size={14} /> Hayır</button>
         </div>
       </div>
     </div>
@@ -398,7 +387,7 @@ function ArticleFormModal({ article, onSave, onClose }) {
             <div className="form-group">
               <label>Kategori</label>
               <select value={form.category} onChange={e => set('category', e.target.value)}>
-                {KB_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.icon} {c.label}</option>)}
+                {KB_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
             </div>
             <div className="form-group">

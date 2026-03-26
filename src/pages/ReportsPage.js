@@ -4,6 +4,9 @@ import DataExport from '../components/DataExport';
 import DataManagement from '../components/DataManagement';
 import DateRangeFilter from '../components/DateRangeFilter';
 import Icon from '../components/Icon';
+import PageShell from '../components/PageShell';
+import MetricStrip from '../components/MetricStrip';
+import './ReportsPage.css';
 
 function ReportsPage({ clients, incidents, setClients, setIncidents, setActivities, showToast }) {
   const [dateFilter, setDateFilter] = useState(null); // null = tümü, Date = başlangıç tarihi
@@ -23,29 +26,28 @@ function ReportsPage({ clients, incidents, setClients, setIncidents, setActiviti
   }).length;
   const slaRate   = resolved.length ? Math.round(((resolved.length - slaViol) / resolved.length) * 100) : null;
 
-  const statBox = (label, value, color = 'var(--text-primary)') => (
-    <div style={{
-      flex: 1, minWidth: '120px', padding: '16px', borderRadius: '12px',
-      background: 'var(--bg-elevated)', border: '1px solid var(--border)', textAlign: 'center',
-    }}>
-      <div style={{ fontSize: '24px', fontWeight: '700', color }}>{value ?? '—'}</div>
-      <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>{label}</div>
-    </div>
-  );
+  const metricItems = [
+    { label: 'Toplam Arıza', value: filteredIncidents.length, meta: 'Filtreye göre' },
+    { label: 'Aktif', value: active.length, valueColor: active.length > 0 ? '#f59e0b' : 'var(--text-primary)' },
+    { label: 'Çözülen', value: resolved.length, valueColor: '#10b981' },
+    { label: 'Ort. Çözüm', value: avgDur ? `${avgDur} dk` : '—', meta: 'Resolved kayıtlar' },
+    { label: 'SLA Uyum', value: slaRate !== null ? `%${slaRate}` : '—', valueColor: slaRate !== null && slaRate < 80 ? '#ef4444' : '#10b981' },
+    { label: 'SLA İhlali', value: slaViol, valueColor: slaViol > 0 ? '#ef4444' : 'var(--text-primary)' },
+  ];
 
   return (
-    <div className="page-content">
-      <div className="page-header">
-        <h1><Icon name="clipboard" size={20} style={{ marginRight: 8 }} /> Raporlar ve Veri Yönetimi</h1>
-        <p>Raporları indirin ve verilerinizi yönetin</p>
-      </div>
+    <div className="page-content reports-page">
+      <PageShell
+        title="Raporlar ve Veri Yönetimi"
+        subtitle="Operasyon verilerini analiz edin, dışa aktarın ve merkezi olarak yönetin"
+        icon="clipboard"
+      >
 
-      {/* Tarih filtresi */}
-      <div className="card" style={{ marginBottom: '16px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
-          <h2 style={{ margin: 0 }}><Icon name="calendar" size={16} /> Tarih Aralığı</h2>
+      <div className="section-card">
+        <div className="reports-filter-head">
+          <h2 className="section-card-title"><Icon name="calendar" size={16} /> Tarih Aralığı</h2>
           {dateFilter && (
-            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+            <span className="reports-filter-meta">
               {new Date(dateFilter).toLocaleDateString('tr-TR')} tarihinden itibaren · {filteredIncidents.length} kayıt
             </span>
           )}
@@ -53,18 +55,9 @@ function ReportsPage({ clients, incidents, setClients, setIncidents, setActiviti
         <DateRangeFilter onFilterChange={setDateFilter} />
       </div>
 
-      {/* Özet istatistikler */}
-      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '16px' }}>
-        {statBox('Toplam Arıza', filteredIncidents.length)}
-        {statBox('Aktif', active.length, active.length > 0 ? '#f59e0b' : 'var(--text-primary)')}
-        {statBox('Çözülen', resolved.length, '#10b981')}
-        {statBox('Ort. Çözüm', avgDur ? `${avgDur}dk` : null)}
-        {statBox('SLA Uyum', slaRate !== null ? `%${slaRate}` : null, slaRate !== null && slaRate < 80 ? '#ef4444' : '#10b981')}
-        {statBox('SLA İhlali', slaViol, slaViol > 0 ? '#ef4444' : 'var(--text-primary)')}
-      </div>
+      <MetricStrip items={metricItems} />
 
-      {/* Kategori & öncelik dağılımı */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+      <div className="reports-grid-two">
         <div className="card">
           <h2><Icon name="chart" size={16} /> Kategori Dağılımı</h2>
           {[
@@ -90,11 +83,11 @@ function ReportsPage({ clients, incidents, setClients, setIncidents, setActiviti
         </div>
 
         <div className="card">
-          <h2>🎯 Öncelik Dağılımı</h2>
+          <h2><Icon name="alert" size={16} /> Öncelik Dağılımı</h2>
           {[
-            { key: 'critical', label: '🔴 Kritik', color: '#ef4444' },
-            { key: 'medium',   label: '🟡 Orta',   color: '#f59e0b' },
-            { key: 'low',      label: '🟢 Düşük',  color: '#10b981' },
+            { key: 'critical', label: 'Kritik', color: '#ef4444' },
+            { key: 'medium',   label: 'Orta',   color: '#f59e0b' },
+            { key: 'low',      label: 'Düşük',  color: '#10b981' },
           ].map(({ key, label, color }) => {
             const count = filteredIncidents.filter(i => i.priority === key).length;
             const pct   = filteredIncidents.length ? Math.round((count / filteredIncidents.length) * 100) : 0;
@@ -136,11 +129,10 @@ function ReportsPage({ clients, incidents, setClients, setIncidents, setActiviti
         </div>
       </div>
 
-      {/* Export ve yönetim */}
       <div className="reports-grid">
         <ReportGenerator incidents={filteredIncidents} clients={clients} />
         <div className="card">
-          <h2>📂 Veri Yönetimi</h2>
+          <h2><Icon name="grid" size={16} /> Veri Yönetimi</h2>
           <DataExport incidents={filteredIncidents} clients={clients} setClients={setClients} showToast={showToast} />
           <hr style={{ margin: '14px 0', border: 'none', borderTop: '1px solid var(--border)' }} />
           <DataManagement
@@ -150,6 +142,7 @@ function ReportsPage({ clients, incidents, setClients, setIncidents, setActiviti
           />
         </div>
       </div>
+      </PageShell>
     </div>
   );
 }

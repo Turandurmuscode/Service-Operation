@@ -1,10 +1,8 @@
-.csat-page { padding: 24px; }
-.csat-page h2 { margin: 0 0 4px; font-size: 1.5rem; }
-.csat-page .page-subtitle { color: #64748b; margin-bottom: 20px; }
+.csat-page { padding: 0; }
 
 /* Stats row */
 .csat-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
-.csat-stat-card { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.csat-stat-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; box-shadow: var(--shadow-xs); }
 .dark .csat-stat-card { background: #1e293b; }
 .csat-stat-card .stat-value { font-size: 2rem; font-weight: 700; }
 .csat-stat-card .stat-value.excellent { color: #10b981; }
@@ -15,12 +13,12 @@
 
 /* Tabs */
 .csat-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-.csat-tabs button { padding: 8px 18px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-size: .9rem; transition: all .2s; }
+.csat-tabs button { padding: 8px 18px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-surface); cursor: pointer; font-size: .9rem; transition: all .2s; }
 .dark .csat-tabs button { background: #1e293b; border-color: #334155; color: #e2e8f0; }
 .csat-tabs button.active { background: #3b82f6; color: white; border-color: #3b82f6; }
 
 /* Survey form */
-.csat-survey-form { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 24px; }
+.csat-survey-form { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: var(--shadow-xs); margin-bottom: 24px; }
 .dark .csat-survey-form { background: #1e293b; }
 .csat-survey-form h3 { margin: 0 0 16px; }
 .csat-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
@@ -53,7 +51,7 @@
 
 /* Survey item list */
 .csat-survey-list { display: flex; flex-direction: column; gap: 12px; }
-.csat-survey-item { background: white; border-radius: 12px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.08); display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; }
+.csat-survey-item { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; box-shadow: var(--shadow-xs); display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; }
 .dark .csat-survey-item { background: #1e293b; }
 .csat-survey-item .score-badge { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; color: white; }
 .score-badge.score-5 { background: #10b981; }
@@ -68,7 +66,7 @@
 .dark .csat-survey-item .survey-comment { background: #0f172a; color: #94a3b8; }
 
 /* Ranking table */
-.csat-ranking { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.csat-ranking { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-xs); }
 .dark .csat-ranking { background: #1e293b; }
 .csat-ranking h3 { margin: 0 0 16px; }
 .csat-ranking table { width: 100%; border-collapse: collapse; }
@@ -80,7 +78,7 @@
 .satisfaction-bar .fill { height: 100%; border-radius: 4px; transition: width .3s; }
 
 /* Trend chart area */
-.csat-trend-chart { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 24px; }
+.csat-trend-chart { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-xs); margin-bottom: 24px; }
 .dark .csat-trend-chart { background: #1e293b; }
 .csat-trend-chart h3 { margin: 0 0 16px; }
 .mini-bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 120px; }
@@ -90,7 +88,7 @@
 
 /* Actions bar */
 .csat-actions { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-.csat-actions button { padding: 8px 16px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-size: .85rem; }
+.csat-actions button { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-surface); cursor: pointer; font-size: .85rem; display: inline-flex; align-items: center; gap: 6px; }
 .dark .csat-actions button { background: #1e293b; border-color: #334155; color: #e2e8f0; }
 .csat-actions button.primary { background: #3b82f6; color: white; border-color: #3b82f6; }
 .csat-actions select { padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: .85rem; }

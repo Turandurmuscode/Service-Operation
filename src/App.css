@@ -10,11 +10,11 @@
 /* ─── DESIGN TOKENS — DARK (default) ─────────────── */
 :root {
   /* Surfaces */
-  --bg-base:      #0a0a0d;
-  --bg-surface:   #0e0e12;
-  --bg-elevated:  #131318;
-  --bg-overlay:   #18181d;
-  --bg-hover:     #1a1a22;
+  --bg-base:      #0b1220;
+  --bg-surface:   #111b2e;
+  --bg-elevated:  #16233b;
+  --bg-overlay:   #1c2b46;
+  --bg-hover:     #223553;
 
   /* Borders */
   --border:        rgba(255,255,255,0.04);
@@ -22,17 +22,17 @@
   --border-focus:  rgba(255,255,255,0.16);
 
   /* Text */
-  --text-primary:   #e8e8ec;
-  --text-secondary: #9a9aaa;
-  --text-muted:     #6a6a7e;
-  --text-inverse:   #0a0a0d;
+  --text-primary:   #e7edf7;
+  --text-secondary: #b2bfd4;
+  --text-muted:     #7f8ea8;
+  --text-inverse:   #0b1220;
 
   /* Accent — single brand blue */
-  --accent:        #4f7fff;
-  --accent-hover:  #6690ff;
-  --accent-dim:    rgba(79,127,255,0.10);
-  --accent-glow:   rgba(79,127,255,0.18);
-  --accent-border: rgba(79,127,255,0.24);
+  --accent:        #2f6fbf;
+  --accent-hover:  #3f7fce;
+  --accent-dim:    rgba(47,111,191,0.12);
+  --accent-glow:   rgba(47,111,191,0.2);
+  --accent-border: rgba(47,111,191,0.3);
 
   /* Semantic */
   --success:        #34c16a;
@@ -50,13 +50,22 @@
   --info:           #4f7fff;
   --info-dim:       rgba(79,127,255,0.08);
 
-  --purple:         #a855f7;
-  --purple-dim:     rgba(168,85,247,0.08);
-  --purple-border:  rgba(168,85,247,0.18);
+  --purple:         #607292;
+  --purple-dim:     rgba(96,114,146,0.08);
+  --purple-border:  rgba(96,114,146,0.18);
 
   /* Typography */
   --font-sans: 'Geist', system-ui, sans-serif;
   --font-mono: 'Geist Mono', monospace;
+  --type-h1-size: 24px;
+  --type-h1-line: 1.2;
+  --type-h2-size: 16px;
+  --type-h2-line: 1.35;
+  --type-meta-size: 12px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
 
   /* Radius */
   --radius-xs: 4px;
@@ -73,11 +82,11 @@
   --shadow-accent: 0 2px 16px rgba(79,127,255,0.18);
 
   /* Aliases / compatibility */
-  --primary:              #4f7fff;
-  --primary-dim:          rgba(79,127,255,0.10);
-  --shadow-elevated:      0 4px 20px rgba(0,0,0,0.55);
-  --shadow-elevated-dark: 0 8px 28px rgba(0,0,0,0.75);
-  --shadow-popover:       0 12px 36px rgba(0,0,0,0.60);
+  --primary:              #2f6fbf;
+  --primary-dim:          rgba(47,111,191,0.12);
+  --shadow-elevated:      0 6px 20px rgba(2,8,23,0.45);
+  --shadow-elevated-dark: 0 10px 28px rgba(2,8,23,0.62);
+  --shadow-popover:       0 16px 38px rgba(2,8,23,0.52);
 
   /* Floating action stack offsets */
   --fab-right-offset: 24px;
@@ -132,7 +141,10 @@ body {
 
 .App {
   min-height: 100vh;
-  background: var(--bg-base);
+  background:
+    radial-gradient(circle at 100% -10%, rgba(47, 111, 191, 0.18) 0%, rgba(47, 111, 191, 0) 48%),
+    radial-gradient(circle at 0% 120%, rgba(15, 23, 42, 0.52) 0%, rgba(15, 23, 42, 0) 44%),
+    var(--bg-base);
 }
 
 /* ─── LAYOUT ──────────────────────────────────────── */
@@ -157,6 +169,22 @@ body {
   padding: var(--page-padding, 28px 32px 40px);
   max-width: 1600px;
   width: 100%;
+}
+
+.section-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-xs);
+}
+
+.section-card-title {
+  margin: 0 0 12px;
+  font-size: var(--type-h2-size);
+  line-height: var(--type-h2-line);
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .page-header {
@@ -195,8 +223,8 @@ body {
 
 .card:hover {
   border-color: var(--border-strong);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .card:active {

@@ -18,6 +18,7 @@
 .ct-stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
 
 .ct-alert-banner { display: flex; align-items: flex-start; gap: 12px; padding: 14px 18px; background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 8px; margin-bottom: 16px; font-size: 13px; color: var(--text-primary); }
+.ct-alert-banner span { display: inline-flex; align-items: center; }
 
 .ct-tabs { display: flex; gap: 4px; margin-bottom: 16px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; }
 .ct-tab { flex: 1; padding: 8px 16px; border: none; background: transparent; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
@@ -48,12 +49,14 @@
 
 .ct-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
 .ct-card-type { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+.ct-card-type { display: inline-flex; align-items: center; gap: 6px; }
 .ct-status-badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
 .ct-status-badge.badge-info { background: rgba(107, 114, 128, 0.1); color: #6b7280; }
 .ct-status-badge.badge-muted { background: rgba(107, 114, 128, 0.1); color: #9ca3af; }
 
 .ct-card-title { font-size: 16px; font-weight: 700; margin: 0 0 8px; color: var(--text-primary); }
 .ct-card-client { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; display: flex; align-items: center; gap: 4px; }
+.ct-card-client span { display: inline-flex; }
 
 .ct-card-details { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
 .ct-card-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary); }

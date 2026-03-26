@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import Icon from '../components/Icon';
+import PageShell from '../components/PageShell';
+import MetricStrip from '../components/MetricStrip';
 import './ContractsPage.css';
 
 const CONTRACT_TYPES = [
-  { value: 'maintenance', label: 'Bakım Sözleşmesi', icon: '🔧' },
-  { value: 'support', label: 'Destek Sözleşmesi', icon: '🎧' },
-  { value: 'license', label: 'Lisans Sözleşmesi', icon: '📋' },
-  { value: 'hosting', label: 'Hosting / Barındırma', icon: '☁️' },
-  { value: 'security', label: 'Güvenlik Sözleşmesi', icon: '🛡️' },
-  { value: 'consulting', label: 'Danışmanlık', icon: '💼' },
-  { value: 'other', label: 'Diğer', icon: '📄' },
+  { value: 'maintenance', label: 'Bakım Sözleşmesi', icon: 'tool' },
+  { value: 'support', label: 'Destek Sözleşmesi', icon: 'phone' },
+  { value: 'license', label: 'Lisans Sözleşmesi', icon: 'clipboard' },
+  { value: 'hosting', label: 'Hosting / Barındırma', icon: 'network' },
+  { value: 'security', label: 'Güvenlik Sözleşmesi', icon: 'alert' },
+  { value: 'consulting', label: 'Danışmanlık', icon: 'user' },
+  { value: 'other', label: 'Diğer', icon: 'box' },
 ];
 
 const BILLING_PERIODS = [
@@ -157,51 +160,33 @@ function ContractsPage({ clients, incidents, currentUser, showToast }) {
     }
   }, 0);
   const annualRevenue = monthlyRevenue * 12;
+  const metricItems = [
+    { label: 'Toplam Sözleşme', value: contracts.length },
+    { label: 'Aktif', value: activeContracts.length, valueColor: '#22c55e' },
+    { label: 'Dolacak (<30)', value: expiringContracts.length, valueColor: '#f59e0b' },
+    { label: 'Süresi Dolmuş', value: expiredContracts.length, valueColor: '#ef4444' },
+    { label: 'Aylık Gelir', value: `${monthlyRevenue.toLocaleString('tr-TR')} ₺` },
+    { label: 'Yıllık Tahmin', value: `${annualRevenue.toLocaleString('tr-TR')} ₺` },
+  ];
 
   return (
     <div className="page-content">
-      <div className="page-header-row">
-        <div>
-          <h1 className="page-title">📑 Sözleşme Yönetimi</h1>
-          <p className="page-subtitle">Müşteri sözleşmeleri, yenileme takibi ve gelir analizi</p>
-        </div>
-        <button className="btn btn-primary" onClick={() => { setEditingContract(null); setShowForm(true); }}>
-          + Sözleşme Ekle
-        </button>
-      </div>
-
-      {/* Stats */}
-      <div className="ct-stats">
-        <div className="ct-stat-card">
-          <div className="ct-stat-value">{contracts.length}</div>
-          <div className="ct-stat-label">Toplam Sözleşme</div>
-        </div>
-        <div className="ct-stat-card">
-          <div className="ct-stat-value" style={{ color: '#22c55e' }}>{activeContracts.length}</div>
-          <div className="ct-stat-label">Aktif</div>
-        </div>
-        <div className={`ct-stat-card ${expiringContracts.length > 0 ? 'warning-card' : ''}`}>
-          <div className="ct-stat-value" style={{ color: '#f59e0b' }}>{expiringContracts.length}</div>
-          <div className="ct-stat-label">Süresi Dolacak (&lt;30 gün)</div>
-        </div>
-        <div className={`ct-stat-card ${expiredContracts.length > 0 ? 'danger-card' : ''}`}>
-          <div className="ct-stat-value" style={{ color: '#ef4444' }}>{expiredContracts.length}</div>
-          <div className="ct-stat-label">Süresi Dolmuş</div>
-        </div>
-        <div className="ct-stat-card revenue-card">
-          <div className="ct-stat-value">{monthlyRevenue.toLocaleString('tr-TR')} ₺</div>
-          <div className="ct-stat-label">Aylık Gelir</div>
-        </div>
-        <div className="ct-stat-card revenue-card">
-          <div className="ct-stat-value">{annualRevenue.toLocaleString('tr-TR')} ₺</div>
-          <div className="ct-stat-label">Yıllık Gelir (Tahmini)</div>
-        </div>
-      </div>
+      <PageShell
+        title="Sözleşme Yönetimi"
+        subtitle="Müşteri sözleşmeleri, yenileme takibi ve gelir analizi"
+        icon="clipboard"
+        actions={
+          <button className="btn btn-primary" onClick={() => { setEditingContract(null); setShowForm(true); }}>
+            Yeni Sözleşme
+          </button>
+        }
+      >
+      <MetricStrip items={metricItems} />
 
       {/* Expiring alert */}
       {expiringContracts.length > 0 && (
         <div className="ct-alert-banner">
-          <span>⏰</span>
+          <span><Icon name="clock" size={14} /></span>
           <div>
             <strong>{expiringContracts.length} sözleşmenin süresi 30 gün içinde dolacak:</strong>{' '}
             {expiringContracts.map(c => `${c.client?.name || 'Müşteri'} (${c.daysRemaining} gün)`).join(', ')}
@@ -212,13 +197,13 @@ function ContractsPage({ clients, incidents, currentUser, showToast }) {
       {/* View Tabs */}
       <div className="ct-tabs">
         <button className={`ct-tab ${activeView === 'active' ? 'active' : ''}`}
-          onClick={() => setActiveView('active')}>✅ Aktif ({activeContracts.length})</button>
+          onClick={() => setActiveView('active')}>Aktif ({activeContracts.length})</button>
         <button className={`ct-tab ${activeView === 'expiring' ? 'active' : ''}`}
-          onClick={() => setActiveView('expiring')}>⚠️ Dolacak ({expiringContracts.length})</button>
+          onClick={() => setActiveView('expiring')}>Dolacak ({expiringContracts.length})</button>
         <button className={`ct-tab ${activeView === 'expired' ? 'active' : ''}`}
-          onClick={() => setActiveView('expired')}>🔴 Dolmuş ({expiredContracts.length})</button>
+          onClick={() => setActiveView('expired')}>Dolmuş ({expiredContracts.length})</button>
         <button className={`ct-tab ${activeView === 'all' ? 'active' : ''}`}
-          onClick={() => setActiveView('all')}>📋 Tümü ({contracts.length})</button>
+          onClick={() => setActiveView('all')}>Tümü ({contracts.length})</button>
       </div>
 
       {/* Filters */}
@@ -227,7 +212,7 @@ function ContractsPage({ clients, incidents, currentUser, showToast }) {
           value={search} onChange={e => setSearch(e.target.value)} />
         <select className="filter-select" value={filterType} onChange={e => setFilterType(e.target.value)}>
           <option value="all">Tüm Türler</option>
-          {CONTRACT_TYPES.map(t => <option key={t.value} value={t.value}>{t.icon} {t.label}</option>)}
+          {CONTRACT_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
         </select>
       </div>
 
@@ -244,39 +229,39 @@ function ContractsPage({ clients, incidents, currentUser, showToast }) {
                 className={`ct-card ct-status-${contract.computedStatus} ${selectedContract?.id === contract.id ? 'selected' : ''}`}
                 onClick={() => setSelectedContract(selectedContract?.id === contract.id ? null : contract)}>
                 <div className="ct-card-header">
-                  <div className="ct-card-type">{typeInfo?.icon || '📄'} {typeInfo?.label || contract.type}</div>
+                  <div className="ct-card-type"><Icon name={typeInfo?.icon || 'box'} size={12} /> {typeInfo?.label || contract.type}</div>
                   <ContractStatusBadge status={contract.computedStatus} days={contract.daysRemaining} />
                 </div>
                 <h3 className="ct-card-title">{contract.title || contract.contractNo || 'Sözleşme'}</h3>
                 <div className="ct-card-client">
-                  <span>👤</span> {contract.client?.name || 'Bilinmeyen Müşteri'}
+                  <span><Icon name="user" size={12} /></span> {contract.client?.name || 'Bilinmeyen Müşteri'}
                 </div>
                 <div className="ct-card-details">
                   <div className="ct-card-row">
-                    <span>📅 Başlangıç:</span>
+                    <span>Başlangıç:</span>
                     <span>{new Date(contract.startDate).toLocaleDateString('tr-TR')}</span>
                   </div>
                   <div className="ct-card-row">
-                    <span>📅 Bitiş:</span>
+                    <span>Bitiş:</span>
                     <span>{new Date(contract.endDate).toLocaleDateString('tr-TR')}</span>
                   </div>
                   <div className="ct-card-row">
-                    <span>💰 Ücret:</span>
+                    <span>Ücret:</span>
                     <span>{(contract.monthlyFee || 0).toLocaleString('tr-TR')} ₺ / {billing?.label || '-'}</span>
                   </div>
                   {contract.contractNo && (
                     <div className="ct-card-row">
-                      <span>🔢 No:</span>
+                      <span>No:</span>
                       <span style={{ fontFamily: 'monospace' }}>{contract.contractNo}</span>
                     </div>
                   )}
                 </div>
                 <div className="ct-card-actions" onClick={e => e.stopPropagation()}>
                   {(contract.computedStatus === 'expiring' || contract.computedStatus === 'expired') && (
-                    <button className="btn-sm btn-success" onClick={() => renewContract(contract)}>🔄 Yenile</button>
+                    <button className="btn-sm btn-success" onClick={() => renewContract(contract)}>Yenile</button>
                   )}
-                  <button className="btn-sm btn-ghost" onClick={() => { setEditingContract(contract); setShowForm(true); }}>✏️</button>
-                  <button className="btn-sm btn-ghost" onClick={() => deleteContract(contract.id)} style={{ color: '#ef4444' }}>🗑️</button>
+                  <button className="btn-sm btn-ghost" onClick={() => { setEditingContract(contract); setShowForm(true); }}><Icon name="edit" size={12} /></button>
+                  <button className="btn-sm btn-ghost" onClick={() => deleteContract(contract.id)} style={{ color: '#ef4444' }}><Icon name="trash" size={12} /></button>
                 </div>
               </div>
             );
@@ -303,6 +288,7 @@ function ContractsPage({ clients, incidents, currentUser, showToast }) {
           onClose={() => { setShowForm(false); setEditingContract(null); }}
         />
       )}
+      </PageShell>
     </div>
   );
 }
@@ -327,7 +313,7 @@ function ContractDetailPanel({ contract, client, incidents, onClose }) {
   return (
     <div className="ct-detail-panel">
       <div className="ct-detail-header">
-        <h3>{typeInfo?.icon} {contract.title || contract.contractNo}</h3>
+        <h3><Icon name={typeInfo?.icon || 'box'} size={14} /> {contract.title || contract.contractNo}</h3>
         <button className="modal-close" onClick={onClose}>×</button>
       </div>
       <div className="ct-detail-body">
@@ -344,7 +330,7 @@ function ContractDetailPanel({ contract, client, incidents, onClose }) {
         </div>
         <div className="ct-detail-section">
           <h4>Müşteri: {client?.name || '-'}</h4>
-          <p>📍 {client?.city || '-'} | 📞 {client?.phone || '-'} | ✉️ {client?.email || '-'}</p>
+          <p>{client?.city || '-'} | {client?.phone || '-'} | {client?.email || '-'}</p>
           <p>Toplam Arıza: {incidents.length} | Aktif: {activeIncidents.length} | Çözülmüş: {resolvedIncidents.length}</p>
         </div>
         {contract.renewalHistory?.length > 0 && (
@@ -416,7 +402,7 @@ function ContractFormModal({ contract, clients, onSave, onClose }) {
             <div className="form-group">
               <label>Sözleşme Türü</label>
               <select value={form.type} onChange={e => set('type', e.target.value)}>
-                {CONTRACT_TYPES.map(t => <option key={t.value} value={t.value}>{t.icon} {t.label}</option>)}
+                {CONTRACT_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
             </div>
             <div className="form-group">

@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import Icon from '../components/Icon';
+import PageShell from '../components/PageShell';
+import MetricStrip from '../components/MetricStrip';
 import './ContactLogPage.css';
 
 const CONTACT_TYPES = [
-  { id: 'call', label: 'Telefon', icon: '📞', color: '#10b981' },
-  { id: 'email', label: 'E-posta', icon: '📧', color: '#3b82f6' },
-  { id: 'meeting', label: 'Toplantı', icon: '🤝', color: '#8b5cf6' },
-  { id: 'visit', label: 'Ziyaret', icon: '🏢', color: '#f59e0b' },
-  { id: 'message', label: 'Mesaj', icon: '💬', color: '#6366f1' },
-  { id: 'other', label: 'Diğer', icon: '📋', color: '#64748b' },
+  { id: 'call', label: 'Telefon', icon: 'phone', color: '#10b981' },
+  { id: 'email', label: 'E-posta', icon: 'mail', color: '#3b82f6' },
+  { id: 'meeting', label: 'Toplantı', icon: 'user', color: '#8b5cf6' },
+  { id: 'visit', label: 'Ziyaret', icon: 'grid', color: '#f59e0b' },
+  { id: 'message', label: 'Mesaj', icon: 'clipboard', color: '#6366f1' },
+  { id: 'other', label: 'Diğer', icon: 'box', color: '#64748b' },
 ];
 
 const DIRECTIONS = [
-  { id: 'incoming', label: 'Gelen', icon: '📥' },
-  { id: 'outgoing', label: 'Giden', icon: '📤' },
+  { id: 'incoming', label: 'Gelen' },
+  { id: 'outgoing', label: 'Giden' },
 ];
 
 const emptyForm = {
@@ -168,59 +171,38 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
     const now = new Date();
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   }).length;
+  const metricItems = [
+    { label: 'Toplam Kayıt', value: totalLogs },
+    { label: 'Bu Ay', value: thisMonthLogs },
+    { label: 'Aktif Müşteri', value: clientSummary.length },
+    { label: 'Geciken Hatırlatma', value: overdueFollowUps.length, valueColor: overdueFollowUps.length > 0 ? '#ef4444' : 'var(--text-primary)' },
+    { label: 'Bekleyen Hatırlatma', value: pendingFollowUps.length, valueColor: pendingFollowUps.length > 0 ? '#f59e0b' : 'var(--text-primary)' },
+  ];
 
   return (
     <div className="page-content">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">📋 İletişim Geçmişi</h1>
-          <p className="page-subtitle">Müşteri bazlı tüm iletişim kayıtlarını takip edin</p>
-        </div>
-        <div className="page-header-actions">
+      <PageShell
+        title="İletişim Geçmişi"
+        subtitle="Müşteri bazlı iletişim kayıtlarını merkezi olarak takip edin"
+        icon="clipboard"
+        actions={
           <button className="btn btn-primary" onClick={() => { setShowForm(true); setEditingLog(null); setForm({ ...emptyForm }); }}>
-            + Yeni İletişim
+            Yeni İletişim
           </button>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="cl-stats">
-        <div className="cl-stat-card">
-          <div className="cl-stat-value">{totalLogs}</div>
-          <div className="cl-stat-label">Toplam Kayıt</div>
-        </div>
-        <div className="cl-stat-card">
-          <div className="cl-stat-value">{thisMonthLogs}</div>
-          <div className="cl-stat-label">Bu Ay</div>
-        </div>
-        <div className="cl-stat-card">
-          <div className="cl-stat-value">{clientSummary.length}</div>
-          <div className="cl-stat-label">İletişimde Olunan Müşteri</div>
-        </div>
-        {overdueFollowUps.length > 0 && (
-          <div className="cl-stat-card danger">
-            <div className="cl-stat-value" style={{ color: '#ef4444' }}>{overdueFollowUps.length}</div>
-            <div className="cl-stat-label">Geciken Hatırlatma</div>
-          </div>
-        )}
-        {pendingFollowUps.length > 0 && (
-          <div className="cl-stat-card">
-            <div className="cl-stat-value" style={{ color: '#f59e0b' }}>{pendingFollowUps.length}</div>
-            <div className="cl-stat-label">Bekleyen Hatırlatma</div>
-          </div>
-        )}
-      </div>
+        }
+      >
+      <MetricStrip items={metricItems} />
 
       {/* Tabs */}
       <div className="cl-tabs">
         {[
-          { id: 'timeline', label: 'Zaman Çizelgesi', icon: '📅', badge: null },
-          { id: 'clients', label: 'Müşteri Özeti', icon: '👥', badge: null },
-          { id: 'followups', label: 'Hatırlatmalar', icon: '⏰', badge: pendingFollowUps.length || null },
+          { id: 'timeline', label: 'Zaman Çizelgesi', badge: null },
+          { id: 'clients', label: 'Müşteri Özeti', badge: null },
+          { id: 'followups', label: 'Hatırlatmalar', badge: pendingFollowUps.length || null },
         ].map(tab => (
           <button key={tab.id} className={`cl-tab ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}>
-            <span>{tab.icon}</span> {tab.label}
+            {tab.label}
             {tab.badge && <span className="cl-tab-badge">{tab.badge}</span>}
           </button>
         ))}
@@ -238,13 +220,13 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
             </select>
             <select className="filter-select" value={filterType} onChange={e => setFilterType(e.target.value)}>
               <option value="all">Tüm Türler</option>
-              {CONTACT_TYPES.map(ct => <option key={ct.id} value={ct.id}>{ct.icon} {ct.label}</option>)}
+              {CONTACT_TYPES.map(ct => <option key={ct.id} value={ct.id}>{ct.label}</option>)}
             </select>
           </div>
 
           {filteredLogs.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">📋</div>
+              <div className="empty-icon"><Icon name="clipboard" size={24} /></div>
               <p>İletişim kaydı bulunamadı.</p>
             </div>
           ) : (
@@ -255,13 +237,13 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
                 return (
                   <div key={log.id} className="cl-timeline-item">
                     <div className="cl-tl-icon" style={{ background: typeInfo?.color + '18', color: typeInfo?.color }}>
-                      {typeInfo?.icon}
+                      <Icon name={typeInfo?.icon} size={14} />
                     </div>
                     <div className="cl-tl-content">
                       <div className="cl-tl-header">
                         <div className="cl-tl-title">
                           <span className="cl-tl-subject">{log.subject}</span>
-                          <span className="cl-tl-dir">{dirInfo?.icon} {dirInfo?.label}</span>
+                          <span className="cl-tl-dir">{dirInfo?.label}</span>
                         </div>
                         <div className="cl-tl-actions">
                           <button className="btn-icon" title="Düzenle" onClick={() => handleEdit(log)}>
@@ -277,26 +259,26 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
                         </div>
                       </div>
                       <div className="cl-tl-meta">
-                        <span className="cl-tl-client">🏢 {getClientName(log.clientId)}</span>
-                        {log.contactPerson && <span>👤 {log.contactPerson}</span>}
-                        <span>📅 {formatDateTime(log.date)}</span>
-                        {log.duration && <span>⏱️ {log.duration} dk</span>}
+                        <span className="cl-tl-client"><Icon name="building" size={12} /> {getClientName(log.clientId)}</span>
+                        {log.contactPerson && <span><Icon name="user" size={12} /> {log.contactPerson}</span>}
+                        <span><Icon name="calendar" size={12} /> {formatDateTime(log.date)}</span>
+                        {log.duration && <span><Icon name="clock" size={12} /> {log.duration} dk</span>}
                       </div>
                       {log.notes && <p className="cl-tl-notes">{log.notes}</p>}
                       <div className="cl-tl-tags">
                         <span className="cl-type-badge" style={{ background: typeInfo?.color + '18', color: typeInfo?.color }}>
-                          {typeInfo?.icon} {typeInfo?.label}
+                          <Icon name={typeInfo?.icon} size={11} /> {typeInfo?.label}
                         </span>
                         {log.incidentId && (
-                          <span className="cl-incident-tag">🔧 {getIncidentLabel(log.incidentId)}</span>
+                          <span className="cl-incident-tag"><Icon name="tool" size={12} /> {getIncidentLabel(log.incidentId)}</span>
                         )}
                         {log.followUpDate && !log.followUpCompleted && (
                           <span className={`cl-followup-tag ${new Date(log.followUpDate) < new Date() ? 'overdue' : ''}`}>
-                            ⏰ Hatırlatma: {formatDate(log.followUpDate)}
+                            <Icon name="bell" size={12} /> Hatırlatma: {formatDate(log.followUpDate)}
                           </span>
                         )}
                         {log.followUpCompleted && (
-                          <span className="cl-followup-tag done">✅ Tamamlandı</span>
+                          <span className="cl-followup-tag done"><Icon name="check" size={12} /> Tamamlandı</span>
                         )}
                       </div>
                     </div>
@@ -313,7 +295,7 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
         <div className="cl-client-summary">
           {clientSummary.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">👥</div>
+              <div className="empty-icon"><Icon name="user" size={24} /></div>
               <p>Henüz iletişim kaydı yok.</p>
             </div>
           ) : (
@@ -333,7 +315,7 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
                       const ti = CONTACT_TYPES.find(ct => ct.id === type);
                       return (
                         <span key={type} className="cl-cc-type-tag" style={{ background: ti?.color + '14', color: ti?.color }}>
-                          {ti?.icon} {count}
+                          <Icon name={ti?.icon} size={11} /> {count}
                         </span>
                       );
                     })}
@@ -349,7 +331,7 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
                           const ti = CONTACT_TYPES.find(ct => ct.id === l.contactType);
                           return (
                             <div key={l.id} className="cl-cc-recent-item">
-                              <span style={{ color: ti?.color }}>{ti?.icon}</span>
+                              <span style={{ color: ti?.color }}><Icon name={ti?.icon} size={11} /></span>
                               <span className="cl-cc-recent-subject">{l.subject}</span>
                               <span className="cl-cc-recent-date">{formatDate(l.date)}</span>
                             </div>
@@ -369,7 +351,7 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
         <div className="cl-followups">
           {pendingFollowUps.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">✅</div>
+              <div className="empty-icon"><Icon name="save" size={24} /></div>
               <p>Bekleyen hatırlatma yok.</p>
             </div>
           ) : (
@@ -388,9 +370,9 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
                     <div className="cl-fu-content">
                       <div className="cl-fu-subject">{log.subject}</div>
                       <div className="cl-fu-meta">
-                        <span>🏢 {getClientName(log.clientId)}</span>
-                        <span style={{ color: typeInfo?.color }}>{typeInfo?.icon} {typeInfo?.label}</span>
-                        {log.contactPerson && <span>👤 {log.contactPerson}</span>}
+                        <span>{getClientName(log.clientId)}</span>
+                        <span style={{ color: typeInfo?.color }}><Icon name={typeInfo?.icon} size={11} /> {typeInfo?.label}</span>
+                        {log.contactPerson && <span>{log.contactPerson}</span>}
                       </div>
                       {log.followUpNote && <p className="cl-fu-note">{log.followUpNote}</p>}
                     </div>
@@ -410,7 +392,7 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
         <div className="modal-overlay" onClick={() => setShowForm(false)}>
           <div className="modal-content cl-form-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>{editingLog ? 'İletişim Düzenle' : '📋 Yeni İletişim Kaydı'}</h2>
+              <h2>{editingLog ? 'İletişim Düzenle' : 'Yeni İletişim Kaydı'}</h2>
               <button className="modal-close" onClick={() => setShowForm(false)}>✕</button>
             </div>
             <form onSubmit={handleSubmit} className="cl-form">
@@ -433,13 +415,13 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
                 <div className="form-group">
                   <label>İletişim Türü</label>
                   <select value={form.contactType} onChange={e => setForm({ ...form, contactType: e.target.value })}>
-                    {CONTACT_TYPES.map(ct => <option key={ct.id} value={ct.id}>{ct.icon} {ct.label}</option>)}
+                    {CONTACT_TYPES.map(ct => <option key={ct.id} value={ct.id}>{ct.label}</option>)}
                   </select>
                 </div>
                 <div className="form-group">
                   <label>Yön</label>
                   <select value={form.direction} onChange={e => setForm({ ...form, direction: e.target.value })}>
-                    {DIRECTIONS.map(d => <option key={d.id} value={d.id}>{d.icon} {d.label}</option>)}
+                    {DIRECTIONS.map(d => <option key={d.id} value={d.id}>{d.label}</option>)}
                   </select>
                 </div>
               </div>
@@ -472,7 +454,7 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
                   rows={3} placeholder="Görüşme notları..." />
               </div>
               <div className="cl-followup-section">
-                <h4>⏰ Hatırlatma (opsiyonel)</h4>
+                <h4>Hatırlatma (opsiyonel)</h4>
                 <div className="form-row">
                   <div className="form-group">
                     <label>Hatırlatma Tarihi</label>
@@ -495,6 +477,7 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
           </div>
         </div>
       )}
+      </PageShell>
     </div>
   );
 }

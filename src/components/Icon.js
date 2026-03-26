@@ -213,6 +213,55 @@ export default function Icon({ name, size = 18, className = '', title }) {
           <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
       );
+    case 'check':
+      return (
+        <svg {...common} aria-hidden={!title} role={title ? 'img' : 'presentation'}>
+          {title ? <title>{title}</title> : null}
+          <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        </svg>
+      );
+    case 'users':
+      return (
+        <svg {...common} aria-hidden={!title} role={title ? 'img' : 'presentation'}>
+          {title ? <title>{title}</title> : null}
+          <circle cx="9" cy="7" r="3" fill="currentColor" />
+          <path d="M3 19c1-3.5 3.5-5 6-5s5 1.5 6 5" stroke="currentColor" strokeWidth="1.2" fill="none" />
+          <circle cx="17" cy="7" r="2" stroke="currentColor" strokeWidth="1" fill="none" />
+          <path d="M17 12c2 0 3.5 1 4.5 4" stroke="currentColor" strokeWidth="1" fill="none" />
+        </svg>
+      );
+    case 'message':
+      return (
+        <svg {...common} aria-hidden={!title} role={title ? 'img' : 'presentation'}>
+          {title ? <title>{title}</title> : null}
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" stroke="currentColor" strokeWidth="1.4" fill="none" />
+        </svg>
+      );
+    case 'building':
+      return (
+        <svg {...common} aria-hidden={!title} role={title ? 'img' : 'presentation'}>
+          {title ? <title>{title}</title> : null}
+          <rect x="4" y="3" width="16" height="18" rx="1" stroke="currentColor" strokeWidth="1.2" fill="none" />
+          <rect x="8" y="7" width="3" height="3" fill="currentColor" />
+          <rect x="13" y="7" width="3" height="3" fill="currentColor" />
+          <rect x="8" y="13" width="3" height="3" fill="currentColor" />
+          <rect x="13" y="13" width="3" height="3" fill="currentColor" />
+        </svg>
+      );
+    case 'arrow-down':
+      return (
+        <svg {...common} aria-hidden={!title} role={title ? 'img' : 'presentation'}>
+          {title ? <title>{title}</title> : null}
+          <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        </svg>
+      );
+    case 'arrow-up':
+      return (
+        <svg {...common} aria-hidden={!title} role={title ? 'img' : 'presentation'}>
+          {title ? <title>{title}</title> : null}
+          <path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        </svg>
+      );
     default:
       return null;
   }

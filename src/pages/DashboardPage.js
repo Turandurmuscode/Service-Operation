@@ -4,6 +4,7 @@ import SLAMonitor from '../components/SLAMonitor';
 import StatCards from '../components/StatCards';
 import HeroCard from '../components/HeroCard';
 import Icon from '../components/Icon';
+import PageShell from '../components/PageShell';
 
 function ActivityFeed({ activities, incidents, clients }) {
   const formatTime = (iso) => {
@@ -67,8 +68,16 @@ function ActivityFeed({ activities, incidents, clients }) {
 }
 
 function DashboardPage({ incidents, clients, activities, onNavigate }) {
+  const todayLabel = new Date().toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
+
   return (
-    <div className="page-content" style={{ padding: 0 }}>
+    <div className="page-content">
+      <PageShell
+        title="Operasyon Kontrol Merkezi"
+        subtitle="Canlı operasyon görünümü, SLA takibi ve ekip performans özeti"
+        icon="chart"
+        actions={<span style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 600 }}>{todayLabel}</span>}
+      >
       <HeroCard incidents={incidents} clients={clients} onNavigate={onNavigate} />
       <DashboardWidgets incidents={incidents} clients={clients} onNavigate={onNavigate} />
       <SLAMonitor incidents={incidents} />
@@ -79,6 +88,7 @@ function DashboardPage({ incidents, clients, activities, onNavigate }) {
         </div>
         <ActivityFeed activities={activities} incidents={incidents} clients={clients} />
       </div>
+      </PageShell>
     </div>
   );
 }

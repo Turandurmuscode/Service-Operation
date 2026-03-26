@@ -66,7 +66,7 @@ function DashboardWidgets({ incidents, clients, onNavigate }) {
   const categories = { software: 0, hardware: 0, network: 0, other: 0 };
   active.forEach(i => { if (categories[i.category] !== undefined) categories[i.category]++; });
   const catMax = Math.max(...Object.values(categories), 1);
-  const catLabels = { software: '💻 Yazılım', hardware: '🖥️ Donanım', network: '🌐 Network', other: '📦 Diğer' };
+  const catLabels = { software: 'Yazılım', hardware: 'Donanım', network: 'Network', other: 'Diğer' };
   const catColors = { software: '#3b82f6', hardware: '#f59e0b', network: '#10b981', other: '#a855f7' };
 
   return (
@@ -83,7 +83,7 @@ function DashboardWidgets({ incidents, clients, onNavigate }) {
               background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)',
               display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer',
             }} onClick={() => onNavigate && onNavigate('incidents')}>
-              <span style={{ fontSize: '20px' }}>⚠️</span>
+              <span style={{ color: '#ef4444' }}><Icon d="M8 2L14 14H2L8 2ZM8 6v4M8 12h.01" /></span>
               <div>
                 <div style={{ fontWeight: '700', fontSize: '13px', color: '#ef4444' }}>
                   {overdue.length} arıza deadline'ı geçti
@@ -100,7 +100,7 @@ function DashboardWidgets({ incidents, clients, onNavigate }) {
               background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)',
               display: 'flex', alignItems: 'center', gap: '12px',
             }}>
-              <span style={{ fontSize: '20px' }}>⏰</span>
+              <span style={{ color: '#f59e0b' }}><Icon d="M8 2a6 6 0 1 1 0 12A6 6 0 0 1 8 2Zm0 2v4l2 1" /></span>
               <div>
                 <div style={{ fontWeight: '700', fontSize: '13px', color: '#f59e0b' }}>
                   {dueSoon.length} arıza 3 saat içinde bitiyor
@@ -176,7 +176,7 @@ function DashboardWidgets({ incidents, clients, onNavigate }) {
 
         {/* Teknisyen İş Yükü */}
         <div className="card" style={{ margin: 0 }}>
-          <h2 style={{ marginBottom: '16px' }}>👷 Teknisyen İş Yükü</h2>
+          <h2 style={{ marginBottom: '16px' }}>Teknisyen İş Yükü</h2>
           {techWorkload.length === 0 ? (
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
               Henüz teknisyen eklenmedi.<br />
@@ -231,7 +231,7 @@ function DashboardWidgets({ incidents, clients, onNavigate }) {
                     background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)',
                     fontSize: '12px', color: '#f59e0b',
                   }}>
-                    ⚠️ {unassigned} arıza atanmamış
+                    {unassigned} arıza atanmamış
                   </div>
                 ) : null;
               })()}
@@ -241,7 +241,7 @@ function DashboardWidgets({ incidents, clients, onNavigate }) {
 
         {/* Aktif Arıza Kategori Dağılımı */}
         <div className="card" style={{ margin: 0 }}>
-          <h2 style={{ marginBottom: '16px' }}>📊 Kategori Dağılımı</h2>
+          <h2 style={{ marginBottom: '16px' }}>Kategori Dağılımı</h2>
           {active.length === 0 ? (
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
               Aktif arıza yok.

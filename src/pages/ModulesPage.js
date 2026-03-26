@@ -69,7 +69,19 @@ const DEFAULT_ENABLED = ALL_MODULES.filter(m => m.id !== 'kumescalculator').map(
 export function getEnabledModules() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const savedList = JSON.parse(saved);
+      // Auto-enable any new modules not yet in the saved list (non-core defaults ON)
+      const newModules = ALL_MODULES
+        .filter(m => m.id !== 'kumescalculator' && !savedList.includes(m.id))
+        .map(m => m.id);
+      if (newModules.length > 0) {
+        const merged = [...savedList, ...newModules];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        return merged;
+      }
+      return savedList;
+    }
   } catch {}
   return DEFAULT_ENABLED;
 }

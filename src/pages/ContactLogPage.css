@@ -221,6 +221,13 @@
   border-radius: 8px;
 }
 
+.empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, #94a3b8);
+}
+
 .cl-incident-tag {
   font-size: 0.73rem;
   padding: 3px 10px;

@@ -13,6 +13,7 @@ import {
   Filler
 } from 'chart.js';
 import { Bar, Line, Doughnut } from 'react-chartjs-2';
+import Icon from './Icon';
 
 ChartJS.register(
   CategoryScale,
@@ -101,11 +102,11 @@ function ImprovedCharts({ clients, incidents }) {
     datasets: [{
       label: 'Arıza Sayısı',
       data: Object.values(clientData),
-      backgroundColor: 'rgba(102, 126, 234, 0.8)',
-      borderColor: 'rgba(102, 126, 234, 1)',
+      backgroundColor: 'rgba(34, 94, 168, 0.72)',
+      borderColor: 'rgba(34, 94, 168, 1)',
       borderWidth: 2,
       borderRadius: 8,
-      hoverBackgroundColor: 'rgba(118, 75, 162, 0.9)',
+      hoverBackgroundColor: 'rgba(26, 78, 149, 0.92)',
     }]
   };
 
@@ -116,11 +117,11 @@ function ImprovedCharts({ clients, incidents }) {
       label: 'Günlük Arızalar',
       data: Object.values(dailyData),
       fill: true,
-      backgroundColor: 'rgba(102, 126, 234, 0.2)',
-      borderColor: 'rgba(102, 126, 234, 1)',
+      backgroundColor: 'rgba(34, 94, 168, 0.16)',
+      borderColor: 'rgba(34, 94, 168, 1)',
       borderWidth: 3,
       tension: 0.4,
-      pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+      pointBackgroundColor: 'rgba(34, 94, 168, 1)',
       pointBorderColor: '#fff',
       pointBorderWidth: 2,
       pointRadius: 5,
@@ -134,14 +135,14 @@ function ImprovedCharts({ clients, incidents }) {
     datasets: [{
       data: Object.values(priorityData),
       backgroundColor: [
-        'rgba(16, 185, 129, 0.8)',
-        'rgba(245, 158, 11, 0.8)',
-        'rgba(239, 68, 68, 0.8)',
+        'rgba(21, 128, 61, 0.78)',
+        'rgba(180, 83, 9, 0.75)',
+        'rgba(185, 28, 28, 0.76)',
       ],
       borderColor: [
-        'rgba(16, 185, 129, 1)',
-        'rgba(245, 158, 11, 1)',
-        'rgba(239, 68, 68, 1)',
+        'rgba(21, 128, 61, 1)',
+        'rgba(180, 83, 9, 1)',
+        'rgba(185, 28, 28, 1)',
       ],
       borderWidth: 2,
       hoverOffset: 10
@@ -154,16 +155,16 @@ function ImprovedCharts({ clients, incidents }) {
     datasets: [{
       data: Object.values(categoryData),
       backgroundColor: [
-        'rgba(59, 130, 246, 0.8)',
-        'rgba(168, 85, 247, 0.8)',
-        'rgba(236, 72, 153, 0.8)',
-        'rgba(251, 146, 60, 0.8)',
+        'rgba(30, 64, 175, 0.78)',
+        'rgba(22, 78, 99, 0.74)',
+        'rgba(55, 65, 81, 0.74)',
+        'rgba(107, 114, 128, 0.74)',
       ],
       borderColor: [
-        'rgba(59, 130, 246, 1)',
-        'rgba(168, 85, 247, 1)',
-        'rgba(236, 72, 153, 1)',
-        'rgba(251, 146, 60, 1)',
+        'rgba(30, 64, 175, 1)',
+        'rgba(22, 78, 99, 1)',
+        'rgba(55, 65, 81, 1)',
+        'rgba(107, 114, 128, 1)',
       ],
       borderWidth: 2,
       hoverOffset: 10
@@ -265,7 +266,7 @@ function ImprovedCharts({ clients, incidents }) {
   if (incidents.length === 0) {
     return (
       <div className="card">
-        <h2>📊 Analiz Grafikleri</h2>
+        <h2><Icon name="chart" size={16} /> Analiz Grafikleri</h2>
         <p style={{ textAlign: 'center', color: '#94a3b8', padding: '40px', fontSize: '14px' }}>
           Grafik göstermek için önce arıza kaydı oluşturun.
         </p>
@@ -276,29 +277,29 @@ function ImprovedCharts({ clients, incidents }) {
   return (
     <>
       <div className="card">
-        <h2>📊 Müşteri Bazlı Dağılım</h2>
+        <h2><Icon name="user" size={16} /> Müşteri Bazlı Dağılım</h2>
         <div style={{ height: '280px', marginTop: '16px' }}>
           <Bar data={barChartData} options={chartOptions} />
         </div>
       </div>
 
       <div className="card">
-        <h2>📈 Günlük Trend</h2>
+        <h2><Icon name="chart" size={16} /> Günlük Trend</h2>
         <div style={{ height: '280px', marginTop: '16px' }}>
           <Line data={areaChartData} options={chartOptions} />
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
         <div className="card">
-          <h2>🎯 Öncelik Dağılımı</h2>
+          <h2><Icon name="alert" size={16} /> Öncelik Dağılımı</h2>
           <div style={{ height: '260px', marginTop: '16px' }}>
             <Doughnut data={doughnutChartData} options={doughnutOptions} />
           </div>
         </div>
 
         <div className="card">
-          <h2>📂 Kategori Dağılımı</h2>
+          <h2><Icon name="grid" size={16} /> Kategori Dağılımı</h2>
           <div style={{ height: '260px', marginTop: '16px' }}>
             <Doughnut data={categoryChartData} options={doughnutOptions} />
           </div>
