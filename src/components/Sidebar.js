@@ -192,6 +192,33 @@ const Icons = {
       <path d="M5.7 5.2L7.2 9.8M10.3 5.2L8.8 9.8" strokeLinecap="round"/>
     </svg>
   ),
+  followups: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M8 2a6 6 0 1 1-4.24 1.76" strokeLinecap="round"/>
+      <path d="M3 1.5v3h3" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M8 4.5v3.5l2.4 1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  techsummary: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="5" cy="4" r="2"/>
+      <path d="M1.5 10.5c0-2 1.6-3.5 3.5-3.5S8.5 8.5 8.5 10.5" strokeLinecap="round"/>
+      <path d="M9.5 4.5h5M9.5 7h5M9.5 9.5h5" strokeLinecap="round"/>
+    </svg>
+  ),
+  recurringissues: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M3 4h8a2 2 0 0 1 0 4H5" strokeLinecap="round"/>
+      <path d="M13 12H5a2 2 0 0 1 0-4h6" strokeLinecap="round"/>
+      <path d="M3 3.5L1.5 5 3 6.5M13 9.5L14.5 11 13 12.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  approvals: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="2" y="2" width="12" height="12" rx="2"/>
+      <path d="M5 8l2 2 4-4" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
   kumescalculator: (
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
       <path d="M2 4l6-2.5L14 4v5l-6 2.5L2 9V4Z" strokeLinejoin="round"/>
@@ -322,9 +349,9 @@ function Sidebar({
   }, []);
 
   const ROLE_PAGES = {
-    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','modules','kumescalculator','crmdeals','workorders','invoices','rbac','fieldteam','integrations'],
-    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','kumescalculator','crmdeals','workorders','invoices','fieldteam'],
-    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','knowledgebase','documents','projects','fieldteam'],
+    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','modules','kumescalculator','crmdeals','followups','techsummary','recurringissues','approvals','workorders','invoices','rbac','fieldteam','integrations'],
+    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','kumescalculator','crmdeals','followups','techsummary','recurringissues','approvals','workorders','invoices','fieldteam'],
+    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','knowledgebase','documents','projects','fieldteam','techsummary','followups'],
   };
   const allowedPages = currentUser ? (ROLE_PAGES[currentUser.role] || []) : Object.values(ROLE_PAGES).flat();
 
@@ -345,6 +372,9 @@ function Sidebar({
       items: [
         { id: 'kanban',   icon: Icons.kanban,   label: 'Kanban Board' },
         { id: 'crmdeals', icon: Icons.kanban, label: 'CRM Kanban' },
+        { id: 'followups', icon: Icons.followups, label: 'Geri Arama / Takip' },
+        { id: 'techsummary', icon: Icons.techsummary, label: 'Teknisyen Gun Sonu' },
+        { id: 'approvals', icon: Icons.approvals, label: 'Bekleyen Onaylar' },
         { id: 'workorders', icon: Icons.workorders, label: 'İş Emirleri' },
         { id: 'fieldteam', icon: Icons.fieldteam, label: 'Saha Ekip Yönetimi' },
         { id: 'calendar', icon: Icons.calendar, label: 'Takvim' },
@@ -369,6 +399,7 @@ function Sidebar({
       label: 'Raporlama',
       items: [
         { id: 'analytics',    icon: Icons.analytics,    label: 'Analiz' },
+        { id: 'recurringissues', icon: Icons.recurringissues, label: 'Tekrarlayan Ariza' },
         { id: 'reports',      icon: Icons.reports,      label: 'Raporlar' },
         { id: 'costtracking', icon: Icons.costtracking, label: 'Maliyet Takibi' },
         { id: 'contracts',    icon: Icons.contracts,    label: 'Sözleşmeler' },

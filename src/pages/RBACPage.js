@@ -28,6 +28,7 @@ const PAGE_MATRIX = [
     { id: 'contactlog',   label: 'İletişim Geçmişi' },
     { id: 'crmdeals',     label: 'CRM Kanban' },
     { id: 'announcements',label: 'Duyurular' },
+    { id: 'followups',    label: 'Geri Arama / Takip' },
   ]},
   { section: 'İş & Gelir', pages: [
     { id: 'quotations',   label: 'Teklifler' },
@@ -35,6 +36,7 @@ const PAGE_MATRIX = [
     { id: 'invoices',     label: 'Faturalar' },
     { id: 'contracts',    label: 'Sözleşmeler' },
     { id: 'costtracking', label: 'Maliyet Takibi' },
+    { id: 'approvals',    label: 'Bekleyen Onaylar' },
   ]},
   { section: 'Saha & Ekip', pages: [
     { id: 'fieldteam',    label: 'Saha Ekip Yönetimi' },
@@ -44,6 +46,7 @@ const PAGE_MATRIX = [
     { id: 'checklists',   label: 'Kontrol Listeleri' },
     { id: 'projects',     label: 'Proje Yönetimi' },
     { id: 'scheduledmaintenance', label: 'Periyodik Bakım' },
+    { id: 'techsummary',  label: 'Teknisyen Gün Sonu' },
   ]},
   { section: 'Kaynaklar', pages: [
     { id: 'assets',       label: 'Envanter' },
@@ -55,6 +58,7 @@ const PAGE_MATRIX = [
   ]},
   { section: 'Raporlama', pages: [
     { id: 'analytics',    label: 'Analiz' },
+    { id: 'recurringissues', label: 'Tekrarlayan Arıza' },
     { id: 'reports',      label: 'Raporlar' },
   ]},
   { section: 'Sistem', pages: [
@@ -94,7 +98,7 @@ const DEFAULT_ROLES = [
     description: 'Departman yöneticisi, raporlama ve onay yetkisi',
     color: '#f59e0b',
     isSystem: true,
-    pages: ['dashboard','incidents','clients','contactlog','crmdeals','announcements','quotations','workorders','invoices','contracts','costtracking','fieldteam','timesheet','kanban','calendar','checklists','projects','scheduledmaintenance','assets','spareparts','knowledgebase','documents','messaging','remoteaccess','analytics','reports','workflowrules'],
+    pages: ['dashboard','incidents','clients','contactlog','crmdeals','followups','announcements','quotations','workorders','invoices','contracts','costtracking','approvals','fieldteam','timesheet','kanban','calendar','checklists','projects','scheduledmaintenance','techsummary','assets','spareparts','knowledgebase','documents','messaging','remoteaccess','analytics','recurringissues','reports','workflowrules'],
     canCreate: true, canEdit: true, canDelete: false, canExport: true,
     canManageUsers: false, canApprove: true, canAssignTech: true, canViewCost: true,
   },
@@ -104,7 +108,7 @@ const DEFAULT_ROLES = [
     description: 'Saha teknisyeni — iş emirleri ve kontrol listeleri',
     color: '#10b981',
     isSystem: true,
-    pages: ['dashboard','incidents','calendar','timesheet','checklists','announcements','fieldteam','spareparts','knowledgebase','documents','projects'],
+    pages: ['dashboard','incidents','followups','calendar','timesheet','checklists','announcements','fieldteam','techsummary','spareparts','knowledgebase','documents','projects'],
     canCreate: false, canEdit: true, canDelete: false, canExport: false,
     canManageUsers: false, canApprove: false, canAssignTech: false, canViewCost: false,
   },
@@ -114,7 +118,7 @@ const DEFAULT_ROLES = [
     description: 'Fatura ve maliyet erişimi',
     color: '#6366f1',
     isSystem: false,
-    pages: ['dashboard','quotations','invoices','contracts','costtracking','reports','documents'],
+    pages: ['dashboard','quotations','invoices','contracts','costtracking','approvals','reports','documents'],
     canCreate: true, canEdit: true, canDelete: false, canExport: true,
     canManageUsers: false, canApprove: false, canAssignTech: false, canViewCost: true,
   },
@@ -124,7 +128,7 @@ const DEFAULT_ROLES = [
     description: 'Müşteri destek temsilcisi',
     color: '#06b6d4',
     isSystem: false,
-    pages: ['dashboard','incidents','clients','contactlog','messaging','announcements','checklists','knowledgebase'],
+    pages: ['dashboard','incidents','clients','contactlog','followups','messaging','announcements','checklists','knowledgebase'],
     canCreate: true, canEdit: true, canDelete: false, canExport: false,
     canManageUsers: false, canApprove: false, canAssignTech: false, canViewCost: false,
   },

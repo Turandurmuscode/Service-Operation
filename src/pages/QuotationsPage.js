@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './QuotationsPage.css';
 
 /* ════════════════════════════════════════════════════════════
@@ -41,6 +41,46 @@ const QUOTE_STATUSES = [
   { id: 'invoiced', label: 'Faturalandı',  color: '#06b6d4', icon: Icons.invoice },
 ];
 
+const TEMPLATE_STORAGE_KEY = 'sod_quote_templates';
+const COMPANY_STORAGE_KEY = 'sod_quote_company_profile';
+
+const DEFAULT_TEMPLATES = [
+  {
+    id: 'tpl-maintenance-basic',
+    name: 'Periyodik Bakım - Temel',
+    items: [
+      { name: 'Periyodik bakım hizmeti', qty: 1, unit: 'paket', unitPrice: 8500, category: 'hizmet' },
+      { name: 'Kontrol checklist ve raporlama', qty: 1, unit: 'adet', unitPrice: 1750, category: 'işçilik' },
+    ],
+  },
+  {
+    id: 'tpl-installation',
+    name: 'Kurulum Paketi',
+    items: [
+      { name: 'Saha kurulum ve devreye alma', qty: 1, unit: 'iş', unitPrice: 14500, category: 'hizmet' },
+      { name: 'Kablo ve bağlantı sarfı', qty: 1, unit: 'set', unitPrice: 3200, category: 'parça' },
+    ],
+  },
+  {
+    id: 'tpl-repair-fast',
+    name: 'Arıza Müdahale - Hızlı',
+    items: [
+      { name: 'Yerinde arıza tespiti', qty: 1, unit: 'adet', unitPrice: 2250, category: 'işçilik' },
+      { name: 'Müdahale ve onarım', qty: 2, unit: 'saat', unitPrice: 1200, category: 'hizmet' },
+    ],
+  },
+];
+
+const DEFAULT_COMPANY = {
+  name: 'Scor-Pi Servis Operasyonlari',
+  address: 'Istanbul / Turkiye',
+  phone: '+90 (212) 000 00 00',
+  email: 'teklif@scor-pi.com',
+  website: 'www.scor-pi.com',
+  iban: 'TR00 0000 0000 0000 0000 0000 00',
+  logoDataUrl: '',
+};
+
 /* ════════════════════════════════════════════════════════════
    HELPERS
    ════════════════════════════════════════════════════════════ */
@@ -56,12 +96,20 @@ const calcTotal = (items, taxRate, discount) => {
   return { subtotal: sub, discountAmount: disc, afterDiscount: afterDisc, taxAmount: tax, total: afterDisc + tax };
 };
 
+const escapeHtml = (value) => String(value || '')
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#39;');
+
 /* ════════════════════════════════════════════════════════════
    MAIN COMPONENT
    ════════════════════════════════════════════════════════════ */
 export default function QuotationsPage({ darkMode }) {
   const [quotations, setQuotations] = useState([]);
   const [templates, setTemplates] = useState([]);
+  const [companyProfile, setCompanyProfile] = useState(DEFAULT_COMPANY);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterSource, setFilterSource] = useState('all');
@@ -70,19 +118,42 @@ export default function QuotationsPage({ darkMode }) {
   const [modalMode, setModalMode] = useState('create');
   const [editingId, setEditingId] = useState(null);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [showCompanyModal, setShowCompanyModal] = useState(false);
+  const templateImportInputRef = useRef(null);
 
   useEffect(() => {
     const saved = localStorage.getItem('sod_quotations');
     if (saved) { try { setQuotations(JSON.parse(saved)); } catch { setQuotations([]); } }
     else { setQuotations([]); }
 
-    const savedTpl = localStorage.getItem('sod_quote_templates');
-    if (savedTpl) { try { setTemplates(JSON.parse(savedTpl)); } catch { setTemplates([]); } }
-    else { setTemplates([]); }
+    const savedTpl = localStorage.getItem(TEMPLATE_STORAGE_KEY);
+    if (savedTpl) {
+      try {
+        setTemplates(JSON.parse(savedTpl));
+      } catch {
+        setTemplates(DEFAULT_TEMPLATES);
+      }
+    } else {
+      setTemplates(DEFAULT_TEMPLATES);
+      localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(DEFAULT_TEMPLATES));
+    }
+
+    const savedCompany = localStorage.getItem(COMPANY_STORAGE_KEY);
+    if (savedCompany) {
+      try {
+        setCompanyProfile({ ...DEFAULT_COMPANY, ...JSON.parse(savedCompany) });
+      } catch {
+        setCompanyProfile(DEFAULT_COMPANY);
+      }
+    }
   }, []);
 
   const persist = useCallback((data) => { setQuotations(data); localStorage.setItem('sod_quotations', JSON.stringify(data)); }, []);
-  const persistTemplates = useCallback((data) => { setTemplates(data); localStorage.setItem('sod_quote_templates', JSON.stringify(data)); }, []);
+  const persistTemplates = useCallback((data) => { setTemplates(data); localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(data)); }, []);
+  const persistCompany = useCallback((data) => {
+    setCompanyProfile(data);
+    localStorage.setItem(COMPANY_STORAGE_KEY, JSON.stringify(data));
+  }, []);
 
   /* ── Form State ─────────────────────────────────────────── */
   const emptyForm = { client: '', clientContact: '', notes: '', taxRate: 20, discount: 0, validDays: 15, items: [{ name: '', qty: 1, unit: 'adet', unitPrice: 0, category: 'hizmet' }] };
@@ -217,6 +288,151 @@ export default function QuotationsPage({ darkMode }) {
     alert('Şablon kaydedildi!');
   };
 
+  const importTemplateFile = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result || ''));
+        const incoming = Array.isArray(parsed) ? parsed : [parsed];
+        const normalized = incoming
+          .map((tpl) => ({
+            id: `tpl-${uid()}`,
+            name: String(tpl.name || '').trim(),
+            items: Array.isArray(tpl.items) ? tpl.items : [],
+          }))
+          .filter((tpl) => tpl.name && tpl.items.length > 0)
+          .map((tpl) => ({
+            ...tpl,
+            items: tpl.items.map((item) => ({
+              name: String(item.name || 'Kalem').trim(),
+              qty: Number(item.qty) || 1,
+              unit: String(item.unit || 'adet').trim(),
+              unitPrice: Number(item.unitPrice) || 0,
+              category: ['hizmet', 'parça', 'işçilik'].includes(item.category) ? item.category : 'hizmet',
+            })),
+          }));
+
+        if (normalized.length === 0) {
+          alert('Gecerli bir sablon bulunamadi. JSON icinde name ve items alanlari olmali.');
+          return;
+        }
+
+        persistTemplates([...normalized, ...templates]);
+        alert(`${normalized.length} sablon ice aktarıldı.`);
+      } catch {
+        alert('Sablon dosyasi okunamadi. Lutfen gecerli bir JSON dosyasi secin.');
+      } finally {
+        event.target.value = '';
+      }
+    };
+    reader.readAsText(file, 'utf-8');
+  };
+
+  const onCompanyLogoChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      persistCompany({ ...companyProfile, logoDataUrl: String(reader.result || '') });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const downloadQuotePdf = (quote) => {
+    const calc = calcTotal(quote.items, quote.taxRate, quote.discount);
+    const popup = window.open('', '_blank', 'width=900,height=760');
+    if (!popup) {
+      alert('Pop-up engellendi. Lutfen pop-up izni verip tekrar deneyin.');
+      return;
+    }
+
+    const rows = quote.items.map((item, idx) => `
+      <tr>
+        <td>${idx + 1}</td>
+        <td>${escapeHtml(item.name)}</td>
+        <td>${escapeHtml(item.category || '-')}</td>
+        <td style="text-align:right;">${item.qty}</td>
+        <td>${escapeHtml(item.unit || '-')}</td>
+        <td style="text-align:right;">${fmtMoney(item.unitPrice)}</td>
+        <td style="text-align:right;font-weight:700;">${fmtMoney(item.qty * item.unitPrice)}</td>
+      </tr>
+    `).join('');
+
+    const logoHtml = companyProfile.logoDataUrl
+      ? `<img src="${companyProfile.logoDataUrl}" alt="Logo" style="width:130px;max-height:70px;object-fit:contain;" />`
+      : `<div style="font-size:18px;font-weight:700;color:#0f172a;">${escapeHtml(companyProfile.name)}</div>`;
+
+    popup.document.write(`
+      <!doctype html>
+      <html lang="tr">
+        <head>
+          <meta charset="utf-8" />
+          <title>${quote.id}</title>
+          <style>
+            body { font-family: Arial, sans-serif; color:#0f172a; margin: 22px; }
+            .head { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; border-bottom:2px solid #e2e8f0; padding-bottom:12px; }
+            .company { font-size:12px; line-height:1.5; color:#334155; }
+            .meta { text-align:right; font-size:12px; color:#334155; }
+            .meta strong { color:#0f172a; }
+            table { width:100%; border-collapse:collapse; margin-top:16px; }
+            th { background:#f1f5f9; font-size:11px; text-transform:uppercase; color:#475569; }
+            td, th { border:1px solid #e2e8f0; padding:8px; }
+            .totals { margin-left:auto; width:300px; margin-top:16px; }
+            .totals div { display:flex; justify-content:space-between; border-bottom:1px dashed #cbd5e1; padding:4px 0; font-size:13px; }
+            .totals .grand { font-size:16px; font-weight:700; border-bottom:none; margin-top:6px; }
+            .notes { margin-top:18px; font-size:12px; color:#334155; }
+            .foot { margin-top:24px; font-size:11px; color:#64748b; border-top:1px solid #e2e8f0; padding-top:8px; }
+          </style>
+        </head>
+        <body>
+          <div class="head">
+            <div>
+              ${logoHtml}
+              <div class="company">
+                <div>${escapeHtml(companyProfile.address)}</div>
+                <div>Tel: ${escapeHtml(companyProfile.phone)} · E-posta: ${escapeHtml(companyProfile.email)}</div>
+                <div>Web: ${escapeHtml(companyProfile.website)}</div>
+                <div>IBAN: ${escapeHtml(companyProfile.iban)}</div>
+              </div>
+            </div>
+            <div class="meta">
+              <div><strong>${escapeHtml(quote.id)}</strong></div>
+              <div>Musteri: ${escapeHtml(quote.client)}</div>
+              <div>Ilgili: ${escapeHtml(quote.clientContact || '-')}</div>
+              <div>Tarih: ${fmtDate(quote.createdAt)}</div>
+              <div>Gecerlilik: ${fmtDate(quote.validUntil)}</div>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Kalem</th><th>Kategori</th><th>Miktar</th><th>Birim</th><th>Birim Fiyat</th><th>Toplam</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          <div class="totals">
+            <div><span>Ara Toplam</span><span>${fmtMoney(calc.subtotal)}</span></div>
+            <div><span>Iskonto (%${quote.discount || 0})</span><span>-${fmtMoney(calc.discountAmount)}</span></div>
+            <div><span>KDV (%${quote.taxRate || 0})</span><span>${fmtMoney(calc.taxAmount)}</span></div>
+            <div class="grand"><span>Genel Toplam</span><span>${fmtMoney(calc.total)}</span></div>
+          </div>
+          <div class="notes">${escapeHtml(quote.notes || '')}</div>
+          <div class="foot">Bu dokuman sistem tarafindan olusturulmustur.</div>
+          <script>
+            window.onload = () => {
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    popup.document.close();
+  };
+
   /* ── Filtered ───────────────────────────────────────────── */
   const filtered = quotations.filter(q => {
     const matchSearch = q.client.toLowerCase().includes(searchTerm.toLowerCase()) || q.id.toLowerCase().includes(searchTerm.toLowerCase());
@@ -257,6 +473,7 @@ export default function QuotationsPage({ darkMode }) {
               </>
             )}
             {q.status === 'approved' && <button className="qt-btn qt-btn-primary qt-btn-sm" onClick={() => convertToInvoice(q)}>{Icons.invoice(14)} Faturaya Dönüştür</button>}
+            <button className="qt-btn qt-btn-secondary qt-btn-sm" onClick={() => downloadQuotePdf(q)}>{Icons.download(14)} PDF İndir</button>
             <button className="qt-btn qt-btn-secondary qt-btn-sm" onClick={() => duplicateQuotation(q)}>{Icons.copy(14)} Kopyala</button>
             <button className="qt-btn qt-btn-secondary qt-btn-sm" onClick={() => openEdit(q)}>{Icons.edit(14)} Düzenle</button>
           </div>
@@ -353,6 +570,39 @@ export default function QuotationsPage({ darkMode }) {
 
         {/* Editing modal from preview */}
         {showModal && renderModal()}
+        {showCompanyModal && renderCompanyModal()}
+      </div>
+    );
+  }
+
+  function renderCompanyModal() {
+    const profile = companyProfile;
+    const setProfileField = (key, value) => persistCompany({ ...profile, [key]: value });
+
+    return (
+      <div className="qt-modal-overlay" onClick={() => setShowCompanyModal(false)}>
+        <div className="qt-modal qt-modal-sm" onClick={(event) => event.stopPropagation()}>
+          <div className="qt-modal-header">
+            <h2>{Icons.template(16)} Firma Bilgisi</h2>
+            <button className="qt-modal-close" onClick={() => setShowCompanyModal(false)}>×</button>
+          </div>
+          <div className="qt-form">
+            <div className="qt-form-group"><label>Firma Adı</label><input value={profile.name} onChange={(event) => setProfileField('name', event.target.value)} /></div>
+            <div className="qt-form-group"><label>Adres</label><input value={profile.address} onChange={(event) => setProfileField('address', event.target.value)} /></div>
+            <div className="qt-form-group"><label>Telefon</label><input value={profile.phone} onChange={(event) => setProfileField('phone', event.target.value)} /></div>
+            <div className="qt-form-group"><label>E-posta</label><input value={profile.email} onChange={(event) => setProfileField('email', event.target.value)} /></div>
+            <div className="qt-form-group"><label>Web Sitesi</label><input value={profile.website} onChange={(event) => setProfileField('website', event.target.value)} /></div>
+            <div className="qt-form-group"><label>IBAN</label><input value={profile.iban} onChange={(event) => setProfileField('iban', event.target.value)} /></div>
+            <div className="qt-form-group">
+              <label>Logo</label>
+              <input type="file" accept="image/*" onChange={onCompanyLogoChange} />
+              {profile.logoDataUrl && <img src={profile.logoDataUrl} alt="Firma logosu" className="qt-company-logo-preview" />}
+            </div>
+            <div className="qt-form-actions">
+              <button className="qt-btn qt-btn-primary" onClick={() => setShowCompanyModal(false)}>Kapat</button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -465,7 +715,10 @@ export default function QuotationsPage({ darkMode }) {
           <h1>{Icons.fileText(20)} Teklif Yönetimi</h1>
           <p>Müşterilere teklif hazırlayın, takip edin ve faturaya dönüştürün</p>
         </div>
-        <button className="qt-btn qt-btn-primary" onClick={openCreate}>{Icons.plus(15)} Yeni Teklif</button>
+        <div className="qt-header-actions">
+          <button className="qt-btn qt-btn-secondary" onClick={() => setShowCompanyModal(true)}>{Icons.template(14)} Firma Bilgisi</button>
+          <button className="qt-btn qt-btn-primary" onClick={openCreate}>{Icons.plus(15)} Yeni Teklif</button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -564,6 +817,7 @@ export default function QuotationsPage({ darkMode }) {
 
       {/* Form Modal */}
       {showModal && renderModal()}
+      {showCompanyModal && renderCompanyModal()}
 
       {/* Template Picker Modal */}
       {showTemplateModal && (
@@ -572,6 +826,18 @@ export default function QuotationsPage({ darkMode }) {
             <div className="qt-modal-header">
               <h2>{Icons.template(16)} Şablon Seç</h2>
               <button className="qt-modal-close" onClick={() => setShowTemplateModal(false)}>×</button>
+            </div>
+            <div className="qt-template-import">
+              <input
+                ref={templateImportInputRef}
+                type="file"
+                accept="application/json,.json"
+                style={{ display: 'none' }}
+                onChange={importTemplateFile}
+              />
+              <button className="qt-btn qt-btn-secondary qt-btn-sm" onClick={() => templateImportInputRef.current?.click()}>
+                {Icons.download(14)} JSON Şablon İçe Aktar
+              </button>
             </div>
             <div className="qt-template-list">
               {templates.map(tpl => (

@@ -22,6 +22,9 @@ const ALL_MODULES = [
   { id: 'announcements', label: 'Duyurular',          category: 'Genel',        description: 'Şirket içi duyuru paneli' },
   { id: 'activityfeed',  label: 'Canlı Akış',         category: 'Genel',        description: 'Gerçek zamanlı aktivite takibi' },
   { id: 'crmdeals',      label: 'CRM Kanban',         category: 'İş Yönetimi',  description: 'Lead, teklif ve kazanım fırsatlarını Kanban akışında yönetim' },
+  { id: 'followups',     label: 'Geri Arama / Takip', category: 'İş Yönetimi',  description: 'Müşteri geri arama ve takip görev listesi' },
+  { id: 'techsummary',   label: 'Teknisyen Gün Sonu', category: 'İş Yönetimi',  description: 'Teknisyen günlük özet ve yarına kalan işler' },
+  { id: 'approvals',     label: 'Bekleyen Onaylar',   category: 'İş Yönetimi',  description: 'Fiyat, indirim ve iade taleplerini tek kutuda yönetim' },
   // İş Yönetimi
   { id: 'kanban',        label: 'Kanban Board',       category: 'İş Yönetimi',  description: 'Sürükle-bırak görev yönetimi' },
   { id: 'calendar',      label: 'Takvim',             category: 'İş Yönetimi',  description: 'Tarih bazlı planlama' },
@@ -39,6 +42,7 @@ const ALL_MODULES = [
   // Raporlama
   { id: 'analytics',     label: 'Analiz',             category: 'Raporlama',    description: 'Grafiksel analiz ve istatistik' },
   { id: 'reports',       label: 'Raporlar',           category: 'Raporlama',    description: 'Detaylı rapor oluşturma' },
+  { id: 'recurringissues', label: 'Tekrarlayan Arıza', category: 'Raporlama',   description: 'Aynı müşteri ve sorunda tekrar eden arıza analizi' },
   { id: 'costtracking',  label: 'Maliyet Takibi',     category: 'Raporlama',    description: 'Maliyet ve fatura takibi' },
   { id: 'contracts',     label: 'Sözleşmeler',        category: 'Raporlama',    description: 'Müşteri sözleşme yönetimi' },
   { id: 'quotations',    label: 'Teklifler',          category: 'Raporlama',    description: 'Teklif oluşturma ve takip' },

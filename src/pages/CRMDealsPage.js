@@ -41,6 +41,8 @@ function readDeals() {
 
 export default function CRMDealsPage({ clients = [], currentUser, showToast, onNavigate }) {
   const [deals, setDeals] = useState(readDeals);
+  const [draggedDealId, setDraggedDealId] = useState(null);
+  const [dragOverStage, setDragOverStage] = useState('');
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoHtml, setInfoHtml] = useState('');
   const [infoLoading, setInfoLoading] = useState(false);
@@ -105,6 +107,44 @@ export default function CRMDealsPage({ clients = [], currentUser, showToast, onN
   const removeDeal = (id) => {
     persist(deals.filter((d) => d.id !== id));
     showToast?.('Firsat kaydi silindi', 'warning');
+  };
+
+  const onDealDragStart = (event, dealId) => {
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', dealId);
+    setDraggedDealId(dealId);
+  };
+
+  const onDealDragEnd = () => {
+    setDraggedDealId(null);
+    setDragOverStage('');
+  };
+
+  const onColumnDragOver = (event, stageId) => {
+    if (!draggedDealId) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    if (dragOverStage !== stageId) {
+      setDragOverStage(stageId);
+    }
+  };
+
+  const onColumnDrop = (event, stageId) => {
+    event.preventDefault();
+    const dealId = event.dataTransfer.getData('text/plain') || draggedDealId;
+    if (!dealId) {
+      setDragOverStage('');
+      return;
+    }
+
+    const deal = deals.find((d) => d.id === dealId);
+    if (deal && deal.stage !== stageId) {
+      updateStage(dealId, stageId);
+      showToast?.(`Fırsat '${STAGES.find((s) => s.id === stageId)?.label || stageId}' aşamasına taşındı`, 'info');
+    }
+
+    setDraggedDealId(null);
+    setDragOverStage('');
   };
 
   const convertToQuotation = (deal) => {
@@ -341,7 +381,13 @@ export default function CRMDealsPage({ clients = [], currentUser, showToast, onN
         {STAGES.map((stage) => {
           const stageDeals = deals.filter((d) => d.stage === stage.id);
           return (
-            <div key={stage.id} className="crm-column card">
+            <div
+              key={stage.id}
+              className={`crm-column card ${dragOverStage === stage.id ? 'is-drag-over' : ''}`}
+              onDragOver={(event) => onColumnDragOver(event, stage.id)}
+              onDragLeave={() => dragOverStage === stage.id && setDragOverStage('')}
+              onDrop={(event) => onColumnDrop(event, stage.id)}
+            >
               <div className="crm-column-header">
                 <strong>{stage.label}</strong>
                 <span>{stageTotals[stage.id]?.count || 0} kayit</span>
@@ -352,7 +398,13 @@ export default function CRMDealsPage({ clients = [], currentUser, showToast, onN
 
               <div className="crm-deals">
                 {stageDeals.map((deal) => (
-                  <div key={deal.id} className="crm-deal">
+                  <div
+                    key={deal.id}
+                    className={`crm-deal ${draggedDealId === deal.id ? 'is-dragging' : ''}`}
+                    draggable
+                    onDragStart={(event) => onDealDragStart(event, deal.id)}
+                    onDragEnd={onDealDragEnd}
+                  >
                     <div className="crm-deal-title">{deal.title}</div>
                     <div className="crm-deal-meta">
                       <span>{clientMap.get(Number(deal.clientId))?.name || 'Musteri yok'}</span>

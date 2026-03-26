@@ -12,6 +12,12 @@ function Breadcrumb({ activeTab, setActiveTab }) {
     'calendar': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Takvim', icon: 'calendar' }],
     'reports': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Raporlar', icon: 'clipboard' }],
     'settings': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Ayarlar', icon: 'tool' }],
+    'crmdeals': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'CRM Kanban', icon: 'clipboard' }],
+    'followups': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Geri Arama / Takip', icon: 'calendar' }],
+    'techsummary': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Teknisyen Gun Sonu', icon: 'user' }],
+    'recurringissues': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Tekrarlayan Ariza', icon: 'tool' }],
+    'approvals': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Bekleyen Onaylar', icon: 'clipboard' }],
+    'quotations': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Teklifler', icon: 'clipboard' }],
   };
 
   const currentPath = paths[activeTab] || paths['dashboard'];
