@@ -60,6 +60,9 @@
 .qt-col-client { flex: 1.5; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
 .qt-client-name { font-size: 0.85rem; font-weight: 600; color: var(--text-primary, #334155); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .qt-client-contact { font-size: 0.72rem; color: var(--text-secondary, #94a3b8); }
+.qt-source-badge { display: inline-flex; width: fit-content; margin-top: 3px; padding: 1px 6px; border-radius: 999px; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.02em; }
+.qt-source-badge.crm { background: #dcfce7; color: #166534; }
+.qt-source-badge.manual { background: #e2e8f0; color: #334155; }
 .qt-col-status { width: 110px; flex-shrink: 0; display: flex; align-items: center; gap: 3px; }
 .qt-col-total { width: 110px; flex-shrink: 0; font-size: 0.85rem; }
 .qt-money { font-weight: 700; color: var(--text-primary, #1e293b); }

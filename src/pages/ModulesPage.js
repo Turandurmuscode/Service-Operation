@@ -21,6 +21,7 @@ const ALL_MODULES = [
   { id: 'contactlog',    label: 'İletişim Geçmişi',   category: 'Genel',        description: 'Müşteri iletişim kayıtları' },
   { id: 'announcements', label: 'Duyurular',          category: 'Genel',        description: 'Şirket içi duyuru paneli' },
   { id: 'activityfeed',  label: 'Canlı Akış',         category: 'Genel',        description: 'Gerçek zamanlı aktivite takibi' },
+  { id: 'crmdeals',      label: 'CRM Fırsat Takibi',  category: 'Genel',        description: 'Lead, teklif ve kazanım pipeline yönetimi' },
   // İş Yönetimi
   { id: 'kanban',        label: 'Kanban Board',       category: 'İş Yönetimi',  description: 'Sürükle-bırak görev yönetimi' },
   { id: 'calendar',      label: 'Takvim',             category: 'İş Yönetimi',  description: 'Tarih bazlı planlama' },
@@ -46,10 +47,16 @@ const ALL_MODULES = [
   { id: 'sladashboard',  label: 'SLA Analizi',        category: 'Raporlama',    description: 'SLA uyum takibi' },
   // Sektörel
   { id: 'kumescalculator', label: 'Kümes Hesaplayıcı', category: 'Sektörel',   description: 'Kümes boyut → malzeme → fiyat hesabı' },
+  // Saha & Süreç Zinciri
+  { id: 'workorders',    label: 'İş Emirleri',          category: 'İş Yönetimi',  description: 'Teklif > İş Emri zinciri ve teknisyen atama' },
+  { id: 'invoices',      label: 'Fatura Yönetimi',      category: 'Raporlama',    description: 'Fatura oluşturma, takip ve yazdırma' },
+  { id: 'fieldteam',     label: 'Saha Ekip Yönetimi',  category: 'İş Yönetimi',  description: 'Teknisyen atama, check-in/out ve fotoğraf kanıt' },
   // Sistem (always enabled)
-  { id: 'workflowrules', label: 'Otomasyon',          category: 'Sistem',       description: 'İş akışı kuralları', core: true },
-  { id: 'settings',      label: 'Ayarlar',            category: 'Sistem',       description: 'Sistem ayarları', core: true },
-  { id: 'modules',       label: 'Modül Yönetimi',     category: 'Sistem',       description: 'Modülleri aç/kapat', core: true },
+  { id: 'workflowrules', label: 'Otomasyon',            category: 'Sistem',       description: 'İş akışı kuralları', core: true },
+  { id: 'rbac',          label: 'Yetki & Rol Matrisi', category: 'Sistem',       description: 'Departman bazlı ekran/aksiyon yetkileri', core: true },
+  { id: 'integrations',  label: 'Entegrasyonlar',       category: 'Sistem',       description: 'Logo, Netsis, SAP, e-Fatura, WhatsApp, SMTP' },
+  { id: 'settings',      label: 'Ayarlar',              category: 'Sistem',       description: 'Sistem ayarları', core: true },
+  { id: 'modules',       label: 'Modül Yönetimi',       category: 'Sistem',       description: 'Modülleri aç/kapat', core: true },
 ];
 
 const STORAGE_KEY = 'sod_enabled_modules';

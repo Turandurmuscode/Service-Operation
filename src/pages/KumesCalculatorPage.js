@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './KumesCalculatorPage.css';
+import { buildCalculationResult } from '../utils/kumesCalculator';
+import { validateCalculationInput } from '../utils/kumesValidation';
+import { downloadKumesCsv } from '../utils/kumesExport';
+import FeatureGate from '../components/FeatureGate';
 
 /* ════════════════════════════════════════════════════════════
    SVG ICONS
@@ -39,35 +43,17 @@ const STORAGE_KEY_CALC = 'sod_kumes_calculations';
 const fmtMoney = (n) => '₺' + (n || 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 });
 
 /* ════════════════════════════════════════════════════════════
-   FORMULA CALCULATOR
-   ════════════════════════════════════════════════════════════ */
-function calcQuantity(formula, interval, multiplier, dims) {
-  const { length, width, height } = dims;
-  const perimeter = 2 * (length + width);
-  const floorArea = length * width;
-  const wallArea = 2 * (length * height) + 2 * (width * height);
-  const roofArea = length * width;
-  const volume = length * width * height;
-  const k = multiplier || 1;
-  const inv = interval || 1;
-
-  switch (formula) {
-    case 'per_length':    return Math.ceil(length / inv) * k;
-    case 'per_width':     return Math.ceil(width / inv) * k;
-    case 'per_perimeter': return Math.ceil(perimeter / inv) * k;
-    case 'floor_area':    return Math.ceil(floorArea * k);
-    case 'wall_area':     return Math.ceil(wallArea * k);
-    case 'roof_area':     return Math.ceil(roofArea * k);
-    case 'volume':        return Math.ceil(volume * k);
-    case 'fixed':         return Math.ceil(k);
-    default: return 0;
-  }
-}
-
-/* ════════════════════════════════════════════════════════════
    MAIN COMPONENT
    ════════════════════════════════════════════════════════════ */
-export default function KumesCalculatorPage({ darkMode }) {
+export default function KumesCalculatorPage({ darkMode, canAccessFeature }) {
+  const canViewCosts =
+    typeof canAccessFeature === 'function'
+      ? canAccessFeature('finance.viewCosts')
+      : true;
+  const canEditPricing =
+    typeof canAccessFeature === 'function'
+      ? canAccessFeature('finance.editPricing')
+      : true;
   const [materials, setMaterials] = useState([]);
   const [calculations, setCalculations] = useState([]);
   const [activeTab, setActiveTab] = useState('calculate'); // calculate | materials | history
@@ -78,6 +64,7 @@ export default function KumesCalculatorPage({ darkMode }) {
   const [taxRate, setTaxRate] = useState(20);
   const [discount, setDiscount] = useState(0);
   const [customerName, setCustomerName] = useState('');
+  const [calcErrors, setCalcErrors] = useState([]);
 
   // Material modal
   const [showMatModal, setShowMatModal] = useState(false);
@@ -136,39 +123,26 @@ export default function KumesCalculatorPage({ darkMode }) {
 
   /* ── Calculation ────────────────────────────────────────── */
   const calculate = () => {
-    const d = { length: Number(dims.length), width: Number(dims.width), height: Number(dims.height) };
-    if (!d.length || !d.width || !d.height) return;
-    if (materials.length === 0) { alert('Önce malzeme tanımlayın!'); setActiveTab('materials'); return; }
-
-    const items = materials.map(mat => {
-      const qty = calcQuantity(mat.formula, mat.interval, mat.multiplier, d);
-      const total = qty * mat.unitPrice;
-      return { ...mat, quantity: qty, lineTotal: total };
+    const validation = validateCalculationInput({
+      dims,
+      taxRate,
+      discount,
+      materialsCount: materials.length,
     });
+    if (!validation.valid) {
+      setCalcErrors(validation.errors);
+      if (materials.length === 0) setActiveTab('materials');
+      return;
+    }
+    setCalcErrors([]);
 
-    const subtotal = items.reduce((s, i) => s + i.lineTotal, 0);
-    const discAmount = subtotal * (discount / 100);
-    const afterDisc = subtotal - discAmount;
-    const taxAmount = afterDisc * (taxRate / 100);
-    const grandTotal = afterDisc + taxAmount;
-
-    const result = {
-      dims: d,
-      floorArea: d.length * d.width,
-      wallArea: 2 * (d.length * d.height) + 2 * (d.width * d.height),
-      perimeter: 2 * (d.length + d.width),
-      volume: d.length * d.width * d.height,
-      items,
-      subtotal,
-      discAmount,
-      afterDisc,
-      taxAmount,
-      grandTotal,
+    const result = buildCalculationResult({
+      dims: validation.parsedDims,
+      materials,
       taxRate,
       discount,
       customerName,
-      date: new Date().toISOString(),
-    };
+    });
 
     setCalcResult(result);
   };
@@ -181,6 +155,11 @@ export default function KumesCalculatorPage({ darkMode }) {
 
   const deleteCalculation = (id) => {
     persistCalculations(calculations.filter(c => c.id !== id));
+  };
+
+  const exportCalculationCsv = () => {
+    if (!calcResult) return;
+    downloadKumesCsv(calcResult);
   };
 
   const loadCalculation = (calc) => {
@@ -243,13 +222,21 @@ export default function KumesCalculatorPage({ darkMode }) {
               </div>
               <div className="km-dim-group">
                 <label>KDV (%)</label>
-                <input type="number" value={taxRate} onChange={e => setTaxRate(Number(e.target.value))} min="0" max="100" />
+                <input type="number" value={taxRate} onChange={e => setTaxRate(Number(e.target.value))} min="0" max="100" disabled={!canEditPricing} />
               </div>
               <div className="km-dim-group">
                 <label>İskonto (%)</label>
-                <input type="number" value={discount} onChange={e => setDiscount(Number(e.target.value))} min="0" max="100" />
+                <input type="number" value={discount} onChange={e => setDiscount(Number(e.target.value))} min="0" max="100" disabled={!canEditPricing} />
               </div>
             </div>
+
+            {calcErrors.length > 0 && (
+              <div className="km-validation-errors" role="alert">
+                {calcErrors.map((err, idx) => (
+                  <div key={`${err}-${idx}`} className="km-validation-error-item">{err}</div>
+                ))}
+              </div>
+            )}
 
             {/* Quick info */}
             {dims.length && dims.width && dims.height && (
@@ -272,6 +259,9 @@ export default function KumesCalculatorPage({ darkMode }) {
               <div className="km-result-header">
                 <h3>{Icons.money(16)} Hesaplama Sonucu</h3>
                 <div className="km-result-actions">
+                  <FeatureGate canAccessFeature={canAccessFeature} featureKey="reports.export">
+                    <button className="km-btn km-btn-sm km-btn-secondary" onClick={exportCalculationCsv}>{Icons.download(14)} CSV Indir</button>
+                  </FeatureGate>
                   <button className="km-btn km-btn-sm km-btn-secondary" onClick={saveCalculation}>{Icons.save(14)} Kaydet</button>
                 </div>
               </div>
@@ -304,8 +294,8 @@ export default function KumesCalculatorPage({ darkMode }) {
                         <td className="km-table-formula">{FORMULA_TYPES.find(f => f.id === item.formula)?.label || item.formula}</td>
                         <td className="km-right km-table-bold">{item.quantity.toLocaleString('tr-TR')}</td>
                         <td>{item.unit}</td>
-                        <td className="km-right">{fmtMoney(item.unitPrice)}</td>
-                        <td className="km-right km-table-bold">{fmtMoney(item.lineTotal)}</td>
+                        <td className="km-right">{canViewCosts ? fmtMoney(item.unitPrice) : '-'}</td>
+                        <td className="km-right km-table-bold">{canViewCosts ? fmtMoney(item.lineTotal) : '-'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -316,21 +306,21 @@ export default function KumesCalculatorPage({ darkMode }) {
               <div className="km-totals">
                 <div className="km-total-row">
                   <span>Ara Toplam</span>
-                  <span>{fmtMoney(calcResult.subtotal)}</span>
+                  <span>{canViewCosts ? fmtMoney(calcResult.subtotal) : '-'}</span>
                 </div>
                 {calcResult.discount > 0 && (
                   <div className="km-total-row km-discount">
                     <span>İskonto (%{calcResult.discount})</span>
-                    <span>-{fmtMoney(calcResult.discAmount)}</span>
+                    <span>{canViewCosts ? `-${fmtMoney(calcResult.discAmount)}` : '-'}</span>
                   </div>
                 )}
                 <div className="km-total-row">
                   <span>KDV (%{calcResult.taxRate})</span>
-                  <span>{fmtMoney(calcResult.taxAmount)}</span>
+                  <span>{canViewCosts ? fmtMoney(calcResult.taxAmount) : '-'}</span>
                 </div>
                 <div className="km-total-row km-grand-total">
                   <span>Genel Toplam</span>
-                  <span>{fmtMoney(calcResult.grandTotal)}</span>
+                  <span>{canViewCosts ? fmtMoney(calcResult.grandTotal) : '-'}</span>
                 </div>
               </div>
             </div>
@@ -394,7 +384,7 @@ export default function KumesCalculatorPage({ darkMode }) {
                       )}
                     </div>
                     <div className="km-mat-col-unit">{mat.unit}</div>
-                    <div className="km-mat-col-price">{fmtMoney(mat.unitPrice)}</div>
+                    <div className="km-mat-col-price">{canViewCosts ? fmtMoney(mat.unitPrice) : '-'}</div>
                     <div className="km-mat-col-actions">
                       <button className="km-icon-btn" onClick={() => openEditMaterial(mat)} title="Düzenle">{Icons.edit(14)}</button>
                       <button className="km-icon-btn km-icon-btn-danger" onClick={() => deleteMaterial(mat.id)} title="Sil">{Icons.trash(14)}</button>
@@ -431,7 +421,7 @@ export default function KumesCalculatorPage({ darkMode }) {
                   <div className="km-history-body">
                     <span>{calc.dims.length}m × {calc.dims.width}m × {calc.dims.height}m</span>
                     <span>{calc.items.length} malzeme</span>
-                    <span className="km-history-total">{fmtMoney(calc.grandTotal)}</span>
+                    <span className="km-history-total">{canViewCosts ? fmtMoney(calc.grandTotal) : '-'}</span>
                   </div>
                 </div>
               ))}

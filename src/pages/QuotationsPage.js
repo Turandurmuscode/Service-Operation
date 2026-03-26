@@ -64,6 +64,7 @@ export default function QuotationsPage({ darkMode }) {
   const [templates, setTemplates] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [filterSource, setFilterSource] = useState('all');
   const [previewQuote, setPreviewQuote] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState('create');
@@ -127,6 +128,7 @@ export default function QuotationsPage({ darkMode }) {
         id: `TKL-2026-${String(seq).padStart(4, '0')}`,
         client: form.client,
         clientContact: form.clientContact,
+        source: 'manual',
         status: 'draft',
         version: 1,
         createdAt: today,
@@ -219,7 +221,9 @@ export default function QuotationsPage({ darkMode }) {
   const filtered = quotations.filter(q => {
     const matchSearch = q.client.toLowerCase().includes(searchTerm.toLowerCase()) || q.id.toLowerCase().includes(searchTerm.toLowerCase());
     const matchStatus = filterStatus === 'all' || q.status === filterStatus;
-    return matchSearch && matchStatus;
+    const source = q.source || 'manual';
+    const matchSource = filterSource === 'all' || source === filterSource;
+    return matchSearch && matchStatus && matchSource;
   });
 
   /* ── Stats ──────────────────────────────────────────────── */
@@ -495,6 +499,11 @@ export default function QuotationsPage({ darkMode }) {
           <option value="all">Tüm Durumlar</option>
           {QUOTE_STATUSES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
         </select>
+        <select className="qt-select" value={filterSource} onChange={e => setFilterSource(e.target.value)}>
+          <option value="all">Tum Kaynaklar</option>
+          <option value="manual">Manuel</option>
+          <option value="crm">CRM</option>
+        </select>
       </div>
 
       {/* List */}
@@ -528,6 +537,9 @@ export default function QuotationsPage({ darkMode }) {
                 <span className="qt-col-client">
                   <span className="qt-client-name">{q.client}</span>
                   <span className="qt-client-contact">{q.clientContact}</span>
+                  <span className={`qt-source-badge ${(q.source || 'manual') === 'crm' ? 'crm' : 'manual'}`}>
+                    {(q.source || 'manual') === 'crm' ? 'CRM' : 'Manuel'}
+                  </span>
                 </span>
                 <span className="qt-col-status">
                   <span className="qt-status-badge" style={{ background: statusInfo?.color + '18', color: statusInfo?.color, borderColor: statusInfo?.color + '40' }}>

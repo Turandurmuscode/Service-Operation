@@ -416,12 +416,13 @@ function DocumentsPage({ clients, incidents, currentUser, showToast }) {
   // ── Breadcrumb (klasör yolu) ──────────────
   const getBreadcrumb = () => {
     const path = [{ id: 'root', name: 'Ana Klasör' }];
+    const folderMap = new Map(folders.map(f => [f.id, f]));
     let current = currentFolder;
     const visited = new Set();
     while (current !== 'root') {
       if (visited.has(current)) break;
       visited.add(current);
-      const folder = folders.find(f => f.id === current);
+      const folder = folderMap.get(current);
       if (folder) {
         path.push({ id: folder.id, name: folder.name });
         current = folder.parentId || 'root';

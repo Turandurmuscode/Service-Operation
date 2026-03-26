@@ -1,0 +1,103 @@
+/* ══════════════════════════════════════════════════════════════
+   RBAC PAGE – Yetki & Rol Matrisi
+   ══════════════════════════════════════════════════════════════ */
+
+.rbac-page { padding: 0; animation: rbcFade 0.3s ease; }
+@keyframes rbcFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Header ───────────────────────────────────────────────── */
+.rbac-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.rbac-header-left h1 { font-size: 1.35rem; font-weight: 700; margin: 0 0 3px; color: var(--text-primary, #e8e8ec); letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
+.rbac-header-left p { margin: 0; color: var(--text-secondary, #9a9aaa); font-size: 0.85rem; }
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.rbac-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.82rem; font-weight: 600; transition: all 0.15s; white-space: nowrap; }
+.rbac-btn-primary { background: #6366f1; color: #fff; }
+.rbac-btn-primary:hover { background: #4f46e5; box-shadow: 0 1px 6px rgba(99,102,241,0.3); }
+.rbac-btn-secondary { background: var(--bg-elevated, #131318); color: var(--text-primary, #e8e8ec); border: 1px solid var(--border, rgba(255,255,255,0.08)); }
+.rbac-btn-secondary:hover { background: var(--bg-hover, #1a1a22); }
+.rbac-btn-danger { background: transparent; color: var(--danger, #f05252); border: 1px solid var(--danger-border, rgba(240,82,82,0.18)); }
+.rbac-btn-danger:hover { background: var(--danger-dim, rgba(240,82,82,0.08)); }
+.rbac-btn-sm { padding: 5px 10px; font-size: 0.76rem; border-radius: 6px; }
+
+/* ── Info Banner ──────────────────────────────────────────── */
+.rbac-info-banner { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; background: var(--info-dim, rgba(79,127,255,0.08)); border: 1px solid var(--accent-border, rgba(79,127,255,0.24)); border-radius: 8px; margin-bottom: 20px; color: var(--text-secondary, #9a9aaa); font-size: 0.82rem; line-height: 1.5; }
+.rbac-info-banner svg { flex-shrink: 0; margin-top: 1px; color: var(--accent, #4f7fff); }
+
+/* ── Role Cards ───────────────────────────────────────────── */
+.rbac-roles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.rbac-role-card { background: var(--bg-elevated, #131318); border: 1px solid var(--border, rgba(255,255,255,0.06)); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.15s; }
+.rbac-role-card:hover { border-color: var(--border-strong, rgba(255,255,255,0.12)); }
+.rbac-role-card.selected { border-color: #6366f1; background: rgba(99,102,241,0.06); }
+.rbac-role-card-header { display: flex; align-items: center; gap: 10px; }
+.rbac-role-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.rbac-role-name { font-size: 0.88rem; font-weight: 700; color: var(--text-primary, #e8e8ec); flex: 1; }
+.rbac-role-desc { font-size: 0.78rem; color: var(--text-secondary, #9a9aaa); line-height: 1.4; }
+.rbac-role-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+.rbac-role-stat { font-size: 0.72rem; padding: 2px 7px; border-radius: 5px; background: var(--bg-overlay, #18181d); color: var(--text-secondary, #9a9aaa); }
+.rbac-role-actions { display: flex; gap: 6px; margin-top: 2px; }
+
+/* ── Matrix ───────────────────────────────────────────────── */
+.rbac-matrix-section { margin-bottom: 24px; }
+.rbac-matrix-title { font-size: 0.85rem; font-weight: 700; color: var(--text-primary, #e8e8ec); margin-bottom: 12px; letter-spacing: 0.03em; text-transform: uppercase; }
+.rbac-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border, rgba(255,255,255,0.06)); }
+.rbac-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.rbac-table thead tr { background: var(--bg-elevated, #131318); }
+.rbac-table th { padding: 10px 14px; text-align: left; font-size: 0.73rem; font-weight: 700; color: var(--text-secondary, #9a9aaa); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; border-bottom: 1px solid var(--border, rgba(255,255,255,0.06)); }
+.rbac-table th:not(:first-child) { text-align: center; }
+.rbac-table td { padding: 9px 14px; font-size: 0.82rem; border-bottom: 1px solid var(--border, rgba(255,255,255,0.04)); background: var(--bg-surface, #0e0e12); }
+.rbac-table tbody tr:last-child td { border-bottom: none; }
+.rbac-table tbody tr:hover td { background: var(--bg-hover, #1a1a22); }
+.rbac-table td:not(:first-child) { text-align: center; }
+.rbac-page-label { display: flex; align-items: center; gap: 6px; color: var(--text-primary, #e8e8ec); font-weight: 500; }
+.rbac-section-row td { background: var(--bg-elevated, #131318) !important; padding: 6px 14px; }
+.rbac-section-label { font-size: 0.71rem; font-weight: 700; color: var(--text-muted, #6a6a7e); text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* ── Toggle ───────────────────────────────────────────────── */
+.rbac-toggle { display: inline-flex; cursor: pointer; padding: 4px; }
+.rbac-toggle input { display: none; }
+.rbac-toggle-track { width: 32px; height: 18px; border-radius: 9px; background: var(--border-strong, rgba(255,255,255,0.12)); transition: background 0.15s; display: flex; align-items: center; padding: 0 2px; }
+.rbac-toggle input:checked + .rbac-toggle-track { background: #6366f1; }
+.rbac-toggle-knob { width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: transform 0.15s; }
+.rbac-toggle input:checked + .rbac-toggle-track .rbac-toggle-knob { transform: translateX(14px); }
+.rbac-toggle-locked { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Action Flags ─────────────────────────────────────────── */
+.rbac-actions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+.rbac-action-card { background: var(--bg-elevated, #131318); border: 1px solid var(--border, rgba(255,255,255,0.06)); border-radius: 10px; padding: 16px; }
+.rbac-action-card-title { font-size: 0.83rem; font-weight: 700; color: var(--text-primary, #e8e8ec); margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
+.rbac-action-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border, rgba(255,255,255,0.04)); }
+.rbac-action-row:last-child { border-bottom: none; }
+.rbac-action-label { font-size: 0.8rem; color: var(--text-secondary, #9a9aaa); }
+.rbac-action-flags { display: flex; gap: 14px; }
+.rbac-flag-cell { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.rbac-flag-role { font-size: 0.65rem; color: var(--text-muted, #6a6a7e); font-weight: 600; }
+
+/* ── Modal ────────────────────────────────────────────────── */
+.rbac-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.rbac-modal { background: var(--bg-elevated, #131318); border: 1px solid var(--border-strong, rgba(255,255,255,0.1)); border-radius: 14px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; padding: 24px; }
+.rbac-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.rbac-modal-header h2 { font-size: 1rem; font-weight: 700; color: var(--text-primary, #e8e8ec); margin: 0; }
+.rbac-modal-close { border: none; background: none; color: var(--text-secondary, #9a9aaa); cursor: pointer; font-size: 1.2rem; padding: 4px; }
+.rbac-form-group { margin-bottom: 16px; }
+.rbac-form-label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text-secondary, #9a9aaa); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+.rbac-form-input { width: 100%; padding: 9px 12px; background: var(--bg-surface, #0e0e12); border: 1px solid var(--border-strong, rgba(255,255,255,0.1)); border-radius: 8px; color: var(--text-primary, #e8e8ec); font-size: 0.83rem; outline: none; transition: border-color 0.15s; }
+.rbac-form-input:focus { border-color: #6366f1; }
+.rbac-form-select { width: 100%; padding: 9px 12px; background: var(--bg-surface, #0e0e12); border: 1px solid var(--border-strong, rgba(255,255,255,0.1)); border-radius: 8px; color: var(--text-primary, #e8e8ec); font-size: 0.83rem; outline: none; cursor: pointer; }
+.rbac-color-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.rbac-color-btn { width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.1s; }
+.rbac-color-btn:hover, .rbac-color-btn.active { transform: scale(1.2); border-color: white; }
+.rbac-modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+/* ── Tab Pills ────────────────────────────────────────────── */
+.rbac-tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--bg-elevated, #131318); border-radius: 10px; padding: 4px; border: 1px solid var(--border, rgba(255,255,255,0.06)); }
+.rbac-tab { flex: 1; padding: 8px 12px; border: none; border-radius: 8px; background: none; color: var(--text-secondary, #9a9aaa); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.rbac-tab.active { background: #6366f1; color: #fff; }
+
+@media (max-width: 768px) {
+  .rbac-roles-grid { grid-template-columns: 1fr 1fr; }
+  .rbac-actions-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 500px) {
+  .rbac-roles-grid { grid-template-columns: 1fr; }
+}

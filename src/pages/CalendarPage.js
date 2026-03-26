@@ -19,8 +19,7 @@ function CalendarPage({ incidents, clients }) {
   const getIncidentsForDay = (day) => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    const dayDate = new Date(year, month, day);
-    
+
     return incidents.filter(inc => {
       const incDate = new Date(inc.startTime);
       return incDate.getDate() === day &&

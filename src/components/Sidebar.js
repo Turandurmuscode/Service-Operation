@@ -184,11 +184,54 @@ const Icons = {
       <rect x="10" y="10" width="5" height="5" rx="1" strokeDasharray="2 1"/>
     </svg>
   ),
+  crmdeals: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="4" cy="4" r="2"/>
+      <circle cx="12" cy="4" r="2"/>
+      <circle cx="8" cy="12" r="2"/>
+      <path d="M5.7 5.2L7.2 9.8M10.3 5.2L8.8 9.8" strokeLinecap="round"/>
+    </svg>
+  ),
   kumescalculator: (
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
       <path d="M2 4l6-2.5L14 4v5l-6 2.5L2 9V4Z" strokeLinejoin="round"/>
       <path d="M2 4l6 2.5 6-2.5M8 6.5V14" strokeLinecap="round"/>
       <path d="M2 9v2.5l6 2.5 6-2.5V9" strokeLinejoin="round"/>
+    </svg>
+  ),
+  workorders: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M10 2a4 4 0 0 1 1 7.9L6 14.5a1.5 1.5 0 0 1-2-2l4.6-4.9A4 4 0 0 1 10 2Z" strokeLinejoin="round"/>
+      <path d="M3.5 12.5l10-10" strokeLinecap="round"/>
+    </svg>
+  ),
+  invoices: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M3 2h7l3 3v9H3V2Z" strokeLinejoin="round"/>
+      <path d="M10 2v3h3" strokeLinecap="round"/>
+      <path d="M6 8h4M6 10h2" strokeLinecap="round"/>
+      <path d="M6 12l1 .5 1-.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  rbac: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M8 1.5L2.5 4v4c0 3 2.5 5.5 5.5 6 3-0.5 5.5-3 5.5-6V4L8 1.5Z" strokeLinejoin="round"/>
+      <path d="M5.5 8l1.5 1.5L10.5 6" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  fieldteam: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M10.5 2.5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
+      <path d="M3 13c0-2.5 2.3-4 5.5-4S14 10.5 14 13" strokeLinecap="round"/>
+      <circle cx="3.5" cy="5.5" r="1.5"/>
+      <path d="M1 13c0-1.5 1-2.5 2.5-2.5" strokeLinecap="round"/>
+    </svg>
+  ),
+  integrations: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M9.5 6A3 3 0 0 1 6.5 9M9 5l-.7-.7a3 3 0 0 0-4.6 3.8l.7.7M7 11l.7.7a3 3 0 0 0 4.6-3.8L11.6 7" strokeLinecap="round"/>
+      <circle cx="11" cy="5" r="1.5" fill="currentColor"/>
+      <circle cx="5" cy="11" r="1.5" fill="currentColor"/>
     </svg>
   ),
   scheduledmaintenance: (
@@ -279,9 +322,9 @@ function Sidebar({
   }, []);
 
   const ROLE_PAGES = {
-    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard','documents','projects','quotations','modules','kumescalculator'],
-    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard','documents','projects','quotations','kumescalculator'],
-    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','knowledgebase','techperformance','documents','projects'],
+    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard','documents','projects','quotations','modules','kumescalculator','crmdeals','workorders','invoices','rbac','fieldteam','integrations'],
+    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','csat','remoteaccess','techperformance','sladashboard','documents','projects','quotations','kumescalculator','crmdeals','workorders','invoices','fieldteam'],
+    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','knowledgebase','techperformance','documents','projects','fieldteam'],
   };
   const allowedPages = currentUser ? (ROLE_PAGES[currentUser.role] || []) : Object.values(ROLE_PAGES).flat();
 
@@ -295,12 +338,15 @@ function Sidebar({
         { id: 'contactlog', icon: Icons.contactlog, label: 'İletişim Geçmişi' },
         { id: 'announcements', icon: Icons.announcements, label: 'Duyurular' },
         { id: 'activityfeed', icon: Icons.activityfeed, label: 'Canlı Akış' },
+        { id: 'crmdeals', icon: Icons.crmdeals, label: 'CRM Fırsatlar' },
       ],
     },
     {
       label: 'İş Yönetimi',
       items: [
         { id: 'kanban',   icon: Icons.kanban,   label: 'Kanban Board' },
+        { id: 'workorders', icon: Icons.workorders, label: 'İş Emirleri' },
+        { id: 'fieldteam', icon: Icons.fieldteam, label: 'Saha Ekip Yönetimi' },
         { id: 'calendar', icon: Icons.calendar, label: 'Takvim' },
         { id: 'timesheet', icon: Icons.timesheet, label: 'Saat Takibi' },
         { id: 'checklists', icon: Icons.checklists, label: 'Kontrol Listeleri' },
@@ -327,6 +373,7 @@ function Sidebar({
         { id: 'costtracking', icon: Icons.costtracking, label: 'Maliyet Takibi' },
         { id: 'contracts',    icon: Icons.contracts,    label: 'Sözleşmeler' },
         { id: 'quotations',  icon: Icons.quotations,  label: 'Teklifler' },
+        { id: 'invoices',     icon: Icons.invoices,     label: 'Faturalar' },
         { id: 'csat',         icon: Icons.csat,          label: 'Müşteri Memnuniyeti' },
         { id: 'techperformance', icon: Icons.techperformance, label: 'Teknisyen Performans' },
         { id: 'sladashboard', icon: Icons.sladashboard,  label: 'SLA Analizi' },
@@ -342,6 +389,8 @@ function Sidebar({
       label: 'Sistem',
       items: [
         { id: 'workflowrules', icon: Icons.workflowrules, label: 'Otomasyon' },
+        { id: 'rbac', icon: Icons.rbac, label: 'Yetki & Rol Matrisi' },
+        { id: 'integrations', icon: Icons.integrations, label: 'Entegrasyonlar' },
         { id: 'modules', icon: Icons.modules, label: 'Modüller' },
         { id: 'settings', icon: Icons.settings, label: 'Ayarlar' },
       ],

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { readLocalJSON, writeLocalJSON } from '../services/storageService';
 
 const AuditContext = createContext(null);
 
@@ -6,8 +7,7 @@ const STORAGE_KEY = 'audit_log';
 const MAX_ENTRIES = 500;
 
 const loadLog = () => {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch { return []; }
+  return readLocalJSON(STORAGE_KEY, []);
 };
 
 export function AuditProvider({ children }) {
@@ -29,7 +29,7 @@ export function AuditProvider({ children }) {
 
     setAuditLog(prev => {
       const updated = [entry, ...prev].slice(0, MAX_ENTRIES);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      writeLocalJSON(STORAGE_KEY, updated);
       return updated;
     });
   }, []);

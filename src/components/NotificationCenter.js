@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './NotificationCenter.css';
 
-function NotificationCenter({ incidents, clients }) {
+const CRM_REMINDER_KEY = 'sod_crm_followup_reminders';
+
+function readReminders() {
+  try {
+    return JSON.parse(localStorage.getItem(CRM_REMINDER_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function NotificationCenter({ incidents, clients, onNavigate }) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -65,11 +75,37 @@ function NotificationCenter({ incidents, clients }) {
         }
       });
 
+      // CRM follow-up hatirlatmalari
+      const today = now.toISOString().split('T')[0];
+      readReminders()
+        .filter((r) => r.status === 'pending' && r.followUpDate)
+        .forEach((r) => {
+          const isOverdue = r.followUpDate < today;
+          notifs.push({
+            id: `crm-followup-${r.id}`,
+            type: isOverdue ? 'warning' : 'info',
+            title: isOverdue ? 'Geciken CRM Takibi' : 'CRM Takibi Yaklaşıyor',
+            message: `${r.title} - ${new Date(r.followUpDate).toLocaleDateString('tr-TR')}`,
+            timestamp: r.createdAt || new Date().toISOString(),
+            read: false,
+            icon: isOverdue ? '📌' : '📅',
+            actionTarget: 'crmdeals',
+          });
+        });
+
       // En yeniler üstte
       notifs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-      setNotifications(notifs.slice(0, 10)); // Son 10 bildirim
-      setUnreadCount(notifs.filter(n => !n.read).length);
+      const latest = notifs.slice(0, 10);
+      setNotifications((prev) => {
+        const previousReadMap = new Map(prev.map((n) => [n.id, n.read]));
+        const merged = latest.map((n) => ({
+          ...n,
+          read: previousReadMap.get(n.id) || false,
+        }));
+        setUnreadCount(merged.filter((n) => !n.read).length);
+        return merged;
+      });
     };
 
     generateNotifications();
@@ -78,11 +114,15 @@ function NotificationCenter({ incidents, clients }) {
     return () => clearInterval(interval);
   }, [incidents, clients]);
 
-  const markAsRead = (id) => {
+  const markAsRead = (id, actionTarget) => {
     setNotifications(prev => 
       prev.map(n => n.id === id ? { ...n, read: true } : n)
     );
     setUnreadCount(prev => Math.max(0, prev - 1));
+    if (actionTarget) {
+      onNavigate?.(actionTarget);
+      setIsOpen(false);
+    }
   };
 
   const markAllAsRead = () => {
@@ -146,7 +186,7 @@ function NotificationCenter({ incidents, clients }) {
                   <div 
                     key={notif.id}
                     className={`notification-item ${notif.read ? 'read' : 'unread'} ${notif.type}`}
-                    onClick={() => markAsRead(notif.id)}
+                    onClick={() => markAsRead(notif.id, notif.actionTarget)}
                   >
                     <div className="notification-icon">{notif.icon}</div>
                     <div className="notification-content">

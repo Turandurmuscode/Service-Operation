@@ -78,6 +78,12 @@
   --shadow-elevated:      0 4px 20px rgba(0,0,0,0.55);
   --shadow-elevated-dark: 0 8px 28px rgba(0,0,0,0.75);
   --shadow-popover:       0 12px 36px rgba(0,0,0,0.60);
+
+  /* Floating action stack offsets */
+  --fab-right-offset: 24px;
+  --fab-bottom-primary: 24px;
+  --fab-bottom-secondary: 84px;
+  --fab-bottom-tertiary: 144px;
 }
 
 /* ─── LIGHT MODE ──────────────────────────────────── */
@@ -1263,6 +1269,13 @@ tbody tr:last-child td {
 }
 
 @media (max-width: 768px) {
+  :root {
+    --fab-right-offset: 14px;
+    --fab-bottom-primary: 16px;
+    --fab-bottom-secondary: 68px;
+    --fab-bottom-tertiary: 120px;
+  }
+
   .page-content      { padding: 12px; }
   .table-container   { padding: 0 12px 12px; }
   .dashboard-widgets { grid-template-columns: repeat(2, 1fr); }
@@ -1321,6 +1334,28 @@ tbody tr:last-child td {
 /* ─── PAGE TRANSITIONS ────────────────────────────── */
 .page-transition {
   animation: pageEnter 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sync-status-badge {
+  position: fixed;
+  right: var(--fab-right-offset);
+  bottom: var(--fab-bottom-tertiary);
+  z-index: 1040;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid;
+  background: var(--bg-surface);
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(6px);
+}
+
+@media (max-width: 768px) {
+  .sync-status-badge {
+    font-size: 11px;
+    padding: 7px 10px;
+  }
 }
 
 @keyframes pageEnter {

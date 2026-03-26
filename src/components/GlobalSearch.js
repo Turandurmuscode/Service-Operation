@@ -22,8 +22,6 @@ function GlobalSearch({ incidents, clients, onNavigate }) {
   useEffect(() => {
     if (!searchTerm.trim()) { setResults({ incidents: [], clients: [] }); setCursor(-1); return; }
     const term = searchTerm.toLowerCase();
-    const loadJSON = (key) => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } };
-    const technicians = loadJSON('technicians');
 
     const filteredIncidents = incidents.filter(inc => {
       const client = clients.find(c => c.id === inc.clientId);

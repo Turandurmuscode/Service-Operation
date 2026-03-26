@@ -1,18 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import DashboardWidgets from '../components/DashboardWidgets';
 import SLAMonitor from '../components/SLAMonitor';
 import StatCards from '../components/StatCards';
 import HeroCard from '../components/HeroCard';
 import Icon from '../components/Icon';
 
-const loadJSON = (key, fallback) => {
-  try { return JSON.parse(localStorage.getItem(key)) || fallback; }
-  catch { return fallback; }
-};
-
 function ActivityFeed({ activities, incidents, clients }) {
-  const technicians = loadJSON('technicians', []);
-
   const formatTime = (iso) => {
     const d = new Date(iso);
     const now = new Date();

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, lazy, Suspense } from 'react';
 import './App.css';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -13,47 +13,61 @@ import Breadcrumb from './components/Breadcrumb';
 import PWAInstallBanner from './components/PWAInstallBanner';
 import LoginScreen from './components/LoginScreen';
 import ThemeCustomizer from './components/ThemeCustomizer';
+import ErrorBoundary from './components/ErrorBoundary';
+import SyncStatusBadge from './components/SyncStatusBadge';
+import SyncControlPanel from './components/SyncControlPanel';
+import { readLocalJSON, writeLocalJSON, readSessionJSON, writeSessionJSON } from './services/storageService';
+import { createNotificationOrchestrator } from './services/notification/orchestrator';
+import { createApiClient, createClientsApi, createIncidentsApi } from './services/api';
+import { createSyncEngine } from './services/sync/syncEngine';
 
 // Contexts
-import { AuthProvider, useAuth, ROLE_PERMISSIONS } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { I18nProvider, useI18n } from './context/i18nContext';
 import { AuditProvider, useAudit } from './context/AuditContext';
 
-// Pages
-import DashboardPage from './pages/DashboardPage';
-import IncidentsPage from './pages/IncidentsPage';
-import ClientsPage from './pages/ClientsPage';
-import KanbanPage from './pages/KanbanPage';
-import AnalyticsPage from './pages/AnalyticsPage';
-import CalendarPage from './pages/CalendarPage';
-import ReportsPage from './pages/ReportsPage';
-import SettingsPage from './pages/SettingsPage';
-import AssetsPage from './pages/AssetsPage';
-import TimesheetPage from './pages/TimesheetPage';
-import MessagingPage from './pages/MessagingPage';
-import ChecklistsPage from './pages/ChecklistsPage';
-import CostTrackingPage from './pages/CostTrackingPage';
-import AnnouncementsPage from './pages/AnnouncementsPage';
-import ContactLogPage from './pages/ContactLogPage';
-import ActivityFeedPage from './pages/ActivityFeedPage';
-import WorkflowRulesPage from './pages/WorkflowRulesPage';
-import SparePartsPage from './pages/SparePartsPage';
-import ContractsPage from './pages/ContractsPage';
-import KnowledgeBasePage from './pages/KnowledgeBasePage';
-import ScheduledMaintenancePage from './pages/ScheduledMaintenancePage';
-import CSATPage from './pages/CSATPage';
-import RemoteAccessPage from './pages/RemoteAccessPage';
-import TechPerformancePage from './pages/TechPerformancePage';
-import SLADashboardPage from './pages/SLADashboardPage';
-import DocumentsPage from './pages/DocumentsPage';
-import ProjectsPage from './pages/ProjectsPage';
-import QuotationsPage from './pages/QuotationsPage';
-import ModulesPage from './pages/ModulesPage';
-import KumesCalculatorPage from './pages/KumesCalculatorPage';
 import { processWorkflowRules } from './utils/workflowEngine';
 
+// Pages (route-level code splitting)
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const IncidentsPage = lazy(() => import('./pages/IncidentsPage'));
+const ClientsPage = lazy(() => import('./pages/ClientsPage'));
+const KanbanPage = lazy(() => import('./pages/KanbanPage'));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const CalendarPage = lazy(() => import('./pages/CalendarPage'));
+const ReportsPage = lazy(() => import('./pages/ReportsPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+const AssetsPage = lazy(() => import('./pages/AssetsPage'));
+const TimesheetPage = lazy(() => import('./pages/TimesheetPage'));
+const MessagingPage = lazy(() => import('./pages/MessagingPage'));
+const ChecklistsPage = lazy(() => import('./pages/ChecklistsPage'));
+const CostTrackingPage = lazy(() => import('./pages/CostTrackingPage'));
+const AnnouncementsPage = lazy(() => import('./pages/AnnouncementsPage'));
+const ContactLogPage = lazy(() => import('./pages/ContactLogPage'));
+const ActivityFeedPage = lazy(() => import('./pages/ActivityFeedPage'));
+const WorkflowRulesPage = lazy(() => import('./pages/WorkflowRulesPage'));
+const SparePartsPage = lazy(() => import('./pages/SparePartsPage'));
+const ContractsPage = lazy(() => import('./pages/ContractsPage'));
+const KnowledgeBasePage = lazy(() => import('./pages/KnowledgeBasePage'));
+const ScheduledMaintenancePage = lazy(() => import('./pages/ScheduledMaintenancePage'));
+const CSATPage = lazy(() => import('./pages/CSATPage'));
+const RemoteAccessPage = lazy(() => import('./pages/RemoteAccessPage'));
+const TechPerformancePage = lazy(() => import('./pages/TechPerformancePage'));
+const SLADashboardPage = lazy(() => import('./pages/SLADashboardPage'));
+const DocumentsPage = lazy(() => import('./pages/DocumentsPage'));
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
+const QuotationsPage = lazy(() => import('./pages/QuotationsPage'));
+const ModulesPage = lazy(() => import('./pages/ModulesPage'));
+const KumesCalculatorPage = lazy(() => import('./pages/KumesCalculatorPage'));
+const CRMDealsPage = lazy(() => import('./pages/CRMDealsPage'));
+const WorkOrderPage = lazy(() => import('./pages/WorkOrderPage'));
+const InvoicePage = lazy(() => import('./pages/InvoicePage'));
+const RBACPage = lazy(() => import('./pages/RBACPage'));
+const FieldTeamPage = lazy(() => import('./pages/FieldTeamPage'));
+const IntegrationsPage = lazy(() => import('./pages/IntegrationsPage'));
+
 function AppContent() {
-  const { currentUser, logout, canAccessPage } = useAuth();
+  const { currentUser, logout, canAccessPage, canAccessFeature } = useAuth();
   const { t } = useI18n();
   const { addAuditEntry } = useAudit();
   const [clients,    setClients]    = useState([]);
@@ -65,30 +79,106 @@ function AppContent() {
   const [activeTab,  setActiveTab]  = useState('dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarOpen,      setSidebarOpen]      = useState(false);
+  const [syncStatus, setSyncStatus] = useState({ queueSize: 0, deadLetterSize: 0 });
+  const [showSyncPanel, setShowSyncPanel] = useState(false);
+  const [deadLetters, setDeadLetters] = useState([]);
+  const notifierRef = useRef(
+    createNotificationOrchestrator({
+      showToast: (message, type = 'success') => setToast({ message, type }),
+      quietHours: { startHour: 22, endHour: 7 },
+    })
+  );
 
   // Bildirim gönderilen ID'leri tut — aynı arıza için tekrar bildirme
   const notifiedRef = useRef(
-    new Set(JSON.parse(sessionStorage.getItem('notifiedDeadlines') || '[]'))
+    new Set(readSessionJSON('notifiedDeadlines', []))
   );
+  const crmReminderNotifiedRef = useRef(
+    new Set(readSessionJSON('notifiedCrmFollowUps', []))
+  );
+  const apiClientRef = useRef(createApiClient({ baseUrl: '/api' }));
+  const clientsApiRef = useRef(createClientsApi(apiClientRef.current));
+  const incidentsApiRef = useRef(createIncidentsApi(apiClientRef.current));
+  const syncEngineRef = useRef(
+    createSyncEngine({
+      clientsApi: clientsApiRef.current,
+      incidentsApi: incidentsApiRef.current,
+    })
+  );
+
+  const refreshSyncStats = useCallback(() => {
+    setSyncStatus(syncEngineRef.current.getSyncStats());
+    setDeadLetters(syncEngineRef.current.getDeadLetters());
+  }, []);
+
+  const flushSyncQueue = useCallback(async () => {
+    const result = await syncEngineRef.current.flushQueue();
+    refreshSyncStats();
+    if (result.succeeded > 0) {
+      notifierRef.current.notify({
+        message: `${result.succeeded} bekleyen islem senkronize edildi`,
+        type: 'success',
+        channels: ['toast'],
+      });
+    }
+    if (result.deadLettered > 0) {
+      notifierRef.current.notify({
+        message: `${result.deadLettered} islem dead-letter listesine tasindi`,
+        type: 'warning',
+        channels: ['toast'],
+      });
+    }
+    return result;
+  }, [refreshSyncStats]);
 
   // ── VERİ YÜKLE ──────────────────────────────────────────────────
   useEffect(() => {
-    setTimeout(() => {
-      const savedClients    = localStorage.getItem('clients');
-      const savedIncidents  = localStorage.getItem('incidents');
-      const savedActivities = localStorage.getItem('activities');
-      const savedDarkMode   = localStorage.getItem('darkMode');
-      const savedCollapsed  = localStorage.getItem('sidebarCollapsed');
+    let alive = true;
 
-      if (savedClients)    setClients(JSON.parse(savedClients));
-      if (savedIncidents)  setIncidents(JSON.parse(savedIncidents));
-      if (savedActivities) setActivities(JSON.parse(savedActivities));
-      if (savedDarkMode)   setDarkMode(JSON.parse(savedDarkMode));
-      if (savedCollapsed)  setSidebarCollapsed(JSON.parse(savedCollapsed));
+    const loadData = async () => {
+      const savedClients = readLocalJSON('clients', []);
+      const savedIncidents = readLocalJSON('incidents', []);
+      const savedActivities = readLocalJSON('activities', []);
+      const savedDarkMode = readLocalJSON('darkMode', null);
+      const savedCollapsed = readLocalJSON('sidebarCollapsed', null);
 
-      setLoading(false);
-    }, 800);
-  }, []);
+      if (!alive) return;
+      setClients(savedClients);
+      setIncidents(savedIncidents);
+      setActivities(savedActivities);
+      if (savedDarkMode !== null) setDarkMode(savedDarkMode);
+      if (savedCollapsed !== null) setSidebarCollapsed(savedCollapsed);
+
+      try {
+        const [remoteClients, remoteIncidents] = await Promise.all([
+          clientsApiRef.current.list(),
+          incidentsApiRef.current.list(),
+        ]);
+
+        if (alive && Array.isArray(remoteClients)) {
+          setClients(remoteClients);
+          writeLocalJSON('clients', remoteClients);
+        }
+        if (alive && Array.isArray(remoteIncidents)) {
+          setIncidents(remoteIncidents);
+          writeLocalJSON('incidents', remoteIncidents);
+        }
+      } catch {
+        // Keep local fallback silently when API is unavailable.
+      } finally {
+        if (alive) {
+          refreshSyncStats();
+          setLoading(false);
+        }
+      }
+    };
+
+    const timer = setTimeout(loadData, 300);
+    return () => {
+      alive = false;
+      clearTimeout(timer);
+    };
+  }, [refreshSyncStats]);
 
   // ── BİLDİRİM İZNİ ───────────────────────────────────────────────
   useEffect(() => {
@@ -96,6 +186,58 @@ function AppContent() {
       const t = setTimeout(() => Notification.requestPermission(), 3000);
       return () => clearTimeout(t);
     }
+  }, []);
+
+  // ── OFFLINE QUEUE SYNC RETRY ───────────────────────────────────
+  useEffect(() => {
+    const interval = setInterval(flushSyncQueue, 45 * 1000);
+    window.addEventListener('online', flushSyncQueue);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('online', flushSyncQueue);
+    };
+  }, [flushSyncQueue]);
+
+  const requeueDeadLetters = useCallback(() => {
+    const moved = syncEngineRef.current.requeueDeadLetters();
+    refreshSyncStats();
+    if (moved > 0) {
+      notifierRef.current.notify({
+        message: `${moved} dead-letter kaydi tekrar kuyruğa alindi`,
+        type: 'success',
+        channels: ['toast'],
+      });
+    }
+  }, [refreshSyncStats]);
+
+  const clearDeadLetters = useCallback(() => {
+    syncEngineRef.current.clearDeadLetters();
+    refreshSyncStats();
+    notifierRef.current.notify({
+      message: 'Dead-letter listesi temizlendi',
+      type: 'success',
+      channels: ['toast'],
+    });
+  }, [refreshSyncStats]);
+
+  // ── KUYRUGA ALINAN BİLDİRİMLERİ BOŞALT ─────────────────────────
+  useEffect(() => {
+    const flush = () => notifierRef.current.flushQueue();
+    const interval = setInterval(flush, 2 * 60 * 1000);
+
+    const onVisibility = () => {
+      if (!document.hidden) flush();
+    };
+
+    window.addEventListener('focus', flush);
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', flush);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
   }, []);
 
   // ── DEADLINE BİLDİRİM KONTROLÜ (her 60 saniye) ──────────────────
@@ -122,31 +264,24 @@ function AppContent() {
           ? `${Math.floor(Math.abs(diff) / 60000)} dakika gecikmiş`
           : `${Math.ceil(diff / 60000)} dakika kaldı`;
 
-        // Tarayıcı push bildirimi
-        if ('Notification' in window && Notification.permission === 'granted') {
-          new Notification(
-            isOverdue ? 'Gecikmiş Arıza' : 'Deadline Yaklaşıyor',
-            {
-              body: `${client?.name || 'Müşteri'}: ${inc.description} — ${timeLabel}`,
-              icon: '/logo192.png',
-              tag: `deadline-${inc.id}`,
-              requireInteraction: isOverdue, // gecikmiş olanlar otomatik kapanmasın
-            }
-          );
-        }
-
-        // Uygulama içi toast
-        showToast(
-          `${isOverdue ? 'Gecikmiş' : 'Yaklaşan deadline'}: ${client?.name} — ${timeLabel}`,
-          isOverdue ? 'error' : 'warning'
-        );
+        notifierRef.current.notify({
+          title: isOverdue ? 'Gecikmiş Arıza' : 'Deadline Yaklaşıyor',
+          message: `${isOverdue ? 'Gecikmiş' : 'Yaklaşan deadline'}: ${client?.name} — ${timeLabel}`,
+          body: `${client?.name || 'Müşteri'}: ${inc.description} — ${timeLabel}`,
+          type: isOverdue ? 'error' : 'warning',
+          channels: ['toast', 'browser'],
+          dedupeKey: `deadline-${inc.id}`,
+          cooldownMs: 60 * 60 * 1000,
+          queueIfSuppressed: true,
+          priority: isOverdue ? 'critical' : 'normal',
+          icon: '/logo192.png',
+          tag: `deadline-${inc.id}`,
+          requireInteraction: isOverdue,
+        });
 
         // Bir kez bildir, tekrarlama
         notifiedRef.current.add(inc.id);
-        sessionStorage.setItem(
-          'notifiedDeadlines',
-          JSON.stringify([...notifiedRef.current])
-        );
+        writeSessionJSON('notifiedDeadlines', [...notifiedRef.current]);
       });
     };
 
@@ -155,9 +290,58 @@ function AppContent() {
     return () => clearInterval(interval);
   }, [incidents, clients]); // eslint-disable-line
 
+  // ── CRM FOLLOW-UP BİLDİRİM KONTROLÜ ─────────────────────────────
+  useEffect(() => {
+    const checkCrmFollowUps = () => {
+      let reminders = [];
+      try {
+        reminders = JSON.parse(localStorage.getItem('sod_crm_followup_reminders')) || [];
+      } catch {
+        reminders = [];
+      }
+
+      const today = new Date().toISOString().split('T')[0];
+
+      reminders.forEach((reminder) => {
+        if (reminder.status !== 'pending' || !reminder.followUpDate) return;
+        if (reminder.followUpDate > today) return;
+        if (crmReminderNotifiedRef.current.has(reminder.id)) return;
+
+        const isOverdue = reminder.followUpDate < today;
+
+        notifierRef.current.notify({
+          title: isOverdue ? 'Geciken CRM Takibi' : 'CRM Takibi Bugün',
+          message: `${reminder.title} - ${new Date(reminder.followUpDate).toLocaleDateString('tr-TR')}`,
+          body: `${reminder.owner || 'Atanmadı'} sorumlusunda CRM takip görevi bekliyor`,
+          type: isOverdue ? 'warning' : 'info',
+          channels: ['toast', 'browser'],
+          dedupeKey: `crm-followup-${reminder.id}`,
+          cooldownMs: 6 * 60 * 60 * 1000,
+          queueIfSuppressed: true,
+          priority: isOverdue ? 'high' : 'normal',
+          icon: '/logo192.png',
+          tag: `crm-followup-${reminder.id}`,
+        });
+
+        crmReminderNotifiedRef.current.add(reminder.id);
+      });
+
+      writeSessionJSON('notifiedCrmFollowUps', [...crmReminderNotifiedRef.current]);
+    };
+
+    checkCrmFollowUps();
+    const interval = setInterval(checkCrmFollowUps, 60 * 1000);
+    window.addEventListener('focus', checkCrmFollowUps);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', checkCrmFollowUps);
+    };
+  }, []);
+
   // ── SIDEBAR ─────────────────────────────────────────────────────
   useEffect(() => {
-    localStorage.setItem('sidebarCollapsed', JSON.stringify(sidebarCollapsed));
+    writeLocalJSON('sidebarCollapsed', sidebarCollapsed);
   }, [sidebarCollapsed]);
 
   // ── ACTIVITY ────────────────────────────────────────────────────
@@ -165,43 +349,56 @@ function AppContent() {
     const newActivity = { type, message, timestamp: new Date().toISOString() };
     const updated = [newActivity, ...activities].slice(0, 50);
     setActivities(updated);
-    localStorage.setItem('activities', JSON.stringify(updated));
+    writeLocalJSON('activities', updated);
   }, [activities]);
 
   // ── TOAST ───────────────────────────────────────────────────────
   const showToast = useCallback((message, type = 'success') => {
-    setToast({ message, type });
+    notifierRef.current.notify({ message, type, channels: ['toast'] });
   }, []);
 
   // ── MÜŞTERİ EKLE ────────────────────────────────────────────────
-  const addClient = useCallback((client) => {
+  const addClient = useCallback(async (client) => {
     const newClient = {
       id: Date.now(), ...client,
       createdAt: new Date().toISOString(), notes: [], favorite: false,
     };
     const updated = [...clients, newClient];
     setClients(updated);
-    localStorage.setItem('clients', JSON.stringify(updated));
+    writeLocalJSON('clients', updated);
     addActivity('client_added', `Yeni müşteri eklendi: ${client.name}`);
     addAuditEntry(currentUser, 'CREATE', 'client', newClient.id, `Müşteri oluşturuldu: ${client.name}`);
     showToast(t('toast.clientAdded'), 'success');
-  }, [clients, addActivity, addAuditEntry, currentUser, showToast, t]);
+    const syncResult = await syncEngineRef.current.syncClientCreate(newClient);
+    refreshSyncStats();
+    if (syncResult.status === 'queued') {
+      showToast('Musteri offline kuyruğa alindi', 'warning');
+    }
+  }, [clients, addActivity, addAuditEntry, currentUser, showToast, t, refreshSyncStats]);
 
   // ── MÜŞTERİYE NOT ───────────────────────────────────────────────
-  const addClientNote = useCallback((clientId, noteText) => {
+  const addClientNote = useCallback(async (clientId, noteText) => {
     const updated = clients.map(c =>
       c.id === clientId
         ? { ...c, notes: [...(c.notes || []), { text: noteText, timestamp: new Date().toISOString() }] }
         : c
     );
     setClients(updated);
-    localStorage.setItem('clients', JSON.stringify(updated));
+    writeLocalJSON('clients', updated);
+    const changed = updated.find(c => c.id === clientId);
+    if (changed) {
+      const syncResult = await syncEngineRef.current.syncClientUpdate(clientId, changed);
+      refreshSyncStats();
+      if (syncResult.status === 'queued') {
+        showToast('Musteri notu offline kuyruğa alindi', 'warning');
+      }
+    }
     addAuditEntry(currentUser, 'UPDATE', 'client', clientId, 'Not eklendi');
     showToast('Not eklendi!', 'success');
-  }, [clients, addAuditEntry, currentUser, showToast]);
+  }, [clients, addAuditEntry, currentUser, showToast, refreshSyncStats]);
 
   // ── ARIZA EKLE ──────────────────────────────────────────────────
-  const addIncident = useCallback((incident) => {
+  const addIncident = useCallback(async (incident) => {
     const newIncident = {
       id: Date.now(), ...incident,
       status: 'new', startTime: new Date().toISOString(),
@@ -209,59 +406,82 @@ function AppContent() {
     };
     const updated = [...incidents, newIncident];
     setIncidents(updated);
-    localStorage.setItem('incidents', JSON.stringify(updated));
+    writeLocalJSON('incidents', updated);
     const client = clients.find(c => c.id === incident.clientId);
     addActivity('incident_created', `${client?.name || 'Müşteri'} için yeni arıza kaydı oluşturuldu`);
     addAuditEntry(currentUser, 'CREATE', 'incident', newIncident.id, `Arıza oluşturuldu: ${incident.description}`);
     showToast(t('toast.incidentCreated'), 'warning');
+    const syncResult = await syncEngineRef.current.syncIncidentCreate(newIncident);
+    refreshSyncStats();
+    if (syncResult.status === 'queued') {
+      showToast('Ariza offline kuyruğa alindi', 'warning');
+    }
     // Workflow engine: trigger on new incident
     const wfClient = clients.find(c => c.id === incident.clientId);
     processWorkflowRules('incident_created', newIncident, wfClient, { showToast, addIncidentNote });
     if (newIncident.priority === 'critical') {
       processWorkflowRules('incident_critical', newIncident, wfClient, { showToast, addIncidentNote });
     }
-  }, [incidents, clients, addActivity, addAuditEntry, currentUser, showToast, t]); // eslint-disable-line
+  }, [incidents, clients, addActivity, addAuditEntry, currentUser, showToast, t, refreshSyncStats]); // eslint-disable-line
 
   // ── ARIZA GÜNCELLE (YENİ) ───────────────────────────────────────
-  const updateIncident = useCallback((updatedIncident) => {
+  const updateIncident = useCallback(async (updatedIncident) => {
     const updated = incidents.map(inc =>
       inc.id === updatedIncident.id ? { ...inc, ...updatedIncident } : inc
     );
     setIncidents(updated);
-    localStorage.setItem('incidents', JSON.stringify(updated));
+    writeLocalJSON('incidents', updated);
     // Deadline değiştiyse bildirim sayacını sıfırla
     notifiedRef.current.delete(updatedIncident.id);
-    sessionStorage.setItem('notifiedDeadlines', JSON.stringify([...notifiedRef.current]));
+    writeSessionJSON('notifiedDeadlines', [...notifiedRef.current]);
     addActivity('incident_updated', `Arıza güncellendi: ${updatedIncident.description}`);
     addAuditEntry(currentUser, 'UPDATE', 'incident', updatedIncident.id, `Arıza güncellendi: ${updatedIncident.description}`);
     showToast(t('toast.incidentUpdated'), 'success');
-  }, [incidents, addActivity, addAuditEntry, currentUser, showToast, t]);
+    const syncResult = await syncEngineRef.current.syncIncidentUpdate(updatedIncident.id, updatedIncident);
+    refreshSyncStats();
+    if (syncResult.status === 'queued') {
+      showToast('Ariza guncellemesi offline kuyruğa alindi', 'warning');
+    }
+  }, [incidents, addActivity, addAuditEntry, currentUser, showToast, t, refreshSyncStats]);
 
   // ── DURUM GÜNCELLE ──────────────────────────────────────────────
-  const updateIncidentStatus = useCallback((id, newStatus) => {
+  const updateIncidentStatus = useCallback(async (id, newStatus) => {
     const updated = incidents.map(inc =>
       inc.id === id ? { ...inc, status: newStatus } : inc
     );
     setIncidents(updated);
-    localStorage.setItem('incidents', JSON.stringify(updated));
+    writeLocalJSON('incidents', updated);
     addAuditEntry(currentUser, 'UPDATE', 'incident', id, `Durum güncellendi: ${newStatus}`);
     showToast('Durum güncellendi!', 'success');
-  }, [incidents, addAuditEntry, currentUser, showToast]);
+    const syncResult = await syncEngineRef.current.syncIncidentStatus(id, newStatus);
+    refreshSyncStats();
+    if (syncResult.status === 'queued') {
+      showToast('Durum degisikligi offline kuyruğa alindi', 'warning');
+    }
+  }, [incidents, addAuditEntry, currentUser, showToast, refreshSyncStats]);
 
   // ── ARIZA NOTU ──────────────────────────────────────────────────
-  const addIncidentNote = useCallback((incidentId, noteText) => {
+  const addIncidentNote = useCallback(async (incidentId, noteText) => {
     const updated = incidents.map(inc =>
       inc.id === incidentId
         ? { ...inc, notes: [...(inc.notes || []), { text: noteText, timestamp: new Date().toISOString() }] }
         : inc
     );
     setIncidents(updated);
-    localStorage.setItem('incidents', JSON.stringify(updated));
+    writeLocalJSON('incidents', updated);
+    const changed = updated.find(inc => inc.id === incidentId);
+    if (changed) {
+      const syncResult = await syncEngineRef.current.syncIncidentUpdate(incidentId, changed);
+      refreshSyncStats();
+      if (syncResult.status === 'queued') {
+        showToast('Ariza notu offline kuyruğa alindi', 'warning');
+      }
+    }
     showToast('Not eklendi!', 'success');
-  }, [incidents, showToast]);
+  }, [incidents, showToast, refreshSyncStats]);
 
   // ── ARIZA ÇÖZDÜ ─────────────────────────────────────────────────
-  const resolveIncident = useCallback((id) => {
+  const resolveIncident = useCallback(async (id) => {
     const updated = incidents.map(inc => {
       if (inc.id === id && inc.status !== 'resolved') {
         const endTime  = new Date().toISOString();
@@ -275,22 +495,27 @@ function AppContent() {
       return inc;
     });
     setIncidents(updated);
-    localStorage.setItem('incidents', JSON.stringify(updated));
+    writeLocalJSON('incidents', updated);
     addAuditEntry(currentUser, 'UPDATE', 'incident', id, 'Arıza çözüldü');
     showToast('Arıza çözüldü!', 'success');
+    const syncResult = await syncEngineRef.current.syncIncidentStatus(id, 'resolved');
+    refreshSyncStats();
+    if (syncResult.status === 'queued') {
+      showToast('Cozum durumu offline kuyruğa alindi', 'warning');
+    }
     // Workflow engine: trigger on resolve
     const resolvedInc = updated.find(i => i.id === id);
     if (resolvedInc) {
       const wfClient = clients.find(c => c.id === resolvedInc.clientId);
       processWorkflowRules('incident_resolved', resolvedInc, wfClient, { showToast, addIncidentNote });
     }
-  }, [incidents, clients, addActivity, addAuditEntry, currentUser, showToast]); // eslint-disable-line
+  }, [incidents, clients, addActivity, addAuditEntry, currentUser, showToast, refreshSyncStats]); // eslint-disable-line
 
   // ── DARK MODE ───────────────────────────────────────────────────
   const toggleDarkMode = useCallback(() => {
     const newMode = !darkMode;
     setDarkMode(newMode);
-    localStorage.setItem('darkMode', JSON.stringify(newMode));
+    writeLocalJSON('darkMode', newMode);
   }, [darkMode]);
 
   // ── RENDER ──────────────────────────────────────────────────────
@@ -302,6 +527,8 @@ function AppContent() {
       addClient, setClients, setIncidents, setActivities,
       addClientNote, showToast, darkMode, toggleDarkMode,
       currentUser,
+      canAccessFeature,
+      onNavigate: handleSetActiveTab,
     };
     // Sayfa erişim kontrolü
     if (activeTab !== 'dashboard' && !canAccessPage(activeTab)) {
@@ -348,7 +575,13 @@ function AppContent() {
       case 'quotations': return <QuotationsPage {...commonProps} />;
       case 'modules': return <ModulesPage {...commonProps} />;
       case 'kumescalculator': return <KumesCalculatorPage {...commonProps} />;
-      default:          return <DashboardPage {...commonProps} onNavigate={handleSetActiveTab} />;
+      case 'crmdeals':     return <CRMDealsPage     {...commonProps} />;
+      case 'workorders':   return <WorkOrderPage    {...commonProps} onNavigate={handleSetActiveTab} />;
+      case 'invoices':     return <InvoicePage       {...commonProps} onNavigate={handleSetActiveTab} />;
+      case 'rbac':         return <RBACPage          {...commonProps} />;
+      case 'fieldteam':    return <FieldTeamPage     {...commonProps} />;
+      case 'integrations': return <IntegrationsPage  {...commonProps} />;
+      default:             return <DashboardPage     {...commonProps} onNavigate={handleSetActiveTab} />;
     }
   };
 
@@ -385,7 +618,7 @@ function AppContent() {
       <div className={`main-layout ${sidebarCollapsed ? 'collapsed' : ''}`}>
         <Header
           darkMode={darkMode} toggleDarkMode={toggleDarkMode}
-          notifications={<NotificationCenter incidents={incidents} clients={clients} />}
+          notifications={<NotificationCenter incidents={incidents} clients={clients} onNavigate={handleSetActiveTab} />}
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
           searchComponent={
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', width: '100%' }}>
@@ -398,7 +631,9 @@ function AppContent() {
         />
         <main className="main-content">
           <div className="page-transition" key={activeTab}>
-            {renderPage()}
+            <Suspense fallback={<LoadingSpinner message={t('app.loading')} />}>
+              {renderPage()}
+            </Suspense>
           </div>
         </main>
       </div>
@@ -406,6 +641,18 @@ function AppContent() {
       <QuickActions onAction={handleSetActiveTab} />
       <ThemeCustomizer darkMode={darkMode} />
       <PWAInstallBanner />
+      {showSyncPanel && (
+        <SyncControlPanel
+          status={syncStatus}
+          deadLetters={deadLetters}
+          onFlush={flushSyncQueue}
+          onRequeueDead={requeueDeadLetters}
+          onClearDead={clearDeadLetters}
+        />
+      )}
+      <div onClick={() => setShowSyncPanel(v => !v)}>
+        <SyncStatusBadge status={syncStatus} />
+      </div>
 
       {toast && (
         <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
@@ -419,7 +666,9 @@ function App() {
     <I18nProvider>
       <AuthProvider>
         <AuditProvider>
-          <AppContent />
+          <ErrorBoundary>
+            <AppContent />
+          </ErrorBoundary>
         </AuditProvider>
       </AuthProvider>
     </I18nProvider>
