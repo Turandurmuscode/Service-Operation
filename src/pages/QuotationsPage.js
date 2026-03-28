@@ -43,6 +43,8 @@ const QUOTE_STATUSES = [
 
 const TEMPLATE_STORAGE_KEY = 'sod_quote_templates';
 const COMPANY_STORAGE_KEY = 'sod_quote_company_profile';
+const COMPANY_PROFILES_STORAGE_KEY = 'sod_quote_company_profiles';
+const COMPANY_ACTIVE_PROFILE_STORAGE_KEY = 'sod_quote_active_company_profile_id';
 
 const DEFAULT_TEMPLATES = [
   {
@@ -80,6 +82,22 @@ const DEFAULT_COMPANY = {
   iban: '',
   logoDataUrl: '',
 };
+
+const normalizeCompanyProfile = (profile = {}) => ({
+  id: String(profile.id || `cmp-${uid()}`),
+  name: String(profile.name || ''),
+  address: String(profile.address || ''),
+  phone: String(profile.phone || ''),
+  email: String(profile.email || ''),
+  website: String(profile.website || ''),
+  iban: String(profile.iban || ''),
+  logoDataUrl: String(profile.logoDataUrl || ''),
+});
+
+const createEmptyCompanyProfile = (name = '') => normalizeCompanyProfile({
+  ...DEFAULT_COMPANY,
+  name,
+});
 
 /* ════════════════════════════════════════════════════════════
    HELPERS
@@ -128,7 +146,9 @@ const escapeHtml = (value) => String(value || '')
 export default function QuotationsPage({ darkMode }) {
   const [quotations, setQuotations] = useState([]);
   const [templates, setTemplates] = useState([]);
-  const [companyProfile, setCompanyProfile] = useState(DEFAULT_COMPANY);
+  const [companyProfiles, setCompanyProfiles] = useState([]);
+  const [activeCompanyProfileId, setActiveCompanyProfileId] = useState('');
+  const [companyProfileDraftId, setCompanyProfileDraftId] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterSource, setFilterSource] = useState('all');
@@ -139,6 +159,17 @@ export default function QuotationsPage({ darkMode }) {
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [showCompanyModal, setShowCompanyModal] = useState(false);
   const templateImportInputRef = useRef(null);
+
+  const buildEmptyForm = useCallback(() => ({
+    client: '',
+    clientContact: '',
+    notes: '',
+    taxRate: 20,
+    discount: 0,
+    validDays: 15,
+    issuerProfileId: activeCompanyProfileId,
+    items: [normalizeLineItem({})],
+  }), [activeCompanyProfileId]);
 
   useEffect(() => {
     const saved = localStorage.getItem('sod_quotations');
@@ -157,28 +188,93 @@ export default function QuotationsPage({ darkMode }) {
       localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(DEFAULT_TEMPLATES));
     }
 
-    const savedCompany = localStorage.getItem(COMPANY_STORAGE_KEY);
-    if (savedCompany) {
+    let loadedProfiles = [];
+    const savedCompanyProfiles = localStorage.getItem(COMPANY_PROFILES_STORAGE_KEY);
+    if (savedCompanyProfiles) {
       try {
-        setCompanyProfile({ ...DEFAULT_COMPANY, ...JSON.parse(savedCompany) });
+        const parsedProfiles = JSON.parse(savedCompanyProfiles);
+        if (Array.isArray(parsedProfiles)) {
+          loadedProfiles = parsedProfiles.map(normalizeCompanyProfile);
+        }
       } catch {
-        setCompanyProfile(DEFAULT_COMPANY);
+        loadedProfiles = [];
       }
     }
+
+    if (loadedProfiles.length === 0) {
+      const savedLegacyCompany = localStorage.getItem(COMPANY_STORAGE_KEY);
+      if (savedLegacyCompany) {
+        try {
+          loadedProfiles = [normalizeCompanyProfile(JSON.parse(savedLegacyCompany))];
+        } catch {
+          loadedProfiles = [createEmptyCompanyProfile('')];
+        }
+      } else {
+        loadedProfiles = [createEmptyCompanyProfile('')];
+      }
+    }
+
+    const savedActiveId = localStorage.getItem(COMPANY_ACTIVE_PROFILE_STORAGE_KEY);
+    const resolvedActiveId = loadedProfiles.some((profile) => profile.id === savedActiveId)
+      ? savedActiveId
+      : loadedProfiles[0].id;
+
+    setCompanyProfiles(loadedProfiles);
+    setActiveCompanyProfileId(resolvedActiveId);
+    setCompanyProfileDraftId(resolvedActiveId);
+
+    localStorage.setItem(COMPANY_PROFILES_STORAGE_KEY, JSON.stringify(loadedProfiles));
+    localStorage.setItem(COMPANY_ACTIVE_PROFILE_STORAGE_KEY, resolvedActiveId);
   }, []);
 
   const persist = useCallback((data) => { setQuotations(data); localStorage.setItem('sod_quotations', JSON.stringify(data)); }, []);
   const persistTemplates = useCallback((data) => { setTemplates(data); localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(data)); }, []);
-  const persistCompany = useCallback((data) => {
-    setCompanyProfile(data);
-    localStorage.setItem(COMPANY_STORAGE_KEY, JSON.stringify(data));
+  const persistCompanyProfiles = useCallback((data, nextActiveId) => {
+    const normalized = Array.isArray(data) && data.length > 0
+      ? data.map(normalizeCompanyProfile)
+      : [createEmptyCompanyProfile('')];
+
+    const resolvedActiveId = normalized.some((profile) => profile.id === nextActiveId)
+      ? nextActiveId
+      : normalized[0].id;
+
+    setCompanyProfiles(normalized);
+    setActiveCompanyProfileId(resolvedActiveId);
+    setCompanyProfileDraftId((prev) => (normalized.some((profile) => profile.id === prev) ? prev : resolvedActiveId));
+    localStorage.setItem(COMPANY_PROFILES_STORAGE_KEY, JSON.stringify(normalized));
+    localStorage.setItem(COMPANY_ACTIVE_PROFILE_STORAGE_KEY, resolvedActiveId);
   }, []);
 
-  /* ── Form State ─────────────────────────────────────────── */
-  const emptyForm = { client: '', clientContact: '', notes: '', taxRate: 20, discount: 0, validDays: 15, items: [normalizeLineItem({})] };
-  const [form, setForm] = useState(emptyForm);
+  const getCompanyProfileById = useCallback((id) => (
+    companyProfiles.find((profile) => profile.id === id)
+  ), [companyProfiles]);
 
-  const openCreate = () => { setForm(emptyForm); setModalMode('create'); setEditingId(null); setShowModal(true); };
+  const resolveQuoteCompanyProfile = useCallback((quote) => (
+    getCompanyProfileById(quote?.issuerProfileId)
+    || getCompanyProfileById(activeCompanyProfileId)
+    || companyProfiles[0]
+    || null
+  ), [activeCompanyProfileId, companyProfiles, getCompanyProfileById]);
+
+  const openCompanyModal = useCallback(() => {
+    const fallbackId = activeCompanyProfileId || companyProfiles[0]?.id || '';
+    setCompanyProfileDraftId((prev) => prev || fallbackId);
+    setShowCompanyModal(true);
+  }, [activeCompanyProfileId, companyProfiles]);
+
+  /* ── Form State ─────────────────────────────────────────── */
+  const [form, setForm] = useState({
+    client: '',
+    clientContact: '',
+    notes: '',
+    taxRate: 20,
+    discount: 0,
+    validDays: 15,
+    issuerProfileId: '',
+    items: [normalizeLineItem({})],
+  });
+
+  const openCreate = () => { setForm(buildEmptyForm()); setModalMode('create'); setEditingId(null); setShowModal(true); };
 
   const openEdit = (q) => {
     setForm({
@@ -188,6 +284,7 @@ export default function QuotationsPage({ darkMode }) {
       taxRate: q.taxRate,
       discount: q.discount,
       validDays: 15,
+      issuerProfileId: q.issuerProfileId || activeCompanyProfileId || companyProfiles[0]?.id || '',
       items: [...q.items.map(normalizeLineItem)],
     });
     setModalMode('edit');
@@ -223,6 +320,10 @@ export default function QuotationsPage({ darkMode }) {
     const today = new Date().toISOString().split('T')[0];
     const validUntil = new Date(Date.now() + (form.validDays || 15) * 86400000).toISOString().split('T')[0];
 
+    const selectedProfileId = companyProfiles.some((profile) => profile.id === form.issuerProfileId)
+      ? form.issuerProfileId
+      : (activeCompanyProfileId || companyProfiles[0]?.id || '');
+
     if (modalMode === 'create') {
       const seq = quotations.length + 1;
       const newQ = {
@@ -237,6 +338,7 @@ export default function QuotationsPage({ darkMode }) {
         notes: form.notes,
         taxRate: Number(form.taxRate),
         discount: Number(form.discount),
+        issuerProfileId: selectedProfileId,
         items: form.items.map(normalizeLineItem),
         history: [{ date: today, action: 'Oluşturuldu', user: 'Admin' }],
       };
@@ -251,6 +353,7 @@ export default function QuotationsPage({ darkMode }) {
           notes: form.notes,
           taxRate: Number(form.taxRate),
           discount: Number(form.discount),
+          issuerProfileId: selectedProfileId,
           validUntil,
           items: form.items.map(normalizeLineItem),
           history: [...q.history, { date: today, action: 'Düzenlendi', user: 'Admin' }],
@@ -305,6 +408,7 @@ export default function QuotationsPage({ darkMode }) {
       version: 1,
       createdAt: today,
       validUntil: new Date(Date.now() + 15 * 86400000).toISOString().split('T')[0],
+      issuerProfileId: q.issuerProfileId || activeCompanyProfileId || companyProfiles[0]?.id || '',
       items: q.items.map(i => ({ ...i })),
       history: [{ date: today, action: `Kopyalandı (${q.id} üzerinden)`, user: 'Admin' }],
     };
@@ -360,17 +464,25 @@ export default function QuotationsPage({ darkMode }) {
   const onCompanyLogoChange = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    if (!companyProfileDraftId) return;
     const reader = new FileReader();
     reader.onload = () => {
-      persistCompany({ ...companyProfile, logoDataUrl: String(reader.result || '') });
+      const updated = companyProfiles.map((profile) => (
+        profile.id === companyProfileDraftId
+          ? { ...profile, logoDataUrl: String(reader.result || '') }
+          : profile
+      ));
+      persistCompanyProfiles(updated, activeCompanyProfileId);
     };
     reader.readAsDataURL(file);
   };
 
   const downloadQuotePdf = (quote) => {
-    if (!companyProfile.name || !companyProfile.name.trim()) {
+    const quoteCompanyProfile = resolveQuoteCompanyProfile(quote);
+
+    if (!quoteCompanyProfile?.name || !quoteCompanyProfile.name.trim()) {
       alert('PDF indirmeden once Firma Bilgisi ekranindan teklifi veren sirket adini girin.');
-      setShowCompanyModal(true);
+      openCompanyModal();
       return;
     }
 
@@ -393,15 +505,15 @@ export default function QuotationsPage({ darkMode }) {
       </tr>
     `).join('');
 
-    const logoHtml = companyProfile.logoDataUrl
-      ? `<img src="${companyProfile.logoDataUrl}" alt="Logo" style="width:130px;max-height:70px;object-fit:contain;display:block;" />`
+    const logoHtml = quoteCompanyProfile.logoDataUrl
+      ? `<img src="${quoteCompanyProfile.logoDataUrl}" alt="Logo" style="width:130px;max-height:70px;object-fit:contain;display:block;" />`
       : '';
 
     const companyLines = [
-      companyProfile.address,
-      [companyProfile.phone && `Tel: ${companyProfile.phone}`, companyProfile.email && `E-posta: ${companyProfile.email}`].filter(Boolean).join(' · '),
-      companyProfile.website && `Web: ${companyProfile.website}`,
-      companyProfile.iban && `IBAN: ${companyProfile.iban}`,
+      quoteCompanyProfile.address,
+      [quoteCompanyProfile.phone && `Tel: ${quoteCompanyProfile.phone}`, quoteCompanyProfile.email && `E-posta: ${quoteCompanyProfile.email}`].filter(Boolean).join(' · '),
+      quoteCompanyProfile.website && `Web: ${quoteCompanyProfile.website}`,
+      quoteCompanyProfile.iban && `IBAN: ${quoteCompanyProfile.iban}`,
     ].filter(Boolean).map((line) => `<div>${escapeHtml(line)}</div>`).join('');
 
     popup.document.write(`
@@ -430,7 +542,7 @@ export default function QuotationsPage({ darkMode }) {
           <div class="head">
             <div>
               ${logoHtml}
-              <div style="font-size:18px;font-weight:700;color:#0f172a;${companyProfile.logoDataUrl ? 'margin-top:6px;' : ''}">${escapeHtml(companyProfile.name)}</div>
+              <div style="font-size:18px;font-weight:700;color:#0f172a;${quoteCompanyProfile.logoDataUrl ? 'margin-top:6px;' : ''}">${escapeHtml(quoteCompanyProfile.name)}</div>
               <div class="company">
                 ${companyLines}
               </div>
@@ -613,8 +725,39 @@ export default function QuotationsPage({ darkMode }) {
   }
 
   function renderCompanyModal() {
-    const profile = companyProfile;
-    const setProfileField = (key, value) => persistCompany({ ...profile, [key]: value });
+    const profile = getCompanyProfileById(companyProfileDraftId) || companyProfiles[0] || null;
+    if (!profile) return null;
+
+    const setProfileField = (key, value) => {
+      const updated = companyProfiles.map((item) => (
+        item.id === profile.id ? { ...item, [key]: value } : item
+      ));
+      persistCompanyProfiles(updated, activeCompanyProfileId);
+    };
+
+    const addCompanyProfile = () => {
+      const newProfile = createEmptyCompanyProfile(`Firma ${companyProfiles.length + 1}`);
+      persistCompanyProfiles([...companyProfiles, newProfile], activeCompanyProfileId || newProfile.id);
+      setCompanyProfileDraftId(newProfile.id);
+    };
+
+    const removeCompanyProfile = () => {
+      if (companyProfiles.length <= 1) {
+        alert('En az bir firma profili kalmalidir.');
+        return;
+      }
+
+      if (!window.confirm('Bu firma profilini silmek istiyor musunuz?')) return;
+
+      const remainingProfiles = companyProfiles.filter((item) => item.id !== profile.id);
+      const nextActiveId = activeCompanyProfileId === profile.id ? remainingProfiles[0].id : activeCompanyProfileId;
+      persistCompanyProfiles(remainingProfiles, nextActiveId);
+      setCompanyProfileDraftId(remainingProfiles[0].id);
+    };
+
+    const setAsDefaultProfile = () => {
+      persistCompanyProfiles(companyProfiles, profile.id);
+    };
 
     return (
       <div className="qt-modal-overlay" onClick={() => setShowCompanyModal(false)}>
@@ -624,7 +767,24 @@ export default function QuotationsPage({ darkMode }) {
             <button className="qt-modal-close" onClick={() => setShowCompanyModal(false)}>×</button>
           </div>
           <div className="qt-form">
-            <p className="qt-company-help">PDF ciktisinda teklifi veren sirket olarak bu bilgiler kullanilir.</p>
+            <p className="qt-company-help">PDF ciktisinda teklifte secilen firma profili kullanilir.</p>
+            <div className="qt-company-toolbar">
+              <div className="qt-form-group">
+                <label>Firma Profili</label>
+                <select value={profile.id} onChange={(event) => setCompanyProfileDraftId(event.target.value)}>
+                  {companyProfiles.map((item, index) => (
+                    <option key={item.id} value={item.id}>
+                      {(item.name || `Firma ${index + 1}`) + (item.id === activeCompanyProfileId ? ' (Varsayilan)' : '')}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="qt-company-actions-inline">
+                <button className="qt-btn qt-btn-secondary qt-btn-sm" onClick={addCompanyProfile}>{Icons.plus(12)} Profil Ekle</button>
+                <button className="qt-btn qt-btn-secondary qt-btn-sm" onClick={setAsDefaultProfile}>Varsayilan Yap</button>
+                <button className="qt-btn qt-btn-secondary qt-btn-sm" onClick={removeCompanyProfile}>{Icons.trash(12)} Sil</button>
+              </div>
+            </div>
             <div className="qt-form-group"><label>Teklifi Veren Sirket Adi</label><input placeholder="Ornek: ABC Teknik Servis Ltd. Sti." value={profile.name} onChange={(event) => setProfileField('name', event.target.value)} /></div>
             <div className="qt-form-group"><label>Adres</label><input value={profile.address} onChange={(event) => setProfileField('address', event.target.value)} /></div>
             <div className="qt-form-group"><label>Telefon</label><input value={profile.phone} onChange={(event) => setProfileField('phone', event.target.value)} /></div>
@@ -663,6 +823,20 @@ export default function QuotationsPage({ darkMode }) {
             <div className="qt-template-bar">
               <button className="qt-btn qt-btn-secondary qt-btn-sm" onClick={() => setShowTemplateModal(true)}>{Icons.template(14)} Şablondan Yükle</button>
               <button className="qt-btn qt-btn-secondary qt-btn-sm" onClick={saveAsTemplate}>{Icons.tag(14)} Şablon Olarak Kaydet</button>
+            </div>
+
+            <div className="qt-form-group">
+              <label>Teklifte Kullanilacak Firma</label>
+              <div className="qt-company-select-row">
+                <select value={form.issuerProfileId} onChange={(event) => setForm({ ...form, issuerProfileId: event.target.value })}>
+                  {companyProfiles.map((profile, index) => (
+                    <option key={profile.id} value={profile.id}>
+                      {(profile.name || `Firma ${index + 1}`) + (profile.id === activeCompanyProfileId ? ' (Varsayilan)' : '')}
+                    </option>
+                  ))}
+                </select>
+                <button className="qt-btn qt-btn-secondary qt-btn-sm" onClick={openCompanyModal}>Profilleri Duzenle</button>
+              </div>
             </div>
 
             <div className="qt-form-row">
@@ -760,7 +934,7 @@ export default function QuotationsPage({ darkMode }) {
           <p>Müşterilere teklif hazırlayın, takip edin ve faturaya dönüştürün</p>
         </div>
         <div className="qt-header-actions">
-          <button className="qt-btn qt-btn-secondary" onClick={() => setShowCompanyModal(true)}>{Icons.template(14)} Firma Bilgisi</button>
+          <button className="qt-btn qt-btn-secondary" onClick={openCompanyModal}>{Icons.template(14)} Firma Bilgisi</button>
           <button className="qt-btn qt-btn-primary" onClick={openCreate}>{Icons.plus(15)} Yeni Teklif</button>
         </div>
       </div>

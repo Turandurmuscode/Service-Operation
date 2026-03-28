@@ -60,6 +60,7 @@ const FollowUpListPage = lazy(() => import('./pages/FollowUpListPage'));
 const TechnicianSummaryPage = lazy(() => import('./pages/TechnicianSummaryPage'));
 const RecurringIssuesPage = lazy(() => import('./pages/RecurringIssuesPage'));
 const PendingApprovalsPage = lazy(() => import('./pages/PendingApprovalsPage'));
+const PhotoPartRecognitionPage = lazy(() => import('./pages/PhotoPartRecognitionPage'));
 const WorkOrderPage = lazy(() => import('./pages/WorkOrderPage'));
 const InvoicePage = lazy(() => import('./pages/InvoicePage'));
 const RBACPage = lazy(() => import('./pages/RBACPage'));
@@ -399,10 +400,13 @@ function AppContent() {
 
   // ── ARIZA EKLE ──────────────────────────────────────────────────
   const addIncident = useCallback(async (incident) => {
+    const nowIso = new Date().toISOString();
     const newIncident = {
       id: Date.now(), ...incident,
-      status: 'new', startTime: new Date().toISOString(),
+      status: 'new', startTime: nowIso,
+      updatedAt: nowIso,
       endTime: null, duration: null, notes: [],
+      photos: Array.isArray(incident.photos) ? incident.photos : [],
     };
     const updated = [...incidents, newIncident];
     setIncidents(updated);
@@ -426,8 +430,9 @@ function AppContent() {
 
   // ── ARIZA GÜNCELLE (YENİ) ───────────────────────────────────────
   const updateIncident = useCallback(async (updatedIncident) => {
+    const nowIso = new Date().toISOString();
     const updated = incidents.map(inc =>
-      inc.id === updatedIncident.id ? { ...inc, ...updatedIncident } : inc
+      inc.id === updatedIncident.id ? { ...inc, ...updatedIncident, updatedAt: nowIso } : inc
     );
     setIncidents(updated);
     writeLocalJSON('incidents', updated);
@@ -446,8 +451,9 @@ function AppContent() {
 
   // ── DURUM GÜNCELLE ──────────────────────────────────────────────
   const updateIncidentStatus = useCallback(async (id, newStatus) => {
+    const nowIso = new Date().toISOString();
     const updated = incidents.map(inc =>
-      inc.id === id ? { ...inc, status: newStatus } : inc
+      inc.id === id ? { ...inc, status: newStatus, updatedAt: nowIso } : inc
     );
     setIncidents(updated);
     writeLocalJSON('incidents', updated);
@@ -462,9 +468,10 @@ function AppContent() {
 
   // ── ARIZA NOTU ──────────────────────────────────────────────────
   const addIncidentNote = useCallback(async (incidentId, noteText) => {
+    const nowIso = new Date().toISOString();
     const updated = incidents.map(inc =>
       inc.id === incidentId
-        ? { ...inc, notes: [...(inc.notes || []), { text: noteText, timestamp: new Date().toISOString() }] }
+        ? { ...inc, notes: [...(inc.notes || []), { text: noteText, timestamp: nowIso }], updatedAt: nowIso }
         : inc
     );
     setIncidents(updated);
@@ -481,16 +488,25 @@ function AppContent() {
   }, [incidents, showToast, refreshSyncStats]);
 
   // ── ARIZA ÇÖZDÜ ─────────────────────────────────────────────────
-  const resolveIncident = useCallback(async (id) => {
+  const resolveIncident = useCallback(async (id, resolvePayload = {}) => {
+    const nowIso = new Date().toISOString();
+    const resolvePhotos = Array.isArray(resolvePayload.photos) ? resolvePayload.photos : [];
     const updated = incidents.map(inc => {
       if (inc.id === id && inc.status !== 'resolved') {
-        const endTime  = new Date().toISOString();
+        const endTime  = nowIso;
         const duration = Math.floor((new Date(endTime) - new Date(inc.startTime)) / 1000 / 60);
         const slaLimit = inc.slaDeadline || 1440;
         if (duration > slaLimit) addActivity('sla_violation', `Arıza ${duration - slaLimit} dakika geç çözüldü`);
         const client = clients.find(c => c.id === inc.clientId);
         addActivity('incident_resolved', `${client?.name || 'Müşteri'} arızası ${duration} dakikada çözüldü`);
-        return { ...inc, status: 'resolved', endTime, duration };
+        return {
+          ...inc,
+          status: 'resolved',
+          endTime,
+          duration,
+          updatedAt: nowIso,
+          photos: resolvePhotos.length > 0 ? resolvePhotos : (inc.photos || []),
+        };
       }
       return inc;
     });
@@ -498,7 +514,10 @@ function AppContent() {
     writeLocalJSON('incidents', updated);
     addAuditEntry(currentUser, 'UPDATE', 'incident', id, 'Arıza çözüldü');
     showToast('Arıza çözüldü!', 'success');
-    const syncResult = await syncEngineRef.current.syncIncidentStatus(id, 'resolved');
+    const resolvedItem = updated.find(inc => inc.id === id);
+    const syncResult = resolvedItem
+      ? await syncEngineRef.current.syncIncidentUpdate(id, resolvedItem)
+      : await syncEngineRef.current.syncIncidentStatus(id, 'resolved');
     refreshSyncStats();
     if (syncResult.status === 'queued') {
       showToast('Cozum durumu offline kuyruğa alindi', 'warning');
@@ -576,6 +595,7 @@ function AppContent() {
       case 'techsummary':  return <TechnicianSummaryPage {...commonProps} />;
       case 'recurringissues': return <RecurringIssuesPage {...commonProps} />;
       case 'approvals':    return <PendingApprovalsPage {...commonProps} />;
+      case 'partrecognition': return <PhotoPartRecognitionPage {...commonProps} />;
       case 'workorders':   return <WorkOrderPage    {...commonProps} onNavigate={handleSetActiveTab} />;
       case 'invoices':     return <InvoicePage       {...commonProps} onNavigate={handleSetActiveTab} />;
       case 'rbac':         return <RBACPage          {...commonProps} />;

@@ -2,7 +2,13 @@
    QUOTATIONS PAGE – Minimal / Kurumsal
    ══════════════════════════════════════════════════════════════ */
 
-.quotations-page { padding: 0; animation: qtFadeIn 0.3s ease; }
+.quotations-page {
+  padding: 0;
+  animation: qtFadeIn 0.3s ease;
+  --card-bg: var(--bg-surface);
+  --border-color: var(--border);
+  --hover-bg: var(--bg-elevated);
+}
 @keyframes qtFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ── Page Header ──────────────────────────────────────────── */
@@ -143,7 +149,16 @@
 .qt-form-group label { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary, #64748b); text-transform: uppercase; letter-spacing: 0.03em; }
 .qt-form-group input, .qt-form-group select, .qt-form-group textarea { padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color, #e2e8f0); background: var(--card-bg, #fff); font-size: 0.85rem; color: var(--text-primary, #334155); transition: border-color 0.15s; font-family: inherit; }
 .qt-form-group input:focus, .qt-form-group select:focus, .qt-form-group textarea:focus { outline: none; border-color: #6366f1; }
+.qt-form-group input::placeholder,
+.qt-form-group textarea::placeholder {
+  color: var(--text-muted, #94a3b8);
+}
 .qt-company-help { margin: 0; font-size: 0.8rem; color: var(--text-secondary, #64748b); }
+.qt-company-toolbar { display: flex; flex-direction: column; gap: 8px; }
+.qt-company-actions-inline { display: flex; gap: 8px; flex-wrap: wrap; }
+.qt-company-select-row { display: flex; gap: 8px; align-items: center; }
+.qt-company-select-row select { flex: 1; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color, #e2e8f0); background: var(--card-bg, #fff); color: var(--text-primary, #334155); }
+.qt-company-select-row select:focus { outline: none; border-color: #6366f1; }
 .qt-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .qt-form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
 .qt-form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
@@ -191,6 +206,18 @@
 .dark-mode .qt-modal-close { background: var(--hover-bg, #334155); }
 .dark-mode .qt-items-row input, .dark-mode .qt-items-row select { background: var(--card-bg, #1e293b); border-color: var(--border-color, #334155); color: var(--text-primary, #e2e8f0); }
 .dark-mode .qt-items-table td { color: var(--text-primary, #e2e8f0); }
+.dark-mode .qt-form-group input,
+.dark-mode .qt-form-group select,
+.dark-mode .qt-form-group textarea {
+  background: var(--card-bg, #1e293b);
+  border-color: var(--border-color, #334155);
+  color: var(--text-primary, #e2e8f0);
+}
+.dark-mode .qt-company-select-row select {
+  background: var(--card-bg, #1e293b);
+  border-color: var(--border-color, #334155);
+  color: var(--text-primary, #e2e8f0);
+}
 
 .qt-company-logo-preview {
   margin-top: 8px;
@@ -213,6 +240,7 @@
   .qt-col-valid, .qt-col-date, .qt-col-total { display: none; }
   .qt-col-actions { width: 80px; }
   .qt-form-row, .qt-form-row-3 { grid-template-columns: 1fr; }
+  .qt-company-select-row { flex-direction: column; align-items: stretch; }
   .qt-items-header-row { display: none; }
   .qt-items-row { flex-wrap: wrap; }
   .qt-ie-name { flex: 1 1 100%; }

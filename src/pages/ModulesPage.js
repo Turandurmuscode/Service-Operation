@@ -35,6 +35,7 @@ const ALL_MODULES = [
   // Kaynaklar
   { id: 'assets',        label: 'Envanter',           category: 'Kaynaklar',    description: 'Cihaz ve ekipman yönetimi' },
   { id: 'spareparts',    label: 'Yedek Parça',        category: 'Kaynaklar',    description: 'Yedek parça stok takibi' },
+  { id: 'partrecognition', label: 'Foto Parca Tanima', category: 'Kaynaklar',    description: 'Yuklenen fotograftan olasi parca adaylarini bulur' },
   { id: 'knowledgebase', label: 'Bilgi Bankası',      category: 'Kaynaklar',    description: 'Teknik doküman ve çözüm arşivi' },
   { id: 'documents',     label: 'Dokümanlar',         category: 'Kaynaklar',    description: 'Dosya yönetimi ve arşiv' },
   { id: 'remoteaccess',  label: 'Uzak Erişim',        category: 'Kaynaklar',    description: 'Uzaktan bağlantı yönetimi' },

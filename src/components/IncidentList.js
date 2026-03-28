@@ -181,8 +181,115 @@ function EditIncidentModal({ incident, clients, technicians, onSave, onClose }) 
   );
 }
 
+function ResolveIncidentModal({ incident, onClose, onConfirm, requirePhoto }) {
+  const [photos, setPhotos] = useState(Array.isArray(incident.photos) ? incident.photos : []);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const nextPhoto = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        name: file.name,
+        src: String(reader.result || ''),
+        at: new Date().toISOString(),
+      };
+      setPhotos((prev) => [nextPhoto, ...prev].slice(0, 10));
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+  };
+
+  const removePhoto = (photoId) => {
+    setPhotos((prev) => prev.filter((photo) => photo.id !== photoId));
+  };
+
+  const canResolve = !requirePhoto || photos.length > 0;
+
+  return (
+    <div
+      style={{
+        position: 'fixed', inset: 0, zIndex: 2100,
+        background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px',
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          background: 'var(--bg-surface)', border: '1px solid var(--border-strong)',
+          borderRadius: '16px', padding: '22px', width: '100%', maxWidth: '560px',
+          boxShadow: '0 24px 60px rgba(0,0,0,0.5)', maxHeight: '90vh', overflowY: 'auto',
+        }}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+          <h2 style={{ margin: 0, fontSize: '16px' }}>Arıza Kapanış Kanıtı</h2>
+          <button
+            onClick={onClose}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: 'var(--text-secondary)', lineHeight: 1, padding: 0 }}
+          >
+            ✕
+          </button>
+        </div>
+
+        <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '12px' }}>
+          {requirePhoto
+            ? 'Bu sistemde arıza kapatırken en az 1 foto zorunlu. Kapanış kanıtını yükleyin.'
+            : 'Fotoğraf yüklemek opsiyonel. İsterseniz kapanış kanıtı ekleyebilirsiniz.'}
+        </div>
+
+        <div style={{ marginBottom: '12px' }}>
+          <input type="file" accept="image/*" onChange={handleFileChange} />
+        </div>
+
+        {photos.length === 0 ? (
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', padding: '8px 0 4px' }}>
+            Henüz fotoğraf eklenmedi.
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '8px', marginBottom: '12px' }}>
+            {photos.map((photo) => (
+              <div key={photo.id} style={{ border: '1px solid var(--border)', borderRadius: '8px', padding: '6px', background: 'var(--bg-elevated)' }}>
+                <img src={photo.src} alt={photo.name} style={{ width: '100%', height: '90px', objectFit: 'cover', borderRadius: '6px' }} />
+                <div style={{ fontSize: '11px', marginTop: '6px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{photo.name}</div>
+                <button
+                  onClick={() => removePhoto(photo.id)}
+                  className="btn btn-secondary"
+                  style={{ width: '100%', marginTop: '6px', padding: '4px 8px', fontSize: '11px' }}
+                >
+                  Kaldır
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!canResolve && (
+          <div style={{ fontSize: '12px', color: '#ef4444', marginBottom: '8px', fontWeight: 600 }}>
+            Arıza kapatmak için en az bir fotoğraf eklemelisiniz.
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button onClick={onClose} className="btn btn-secondary" style={{ flex: 1 }}>İptal</button>
+          <button
+            onClick={() => canResolve && onConfirm(photos)}
+            className="btn btn-primary"
+            style={{ flex: 2, opacity: canResolve ? 1 : 0.6, cursor: canResolve ? 'pointer' : 'not-allowed' }}
+          >
+            Arızayı Kapat
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── KART GÖRÜNÜMÜ ─────────────────────────────────────────────────
-function IncidentCard({ incident, client, technician, resolveIncident, updateIncidentStatus, addIncidentNote, onEdit }) {
+function IncidentCard({ incident, client, technician, resolveIncident, updateIncidentStatus, addIncidentNote, onEdit, onOpenResolveModal }) {
   const [expanded, setExpanded] = useState(false);
   const priColor = { critical: '#ef4444', medium: '#f59e0b', low: '#10b981' }[incident.priority] || '#94a3b8';
   const priLabel = { critical: 'Kritik', medium: 'Orta', low: 'Düşük' }[incident.priority] || incident.priority;
@@ -261,7 +368,7 @@ function IncidentCard({ incident, client, technician, resolveIncident, updateInc
               <option value="on_hold">Bekle</option>
             </select>
             <button
-              onClick={() => resolveIncident(incident.id)}
+              onClick={() => onOpenResolveModal(incident)}
               className="btn btn-secondary"
               style={{ padding: '4px 10px', fontSize: '11px' }}
             >
@@ -299,7 +406,9 @@ function IncidentList({ incidents, clients, resolveIncident, updateIncidentStatu
   const [expandedIncident, setExpandedIncident] = useState(null);
   const [viewMode,         setViewMode]         = useState('table');
   const [editingIncident,  setEditingIncident]  = useState(null);
+  const [resolvingIncident, setResolvingIncident] = useState(null);
   const [technicians]                           = useState(() => loadJSON('technicians', []));
+  const [requireClosePhoto]                     = useState(() => loadJSON('incidentRequireClosePhoto', false));
 
   const sorted            = [...incidents].sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
   const getClient         = id => clients.find(c => c.id === id);
@@ -366,6 +475,18 @@ function IncidentList({ incidents, clients, resolveIncident, updateIncidentStatu
         />
       )}
 
+      {resolvingIncident && (
+        <ResolveIncidentModal
+          incident={resolvingIncident}
+          requirePhoto={requireClosePhoto}
+          onClose={() => setResolvingIncident(null)}
+          onConfirm={(photos) => {
+            resolveIncident(resolvingIncident.id, { photos });
+            setResolvingIncident(null);
+          }}
+        />
+      )}
+
       {/* Görünüm toggle */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px', marginBottom: '12px' }}>
         <button style={toggleBtn(viewMode === 'table')} onClick={() => setViewMode('table')}>Tablo</button>
@@ -385,6 +506,7 @@ function IncidentList({ incidents, clients, resolveIncident, updateIncidentStatu
               updateIncidentStatus={updateIncidentStatus}
               addIncidentNote={addIncidentNote}
               onEdit={setEditingIncident}
+              onOpenResolveModal={setResolvingIncident}
             />
           ))}
         </div>
@@ -497,7 +619,7 @@ function IncidentList({ incidents, clients, resolveIncident, updateIncidentStatu
                                 <option value="on_hold">Bekle</option>
                               </select>
                               <button
-                                onClick={() => resolveIncident(inc.id)}
+                                onClick={() => setResolvingIncident(inc)}
                                 className="btn btn-secondary"
                                 style={{ padding: '4px 8px', fontSize: '11px' }}
                               >

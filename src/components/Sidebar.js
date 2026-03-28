@@ -138,6 +138,14 @@ const Icons = {
       <path d="M8 2v2M8 12v2M2 8h2M12 8h2" strokeLinecap="round"/>
     </svg>
   ),
+  partrecognition: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="1.5" y="2" width="9" height="12" rx="1.5"/>
+      <circle cx="12" cy="6" r="2.2"/>
+      <path d="M12 8.2V10M10.2 10h3.6" strokeLinecap="round"/>
+      <path d="M3.5 5.5h5M3.5 8h3" strokeLinecap="round"/>
+    </svg>
+  ),
   contracts: (
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
       <path d="M3 2h7l3 3v9H3V2Z" strokeLinejoin="round"/>
@@ -324,9 +332,9 @@ function Sidebar({
   }, []);
 
   const ROLE_PAGES = {
-    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','modules','crmdeals','followups','techsummary','recurringissues','approvals','workorders','invoices','rbac','fieldteam','integrations'],
-    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','crmdeals','followups','techsummary','recurringissues','approvals','workorders','invoices','fieldteam'],
-    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','knowledgebase','documents','projects','fieldteam','techsummary','followups'],
+    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','partrecognition','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','modules','crmdeals','followups','techsummary','recurringissues','approvals','workorders','invoices','rbac','fieldteam','integrations'],
+    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','partrecognition','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','crmdeals','followups','techsummary','recurringissues','approvals','workorders','invoices','fieldteam'],
+    technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','partrecognition','knowledgebase','documents','projects','fieldteam','techsummary','followups'],
   };
   const allowedPages = currentUser ? (ROLE_PAGES[currentUser.role] || []) : Object.values(ROLE_PAGES).flat();
 
@@ -364,6 +372,7 @@ function Sidebar({
       items: [
         { id: 'assets',        icon: Icons.assets,        label: 'Envanter' },
         { id: 'spareparts',    icon: Icons.spareparts,    label: 'Yedek Parça' },
+        { id: 'partrecognition', icon: Icons.partrecognition, label: 'Foto Parca Tanima' },
         { id: 'knowledgebase', icon: Icons.knowledgebase, label: 'Bilgi Bankası' },
         { id: 'documents',     icon: Icons.documents,     label: 'Dokümanlar' },
         { id: 'remoteaccess',  icon: Icons.remoteaccess,  label: 'Uzak Erişim' },

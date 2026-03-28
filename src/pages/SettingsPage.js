@@ -42,6 +42,7 @@ function SettingsPage({
 }) {
   const importRef = useRef(null);
   const { language, setLanguage } = useI18n();
+  const [requireIncidentClosePhoto, setRequireIncidentClosePhoto] = useState(() => loadJSON('incidentRequireClosePhoto', false));
 
   // ── Teknisyenler ──
   const [technicians, setTechnicians] = useState(() => loadJSON('technicians', []));
@@ -155,15 +156,22 @@ function SettingsPage({
 
   const handleClearAll = () => {
     if (!window.confirm('Tüm veriler silinecek! Geri alınamaz.')) return;
-    ['clients', 'incidents', 'activities', 'technicians', 'incidentTemplates'].forEach(k => localStorage.removeItem(k));
+    ['clients', 'incidents', 'activities', 'technicians', 'incidentTemplates', 'incidentRequireClosePhoto'].forEach(k => localStorage.removeItem(k));
     if (showToast) showToast('🗑️ Tüm veriler silindi!', 'warning');
     setTimeout(() => window.location.reload(), 1500);
   };
 
   const storageSizeKB = () => {
     let total = 0;
-    ['clients', 'incidents', 'activities', 'technicians', 'incidentTemplates'].forEach(k => { total += (localStorage.getItem(k) || '').length; });
+    ['clients', 'incidents', 'activities', 'technicians', 'incidentTemplates', 'incidentRequireClosePhoto'].forEach(k => { total += (localStorage.getItem(k) || '').length; });
     return (total / 1024).toFixed(1);
+  };
+
+  const toggleRequireIncidentClosePhoto = () => {
+    const next = !requireIncidentClosePhoto;
+    setRequireIncidentClosePhoto(next);
+    localStorage.setItem('incidentRequireClosePhoto', JSON.stringify(next));
+    if (showToast) showToast(next ? 'Ariza kapatmada foto zorunlulugu acildi.' : 'Ariza kapatmada foto zorunlulugu kapatildi.', 'success');
   };
 
   const inputStyle = {
@@ -211,6 +219,15 @@ function SettingsPage({
               onClick={() => setLanguage('en')}
             >🇬🇧 English</button>
           </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderTop: '1px solid var(--border)' }}>
+          <div>
+            <div style={{ fontWeight: '600', marginBottom: '4px' }}>Arıza Kapatırken Foto Zorunlu</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Acilabiliyor: Ariza cozumunde en az 1 kapanis fotograft zorunlu olsun</div>
+          </div>
+          <button className={`btn ${requireIncidentClosePhoto ? 'btn-warning' : 'btn-secondary'}`} onClick={toggleRequireIncidentClosePhoto}>
+            {requireIncidentClosePhoto ? 'Açık' : 'Kapalı'}
+          </button>
         </div>
       </div>
 

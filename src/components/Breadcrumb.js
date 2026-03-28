@@ -18,6 +18,7 @@ function Breadcrumb({ activeTab, setActiveTab }) {
     'recurringissues': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Tekrarlayan Ariza', icon: 'tool' }],
     'approvals': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Bekleyen Onaylar', icon: 'clipboard' }],
     'quotations': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Teklifler', icon: 'clipboard' }],
+    'partrecognition': [{ label: 'Dashboard', icon: 'chart', tab: 'dashboard' }, { label: 'Foto Parca Tanima', icon: 'tool' }],
   };
 
   const currentPath = paths[activeTab] || paths['dashboard'];
