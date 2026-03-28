@@ -204,10 +204,6 @@ const translations = {
     'modules.subtitle': 'Modülleri açıp kapatarak sistemi özelleştirin',
     'nav.modules': 'Modüller',
 
-    // Kümes Hesaplayıcı
-    'kumescalculator.title': 'Kümes Hesaplayıcı',
-    'kumescalculator.subtitle': 'Kümes boyutlarına göre malzeme ve maliyet hesaplayın',
-    'nav.kumescalculator': 'Kümes Hesaplayıcı',
   },
 
   en: {
@@ -412,10 +408,6 @@ const translations = {
     'modules.subtitle': 'Customize the system by enabling or disabling modules',
     'nav.modules': 'Modules',
 
-    // Poultry House Calculator
-    'kumescalculator.title': 'Poultry House Calculator',
-    'kumescalculator.subtitle': 'Calculate materials and costs based on house dimensions',
-    'nav.kumescalculator': 'House Calculator',
   },
 };
 

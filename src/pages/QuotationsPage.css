@@ -143,6 +143,7 @@
 .qt-form-group label { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary, #64748b); text-transform: uppercase; letter-spacing: 0.03em; }
 .qt-form-group input, .qt-form-group select, .qt-form-group textarea { padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color, #e2e8f0); background: var(--card-bg, #fff); font-size: 0.85rem; color: var(--text-primary, #334155); transition: border-color 0.15s; font-family: inherit; }
 .qt-form-group input:focus, .qt-form-group select:focus, .qt-form-group textarea:focus { outline: none; border-color: #6366f1; }
+.qt-company-help { margin: 0; font-size: 0.8rem; color: var(--text-secondary, #64748b); }
 .qt-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .qt-form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
 .qt-form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
@@ -160,6 +161,7 @@
 .qt-ie-qty { width: 55px; flex-shrink: 0; text-align: right; }
 .qt-ie-unit { width: 55px; flex-shrink: 0; }
 .qt-ie-price { width: 80px; flex-shrink: 0; text-align: right; }
+.qt-ie-cost { width: 90px; flex-shrink: 0; text-align: right; }
 .qt-ie-total { width: 90px; flex-shrink: 0; text-align: right; font-size: 0.8rem; font-weight: 700; color: var(--text-primary, #334155); }
 .qt-ie-act { width: 28px; flex-shrink: 0; }
 .qt-ie-remove { border: none; background: none; cursor: pointer; color: var(--text-secondary, #cbd5e1); display: flex; padding: 2px; border-radius: 4px; transition: all 0.15s; }
@@ -167,6 +169,7 @@
 
 .qt-form-totals { display: flex; flex-direction: column; gap: 3px; max-width: 260px; margin-left: auto; padding: 10px 14px; background: var(--hover-bg, #f8fafc); border-radius: 8px; }
 .qt-ft-row { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--text-primary, #334155); }
+.qt-ft-margin { color: #0f766e; }
 .qt-ft-grand { font-size: 0.95rem; font-weight: 700; color: #6366f1; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 6px; margin-top: 4px; }
 
 /* ── Template Picker ──────────────────────────────────────── */
@@ -213,7 +216,7 @@
   .qt-items-header-row { display: none; }
   .qt-items-row { flex-wrap: wrap; }
   .qt-ie-name { flex: 1 1 100%; }
-  .qt-ie-cat, .qt-ie-qty, .qt-ie-unit, .qt-ie-price { flex: 1; min-width: 60px; }
+  .qt-ie-cat, .qt-ie-qty, .qt-ie-unit, .qt-ie-price, .qt-ie-cost { flex: 1; min-width: 60px; }
   .qt-modal { margin: 8px; }
   .qt-preview-header { flex-direction: column; }
   .qt-preview-actions { width: 100%; overflow-x: auto; }

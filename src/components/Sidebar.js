@@ -219,13 +219,6 @@ const Icons = {
       <path d="M5 8l2 2 4-4" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
-  kumescalculator: (
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M2 4l6-2.5L14 4v5l-6 2.5L2 9V4Z" strokeLinejoin="round"/>
-      <path d="M2 4l6 2.5 6-2.5M8 6.5V14" strokeLinecap="round"/>
-      <path d="M2 9v2.5l6 2.5 6-2.5V9" strokeLinejoin="round"/>
-    </svg>
-  ),
   workorders: (
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
       <path d="M10 2a4 4 0 0 1 1 7.9L6 14.5a1.5 1.5 0 0 1-2-2l4.6-4.9A4 4 0 0 1 10 2Z" strokeLinejoin="round"/>
@@ -268,29 +261,11 @@ const Icons = {
       <path d="M12 2l1.5 1.5M4 2L2.5 3.5" strokeLinecap="round"/>
     </svg>
   ),
-  csat: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  ),
   remoteaccess: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
       <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
       <path d="M8 21h8M12 17v4"/>
       <path d="M7 10h.01M12 10h.01M17 10h.01" strokeLinecap="round"/>
-    </svg>
-  ),
-  techperformance: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" strokeLinecap="round" strokeLinejoin="round"/>
-      <circle cx="8.5" cy="7" r="4"/>
-      <path d="M17 11l2 2 4-4" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  ),
-  sladashboard: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="12" cy="12" r="10"/>
-      <path d="M12 6v6l4 2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
   chevronLeft:  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 4L6 8l4 4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
@@ -349,8 +324,8 @@ function Sidebar({
   }, []);
 
   const ROLE_PAGES = {
-    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','modules','kumescalculator','crmdeals','followups','techsummary','recurringissues','approvals','workorders','invoices','rbac','fieldteam','integrations'],
-    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','kumescalculator','crmdeals','followups','techsummary','recurringissues','approvals','workorders','invoices','fieldteam'],
+    admin:      ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','settings','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','modules','crmdeals','followups','techsummary','recurringissues','approvals','workorders','invoices','rbac','fieldteam','integrations'],
+    manager:    ['dashboard','incidents','clients','kanban','analytics','calendar','reports','assets','timesheet','messaging','checklists','costtracking','announcements','contactlog','activityfeed','workflowrules','spareparts','contracts','knowledgebase','scheduledmaintenance','remoteaccess','documents','projects','quotations','crmdeals','followups','techsummary','recurringissues','approvals','workorders','invoices','fieldteam'],
     technician: ['dashboard','incidents','calendar','timesheet','messaging','checklists','announcements','activityfeed','spareparts','knowledgebase','documents','projects','fieldteam','techsummary','followups'],
   };
   const allowedPages = currentUser ? (ROLE_PAGES[currentUser.role] || []) : Object.values(ROLE_PAGES).flat();
@@ -405,12 +380,6 @@ function Sidebar({
         { id: 'contracts',    icon: Icons.contracts,    label: 'Sözleşmeler' },
         { id: 'quotations',  icon: Icons.quotations,  label: 'Teklifler' },
         { id: 'invoices',     icon: Icons.invoices,     label: 'Faturalar' },
-      ],
-    },
-    {
-      label: 'Sektörel',
-      items: [
-        { id: 'kumescalculator', icon: Icons.kumescalculator, label: 'Kümes Hesaplayıcı' },
       ],
     },
     {

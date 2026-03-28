@@ -33,7 +33,7 @@ export const DEMO_USERS = [
 export const ROLE_PERMISSIONS = {
   admin: {
     label: 'Admin',
-    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'settings', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules', 'spareparts', 'contracts', 'knowledgebase', 'scheduledmaintenance', 'remoteaccess', 'documents', 'projects', 'quotations', 'modules', 'kumescalculator', 'crmdeals', 'followups', 'techsummary', 'recurringissues', 'approvals', 'workorders', 'invoices', 'rbac', 'fieldteam', 'integrations'],
+    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'settings', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules', 'spareparts', 'contracts', 'knowledgebase', 'scheduledmaintenance', 'remoteaccess', 'documents', 'projects', 'quotations', 'modules', 'crmdeals', 'followups', 'techsummary', 'recurringissues', 'approvals', 'workorders', 'invoices', 'rbac', 'fieldteam', 'integrations'],
     canCreate: true,
     canEdit: true,
     canDelete: true,
@@ -42,7 +42,7 @@ export const ROLE_PERMISSIONS = {
   },
   manager: {
     label: 'Yönetici',
-    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules', 'spareparts', 'contracts', 'knowledgebase', 'scheduledmaintenance', 'remoteaccess', 'documents', 'projects', 'quotations', 'kumescalculator', 'crmdeals', 'followups', 'techsummary', 'recurringissues', 'approvals', 'workorders', 'invoices', 'fieldteam'],
+    pages: ['dashboard', 'incidents', 'clients', 'kanban', 'analytics', 'calendar', 'reports', 'assets', 'timesheet', 'messaging', 'checklists', 'costtracking', 'announcements', 'contactlog', 'activityfeed', 'workflowrules', 'spareparts', 'contracts', 'knowledgebase', 'scheduledmaintenance', 'remoteaccess', 'documents', 'projects', 'quotations', 'crmdeals', 'followups', 'techsummary', 'recurringissues', 'approvals', 'workorders', 'invoices', 'fieldteam'],
     canCreate: true,
     canEdit: true,
     canDelete: false,

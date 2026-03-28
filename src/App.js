@@ -55,7 +55,6 @@ const DocumentsPage = lazy(() => import('./pages/DocumentsPage'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
 const QuotationsPage = lazy(() => import('./pages/QuotationsPage'));
 const ModulesPage = lazy(() => import('./pages/ModulesPage'));
-const KumesCalculatorPage = lazy(() => import('./pages/KumesCalculatorPage'));
 const CRMDealsPage = lazy(() => import('./pages/CRMDealsPage'));
 const FollowUpListPage = lazy(() => import('./pages/FollowUpListPage'));
 const TechnicianSummaryPage = lazy(() => import('./pages/TechnicianSummaryPage'));
@@ -572,7 +571,6 @@ function AppContent() {
       case 'projects': return <ProjectsPage {...commonProps} />;
       case 'quotations': return <QuotationsPage {...commonProps} />;
       case 'modules': return <ModulesPage {...commonProps} />;
-      case 'kumescalculator': return <KumesCalculatorPage {...commonProps} />;
       case 'crmdeals':     return <CRMDealsPage     {...commonProps} />;
       case 'followups':    return <FollowUpListPage {...commonProps} />;
       case 'techsummary':  return <TechnicianSummaryPage {...commonProps} />;

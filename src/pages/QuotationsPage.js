@@ -72,12 +72,12 @@ const DEFAULT_TEMPLATES = [
 ];
 
 const DEFAULT_COMPANY = {
-  name: 'Scor-Pi Servis Operasyonlari',
-  address: 'Istanbul / Turkiye',
-  phone: '+90 (212) 000 00 00',
-  email: 'teklif@scor-pi.com',
-  website: 'www.scor-pi.com',
-  iban: 'TR00 0000 0000 0000 0000 0000 00',
+  name: '',
+  address: '',
+  phone: '',
+  email: '',
+  website: '',
+  iban: '',
   logoDataUrl: '',
 };
 
@@ -95,6 +95,25 @@ const calcTotal = (items, taxRate, discount) => {
   const tax = afterDisc * (taxRate / 100);
   return { subtotal: sub, discountAmount: disc, afterDiscount: afterDisc, taxAmount: tax, total: afterDisc + tax };
 };
+
+const calcMarginPreview = (items, discount = 0) => {
+  const costSubtotal = items.reduce((sum, item) => sum + ((item.qty || 0) * (item.unitCost || 0)), 0);
+  const revenueSubtotal = calcSubtotal(items);
+  const discountAmount = revenueSubtotal * ((Number(discount) || 0) / 100);
+  const netRevenue = revenueSubtotal - discountAmount;
+  const grossProfit = netRevenue - costSubtotal;
+  const marginPct = netRevenue > 0 ? (grossProfit / netRevenue) * 100 : 0;
+  return { costSubtotal, netRevenue, grossProfit, marginPct };
+};
+
+const normalizeLineItem = (item = {}) => ({
+  name: String(item.name || 'Kalem').trim(),
+  qty: Number(item.qty) || 1,
+  unit: String(item.unit || 'adet').trim(),
+  unitPrice: Number(item.unitPrice) || 0,
+  unitCost: Number(item.unitCost) || 0,
+  category: ['hizmet', 'parça', 'işçilik'].includes(item.category) ? item.category : 'hizmet',
+});
 
 const escapeHtml = (value) => String(value || '')
   .replaceAll('&', '&amp;')
@@ -156,25 +175,33 @@ export default function QuotationsPage({ darkMode }) {
   }, []);
 
   /* ── Form State ─────────────────────────────────────────── */
-  const emptyForm = { client: '', clientContact: '', notes: '', taxRate: 20, discount: 0, validDays: 15, items: [{ name: '', qty: 1, unit: 'adet', unitPrice: 0, category: 'hizmet' }] };
+  const emptyForm = { client: '', clientContact: '', notes: '', taxRate: 20, discount: 0, validDays: 15, items: [normalizeLineItem({})] };
   const [form, setForm] = useState(emptyForm);
 
   const openCreate = () => { setForm(emptyForm); setModalMode('create'); setEditingId(null); setShowModal(true); };
 
   const openEdit = (q) => {
-    setForm({ client: q.client, clientContact: q.clientContact, notes: q.notes, taxRate: q.taxRate, discount: q.discount, validDays: 15, items: [...q.items] });
+    setForm({
+      client: q.client,
+      clientContact: q.clientContact,
+      notes: q.notes,
+      taxRate: q.taxRate,
+      discount: q.discount,
+      validDays: 15,
+      items: [...q.items.map(normalizeLineItem)],
+    });
     setModalMode('edit');
     setEditingId(q.id);
     setShowModal(true);
   };
 
   const applyTemplate = (tpl) => {
-    setForm(prev => ({ ...prev, items: [...tpl.items.map(i => ({ ...i }))] }));
+    setForm(prev => ({ ...prev, items: [...tpl.items.map(normalizeLineItem)] }));
     setShowTemplateModal(false);
   };
 
   const addItem = () => {
-    setForm(prev => ({ ...prev, items: [...prev.items, { name: '', qty: 1, unit: 'adet', unitPrice: 0, category: 'hizmet' }] }));
+    setForm(prev => ({ ...prev, items: [...prev.items, normalizeLineItem({})] }));
   };
 
   const removeItem = (idx) => {
@@ -183,7 +210,10 @@ export default function QuotationsPage({ darkMode }) {
 
   const updateItem = (idx, field, value) => {
     setForm(prev => {
-      const items = prev.items.map((item, i) => i === idx ? { ...item, [field]: field === 'qty' || field === 'unitPrice' ? Number(value) : value } : item);
+      const items = prev.items.map((item, i) => i === idx ? {
+        ...item,
+        [field]: field === 'qty' || field === 'unitPrice' || field === 'unitCost' ? Number(value) : value,
+      } : item);
       return { ...prev, items };
     });
   };
@@ -207,7 +237,7 @@ export default function QuotationsPage({ darkMode }) {
         notes: form.notes,
         taxRate: Number(form.taxRate),
         discount: Number(form.discount),
-        items: form.items,
+        items: form.items.map(normalizeLineItem),
         history: [{ date: today, action: 'Oluşturuldu', user: 'Admin' }],
       };
       persist([newQ, ...quotations]);
@@ -222,7 +252,7 @@ export default function QuotationsPage({ darkMode }) {
           taxRate: Number(form.taxRate),
           discount: Number(form.discount),
           validUntil,
-          items: form.items,
+          items: form.items.map(normalizeLineItem),
           history: [...q.history, { date: today, action: 'Düzenlendi', user: 'Admin' }],
         };
       }));
@@ -284,7 +314,7 @@ export default function QuotationsPage({ darkMode }) {
   const saveAsTemplate = () => {
     const name = prompt('Şablon adı:');
     if (!name) return;
-    persistTemplates([...templates, { id: 'tpl-' + uid(), name, items: form.items.map(i => ({ ...i })) }]);
+    persistTemplates([...templates, { id: 'tpl-' + uid(), name, items: form.items.map(normalizeLineItem) }]);
     alert('Şablon kaydedildi!');
   };
 
@@ -307,11 +337,7 @@ export default function QuotationsPage({ darkMode }) {
           .map((tpl) => ({
             ...tpl,
             items: tpl.items.map((item) => ({
-              name: String(item.name || 'Kalem').trim(),
-              qty: Number(item.qty) || 1,
-              unit: String(item.unit || 'adet').trim(),
-              unitPrice: Number(item.unitPrice) || 0,
-              category: ['hizmet', 'parça', 'işçilik'].includes(item.category) ? item.category : 'hizmet',
+              ...normalizeLineItem(item),
             })),
           }));
 
@@ -342,6 +368,12 @@ export default function QuotationsPage({ darkMode }) {
   };
 
   const downloadQuotePdf = (quote) => {
+    if (!companyProfile.name || !companyProfile.name.trim()) {
+      alert('PDF indirmeden once Firma Bilgisi ekranindan teklifi veren sirket adini girin.');
+      setShowCompanyModal(true);
+      return;
+    }
+
     const calc = calcTotal(quote.items, quote.taxRate, quote.discount);
     const popup = window.open('', '_blank', 'width=900,height=760');
     if (!popup) {
@@ -362,8 +394,15 @@ export default function QuotationsPage({ darkMode }) {
     `).join('');
 
     const logoHtml = companyProfile.logoDataUrl
-      ? `<img src="${companyProfile.logoDataUrl}" alt="Logo" style="width:130px;max-height:70px;object-fit:contain;" />`
-      : `<div style="font-size:18px;font-weight:700;color:#0f172a;">${escapeHtml(companyProfile.name)}</div>`;
+      ? `<img src="${companyProfile.logoDataUrl}" alt="Logo" style="width:130px;max-height:70px;object-fit:contain;display:block;" />`
+      : '';
+
+    const companyLines = [
+      companyProfile.address,
+      [companyProfile.phone && `Tel: ${companyProfile.phone}`, companyProfile.email && `E-posta: ${companyProfile.email}`].filter(Boolean).join(' · '),
+      companyProfile.website && `Web: ${companyProfile.website}`,
+      companyProfile.iban && `IBAN: ${companyProfile.iban}`,
+    ].filter(Boolean).map((line) => `<div>${escapeHtml(line)}</div>`).join('');
 
     popup.document.write(`
       <!doctype html>
@@ -391,11 +430,9 @@ export default function QuotationsPage({ darkMode }) {
           <div class="head">
             <div>
               ${logoHtml}
+              <div style="font-size:18px;font-weight:700;color:#0f172a;${companyProfile.logoDataUrl ? 'margin-top:6px;' : ''}">${escapeHtml(companyProfile.name)}</div>
               <div class="company">
-                <div>${escapeHtml(companyProfile.address)}</div>
-                <div>Tel: ${escapeHtml(companyProfile.phone)} · E-posta: ${escapeHtml(companyProfile.email)}</div>
-                <div>Web: ${escapeHtml(companyProfile.website)}</div>
-                <div>IBAN: ${escapeHtml(companyProfile.iban)}</div>
+                ${companyLines}
               </div>
             </div>
             <div class="meta">
@@ -587,7 +624,8 @@ export default function QuotationsPage({ darkMode }) {
             <button className="qt-modal-close" onClick={() => setShowCompanyModal(false)}>×</button>
           </div>
           <div className="qt-form">
-            <div className="qt-form-group"><label>Firma Adı</label><input value={profile.name} onChange={(event) => setProfileField('name', event.target.value)} /></div>
+            <p className="qt-company-help">PDF ciktisinda teklifi veren sirket olarak bu bilgiler kullanilir.</p>
+            <div className="qt-form-group"><label>Teklifi Veren Sirket Adi</label><input placeholder="Ornek: ABC Teknik Servis Ltd. Sti." value={profile.name} onChange={(event) => setProfileField('name', event.target.value)} /></div>
             <div className="qt-form-group"><label>Adres</label><input value={profile.address} onChange={(event) => setProfileField('address', event.target.value)} /></div>
             <div className="qt-form-group"><label>Telefon</label><input value={profile.phone} onChange={(event) => setProfileField('phone', event.target.value)} /></div>
             <div className="qt-form-group"><label>E-posta</label><input value={profile.email} onChange={(event) => setProfileField('email', event.target.value)} /></div>
@@ -612,6 +650,7 @@ export default function QuotationsPage({ darkMode }) {
      ═══════════════════════════════════════════════════════════ */
   function renderModal() {
     const calc = calcTotal(form.items, form.taxRate, form.discount);
+    const margin = calcMarginPreview(form.items, form.discount);
     return (
       <div className="qt-modal-overlay" onClick={() => setShowModal(false)}>
         <div className="qt-modal qt-modal-lg" onClick={e => e.stopPropagation()}>
@@ -665,6 +704,7 @@ export default function QuotationsPage({ darkMode }) {
                 <span className="qt-ie-qty">Miktar</span>
                 <span className="qt-ie-unit">Birim</span>
                 <span className="qt-ie-price">Birim Fiyat</span>
+                <span className="qt-ie-cost">Birim Maliyet</span>
                 <span className="qt-ie-total">Toplam</span>
                 <span className="qt-ie-act"></span>
               </div>
@@ -679,6 +719,7 @@ export default function QuotationsPage({ darkMode }) {
                   <input className="qt-ie-qty" type="number" min="1" value={item.qty} onChange={e => updateItem(i, 'qty', e.target.value)} />
                   <input className="qt-ie-unit" value={item.unit} onChange={e => updateItem(i, 'unit', e.target.value)} />
                   <input className="qt-ie-price" type="number" min="0" value={item.unitPrice} onChange={e => updateItem(i, 'unitPrice', e.target.value)} />
+                  <input className="qt-ie-cost" type="number" min="0" value={item.unitCost || 0} onChange={e => updateItem(i, 'unitCost', e.target.value)} />
                   <span className="qt-ie-total">{fmtMoney(item.qty * item.unitPrice)}</span>
                   <button className="qt-ie-remove" onClick={() => removeItem(i)}>{Icons.trash(13)}</button>
                 </div>
@@ -691,6 +732,9 @@ export default function QuotationsPage({ darkMode }) {
               <div className="qt-ft-row"><span>Ara Toplam</span><span>{fmtMoney(calc.subtotal)}</span></div>
               {form.discount > 0 && <div className="qt-ft-row"><span>İskonto (%{form.discount})</span><span>-{fmtMoney(calc.discountAmount)}</span></div>}
               <div className="qt-ft-row"><span>KDV (%{form.taxRate})</span><span>{fmtMoney(calc.taxAmount)}</span></div>
+              <div className="qt-ft-row qt-ft-margin"><span>Maliyet Toplam</span><span>{fmtMoney(margin.costSubtotal)}</span></div>
+              <div className="qt-ft-row qt-ft-margin"><span>Brut Kar</span><span>{fmtMoney(margin.grossProfit)}</span></div>
+              <div className="qt-ft-row qt-ft-margin"><span>Kar Marji</span><span>%{Number.isFinite(margin.marginPct) ? margin.marginPct.toFixed(1) : '0.0'}</span></div>
               <div className="qt-ft-row qt-ft-grand"><span>TOPLAM</span><span>{fmtMoney(calc.total)}</span></div>
             </div>
 

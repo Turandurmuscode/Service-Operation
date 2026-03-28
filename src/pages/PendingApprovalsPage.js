@@ -58,7 +58,7 @@ export default function PendingApprovalsPage({ currentUser, showToast }) {
     showToast?.('Onay talebi eklendi', 'success');
   };
 
-  const decide = (id, status) => {
+  const decide = (id, status, decisionReason) => {
     const next = items.map((item) =>
       item.id === id
         ? {
@@ -66,10 +66,22 @@ export default function PendingApprovalsPage({ currentUser, showToast }) {
             status,
             decidedAt: new Date().toISOString(),
             decidedBy: currentUser?.name || 'Yonetici',
+            decisionReason,
           }
         : item
     );
     persist(next);
+  };
+
+  const requestDecision = (id, status) => {
+    const actionLabel = status === 'approved' ? 'onay' : 'red';
+    const reason = window.prompt(`Lutfen ${actionLabel} sebebini girin:`);
+    if (!reason || !reason.trim()) {
+      showToast?.('Sebep zorunlu. Onay islemi kaydedilmedi.', 'warning');
+      return;
+    }
+    decide(id, status, reason.trim());
+    showToast?.(status === 'approved' ? 'Onay verildi' : 'Talep reddedildi', 'success');
   };
 
   const removeItem = (id) => {
@@ -133,8 +145,8 @@ export default function PendingApprovalsPage({ currentUser, showToast }) {
                   {item.note && <p>{item.note}</p>}
                 </div>
                 <div className="approvals-actions">
-                  <button className="btn btn-sm" onClick={() => decide(item.id, 'approved')}>Onayla</button>
-                  <button className="btn btn-sm" onClick={() => decide(item.id, 'rejected')}>Reddet</button>
+                  <button className="btn btn-sm" onClick={() => requestDecision(item.id, 'approved')}>Onayla</button>
+                  <button className="btn btn-sm" onClick={() => requestDecision(item.id, 'rejected')}>Reddet</button>
                   <button className="btn btn-sm" onClick={() => removeItem(item.id)}>Sil</button>
                 </div>
               </div>
@@ -154,6 +166,7 @@ export default function PendingApprovalsPage({ currentUser, showToast }) {
                     <strong>{item.title}</strong>
                     <p>{item.status === 'approved' ? 'Onaylandi' : 'Reddedildi'} · {item.decidedBy || '-'}</p>
                     <p>{item.decidedAt ? new Date(item.decidedAt).toLocaleDateString('tr-TR') : '-'}</p>
+                    <p><strong>Sebep:</strong> {item.decisionReason || '-'}</p>
                   </div>
                 </div>
               ))}

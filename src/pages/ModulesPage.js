@@ -46,8 +46,6 @@ const ALL_MODULES = [
   { id: 'costtracking',  label: 'Maliyet Takibi',     category: 'Raporlama',    description: 'Maliyet ve fatura takibi' },
   { id: 'contracts',     label: 'Sözleşmeler',        category: 'Raporlama',    description: 'Müşteri sözleşme yönetimi' },
   { id: 'quotations',    label: 'Teklifler',          category: 'Raporlama',    description: 'Teklif oluşturma ve takip' },
-  // Sektörel
-  { id: 'kumescalculator', label: 'Kümes Hesaplayıcı', category: 'Sektörel',   description: 'Kümes boyut → malzeme → fiyat hesabı' },
   // Saha & Süreç Zinciri
   { id: 'workorders',    label: 'İş Emirleri',          category: 'İş Yönetimi',  description: 'Teklif > İş Emri zinciri ve teknisyen atama' },
   { id: 'invoices',      label: 'Fatura Yönetimi',      category: 'Raporlama',    description: 'Fatura oluşturma, takip ve yazdırma' },
@@ -61,10 +59,9 @@ const ALL_MODULES = [
 ];
 
 const STORAGE_KEY = 'sod_enabled_modules';
-const CATEGORIES = ['Genel', 'İş Yönetimi', 'Kaynaklar', 'Raporlama', 'Sektörel', 'Sistem'];
+const CATEGORIES = ['Genel', 'İş Yönetimi', 'Kaynaklar', 'Raporlama', 'Sistem'];
 
-// Default enabled modules (all except new sektörel modules)
-const DEFAULT_ENABLED = ALL_MODULES.filter(m => m.id !== 'kumescalculator').map(m => m.id);
+const DEFAULT_ENABLED = ALL_MODULES.map(m => m.id);
 
 /* ── Public helper used by Sidebar ── */
 export function getEnabledModules() {
@@ -73,9 +70,8 @@ export function getEnabledModules() {
     if (saved) {
       const knownModuleIds = new Set(ALL_MODULES.map(m => m.id));
       const savedList = (JSON.parse(saved) || []).filter(id => knownModuleIds.has(id));
-      // Auto-enable any new modules not yet in the saved list (non-core defaults ON)
       const newModules = ALL_MODULES
-        .filter(m => m.id !== 'kumescalculator' && !savedList.includes(m.id))
+        .filter(m => !savedList.includes(m.id))
         .map(m => m.id);
       if (newModules.length > 0) {
         const merged = [...savedList, ...newModules];
