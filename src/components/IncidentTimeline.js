@@ -8,7 +8,7 @@ function IncidentTimeline({ incident }) {
     // Oluşturma
     timeline.push({
       status: 'created',
-      label: '🆕 Arıza Oluşturuldu',
+      label: ' Arıza Oluşturuldu',
       timestamp: incident.startTime,
       color: '#3b82f6'
     });
@@ -17,7 +17,7 @@ function IncidentTimeline({ incident }) {
     if (incident.status === 'in_progress' || incident.status === 'resolved') {
       timeline.push({
         status: 'in_progress',
-        label: '🔄 İşleme Alındı',
+        label: ' İşleme Alındı',
         timestamp: incident.startTime, // Gerçekte ayrı timestamp olmalı
         color: '#f59e0b'
       });
@@ -26,7 +26,7 @@ function IncidentTimeline({ incident }) {
     if (incident.status === 'on_hold') {
       timeline.push({
         status: 'on_hold',
-        label: '⏸️ Beklemeye Alındı',
+        label: ' Beklemeye Alındı',
         timestamp: incident.startTime,
         color: '#a855f7'
       });
@@ -36,7 +36,7 @@ function IncidentTimeline({ incident }) {
     if (incident.status === 'resolved') {
       timeline.push({
         status: 'resolved',
-        label: '✅ Çözüldü',
+        label: ' Çözüldü',
         timestamp: incident.endTime,
         color: '#10b981'
       });
@@ -59,7 +59,7 @@ function IncidentTimeline({ incident }) {
 
   return (
     <div className="incident-timeline">
-      <h4>📅 Arıza Geçmişi</h4>
+      <h4> Arıza Geçmişi</h4>
       <div className="timeline-container">
         {timeline.map((item, index) => (
           <div key={index} className="timeline-item">

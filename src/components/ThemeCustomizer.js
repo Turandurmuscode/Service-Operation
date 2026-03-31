@@ -415,7 +415,7 @@ function ThemeCustomizer({ darkMode }) {
                           />
                           <span className="profile-name">{p.name}</span>
                           <span className="profile-meta">
-                            {FONT_SIZES.find(f => f.key === p.settings.fontSize)?.label} • {DENSITY_MODES.find(d => d.key === p.settings.density)?.label}
+                            {FONT_SIZES.find(f => f.key === p.settings.fontSize)?.label}  {DENSITY_MODES.find(d => d.key === p.settings.density)?.label}
                           </span>
                         </div>
                         <div className="profile-actions">

@@ -17,7 +17,7 @@ function IncidentNotes({ incident, onAddNote }) {
     <div className="notes-section">
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
         <div>
-          <h4>📝 Teknisyen Notları</h4>
+          <h4> Teknisyen Notları</h4>
           
           <form onSubmit={handleSubmit} className="note-form">
             <textarea

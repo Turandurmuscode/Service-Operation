@@ -34,7 +34,7 @@ function EditModal({ client, onSave, onClose }) {
       }} onClick={e => e.stopPropagation()}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h2 style={{ margin: 0, fontSize: '16px' }}><Icon name="edit" size={18} style={{ marginRight: 8 }} /> Müşteri Düzenle</h2>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', color: 'var(--text-secondary)' }}>✕</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', color: 'var(--text-secondary)' }}></button>
         </div>
 
         <div style={{ marginBottom: '14px' }}>
@@ -134,7 +134,7 @@ function ClientsGrid({ clients, incidents, onClientClick, onToggleFavorite, onDe
                 className="clients-search"
               />
               {searchTerm && (
-                <button className="search-clear" onClick={() => setSearchTerm('')}>✕</button>
+                <button className="search-clear" onClick={() => setSearchTerm('')}></button>
               )}
             </div>
             <button
@@ -242,7 +242,7 @@ function ClientsGrid({ clients, incidents, onClientClick, onToggleFavorite, onDe
                   {/* ── Footer: status + tier ── */}
                   <div className="client-card-footer">
                     <span className={`client-status-badge ${stats.activeCount > 0 ? 'has-active' : 'all-clear'}`}>
-                      {stats.activeCount > 0 ? `⚠ ${stats.activeCount} aktif` : '✓ Sorun yok'}
+                      {stats.activeCount > 0 ? ` ${stats.activeCount} aktif` : ' Sorun yok'}
                     </span>
                     <span className="client-tier-badge" style={{
                       background: tier.bgColor, color: tier.color, borderColor: tier.borderColor,

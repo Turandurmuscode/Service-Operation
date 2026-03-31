@@ -2,12 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './AssetsPage.css';
 
 const CATEGORIES = [
-  { id: 'computer', label: 'Bilgisayar', icon: '💻' },
-  { id: 'printer', label: 'Yazıcı', icon: '🖨️' },
-  { id: 'network', label: 'Ağ Cihazı', icon: '🌐' },
-  { id: 'server', label: 'Sunucu', icon: '🖥️' },
-  { id: 'phone', label: 'Telefon', icon: '📱' },
-  { id: 'other', label: 'Diğer', icon: '📦' },
+  { id: 'computer', label: 'Bilgisayar', icon: '' },
+  { id: 'printer', label: 'Yazıcı', icon: '' },
+  { id: 'network', label: 'Ağ Cihazı', icon: '' },
+  { id: 'server', label: 'Sunucu', icon: '' },
+  { id: 'phone', label: 'Telefon', icon: '' },
+  { id: 'other', label: 'Diğer', icon: '' },
 ];
 
 const STATUS_OPTIONS = [
@@ -191,7 +191,7 @@ function AssetsPage({ clients, incidents, showToast, currentUser }) {
           <div className="modal-content asset-form-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2>{editingAsset ? 'Varlık Düzenle' : 'Yeni Varlık Ekle'}</h2>
-              <button className="modal-close" onClick={() => setShowForm(false)}>✕</button>
+              <button className="modal-close" onClick={() => setShowForm(false)}></button>
             </div>
             <form onSubmit={handleSubmit} className="asset-form">
               <div className="form-row">
@@ -259,7 +259,7 @@ function AssetsPage({ clients, incidents, showToast, currentUser }) {
         <div className="asset-detail-panel">
           <div className="asset-detail-header">
             <h3>{CATEGORIES.find(c => c.id === selectedAsset.category)?.icon} {selectedAsset.name}</h3>
-            <button className="modal-close" onClick={() => setSelectedAsset(null)}>✕</button>
+            <button className="modal-close" onClick={() => setSelectedAsset(null)}></button>
           </div>
           <div className="asset-detail-body">
             <div className="detail-grid">

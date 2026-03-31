@@ -23,7 +23,7 @@ describe('NotificationCenter CRM follow-up integration', () => {
 
     render(<NotificationCenter incidents={[]} clients={[]} onNavigate={jest.fn()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /🔔/i }));
+    fireEvent.click(screen.getByRole('button', { name: //i }));
 
     expect(screen.getByText(/crm takibi/i)).toBeInTheDocument();
     expect(screen.getByText(/Yillik Sozlesme Takibi/i)).toBeInTheDocument();
@@ -47,7 +47,7 @@ describe('NotificationCenter CRM follow-up integration', () => {
 
     render(<NotificationCenter incidents={[]} clients={[]} onNavigate={onNavigate} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /🔔/i }));
+    fireEvent.click(screen.getByRole('button', { name: //i }));
     fireEvent.click(screen.getByText(/Demo Planlama/i));
 
     expect(onNavigate).toHaveBeenCalledWith('crmdeals');

@@ -83,13 +83,13 @@ function PerformanceMonitor() {
       {isOpen && (
         <div className="performance-panel">
           <div className="performance-header">
-            <h3>⚡ Performans</h3>
-            <button onClick={() => setIsOpen(false)} className="performance-close">✕</button>
+            <h3> Performans</h3>
+            <button onClick={() => setIsOpen(false)} className="performance-close"></button>
           </div>
 
           <div className="performance-metrics">
             <div className="performance-metric">
-              <span className="metric-icon">🚀</span>
+              <span className="metric-icon"></span>
               <div className="metric-content">
                 <div className="metric-label">Yükleme Süresi</div>
                 <div className="metric-value">{(metrics.loadTime / 1000).toFixed(2)}s</div>
@@ -97,7 +97,7 @@ function PerformanceMonitor() {
             </div>
 
             <div className="performance-metric">
-              <span className="metric-icon">🎯</span>
+              <span className="metric-icon"></span>
               <div className="metric-content">
                 <div className="metric-label">FPS</div>
                 <div className="metric-value" style={{ color: performanceLevel.color }}>
@@ -107,7 +107,7 @@ function PerformanceMonitor() {
             </div>
 
             <div className="performance-metric">
-              <span className="metric-icon">💾</span>
+              <span className="metric-icon"></span>
               <div className="metric-content">
                 <div className="metric-label">Bellek Kullanımı</div>
                 <div className="metric-value">{metrics.memoryUsage} MB</div>
@@ -115,7 +115,7 @@ function PerformanceMonitor() {
             </div>
 
             <div className="performance-metric">
-              <span className="metric-icon">🔄</span>
+              <span className="metric-icon"></span>
               <div className="metric-content">
                 <div className="metric-label">Render Sayısı</div>
                 <div className="metric-value">{metrics.renderCount}</div>
@@ -125,7 +125,7 @@ function PerformanceMonitor() {
 
           <div className="performance-tips">
             <div className="performance-tip">
-              💡 {metrics.fps < 45 ? 'Performansı artırmak için bazı özellikleri kapatmayı deneyin' : 
+               {metrics.fps < 45 ? 'Performansı artırmak için bazı özellikleri kapatmayı deneyin' : 
                    'Sistem sorunsuz çalışıyor'}
             </div>
           </div>

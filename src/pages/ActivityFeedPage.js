@@ -2,16 +2,16 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './ActivityFeedPage.css';
 
 const EVENT_TYPES = {
-  incident_created:  { icon: '🔧', label: 'Yeni Arıza', color: '#ef4444' },
-  incident_resolved: { icon: '✅', label: 'Arıza Çözüldü', color: '#10b981' },
-  incident_updated:  { icon: '🔄', label: 'Arıza Güncellendi', color: '#f59e0b' },
-  client_added:      { icon: '👤', label: 'Yeni Müşteri', color: '#3b82f6' },
-  note_added:        { icon: '📝', label: 'Not Eklendi', color: '#8b5cf6' },
-  comment:           { icon: '💬', label: 'Yorum', color: '#6366f1' },
-  announcement:      { icon: '📢', label: 'Duyuru', color: '#ec4899' },
-  system:            { icon: '⚙️', label: 'Sistem', color: '#64748b' },
-  milestone:         { icon: '🏆', label: 'Başarı', color: '#f59e0b' },
-  mention:           { icon: '📣', label: 'Etiket', color: '#14b8a6' },
+  incident_created:  { icon: '', label: 'Yeni Arıza', color: '#ef4444' },
+  incident_resolved: { icon: '', label: 'Arıza Çözüldü', color: '#10b981' },
+  incident_updated:  { icon: '', label: 'Arıza Güncellendi', color: '#f59e0b' },
+  client_added:      { icon: '', label: 'Yeni Müşteri', color: '#3b82f6' },
+  note_added:        { icon: '', label: 'Not Eklendi', color: '#8b5cf6' },
+  comment:           { icon: '', label: 'Yorum', color: '#6366f1' },
+  announcement:      { icon: '', label: 'Duyuru', color: '#ec4899' },
+  system:            { icon: '', label: 'Sistem', color: '#64748b' },
+  milestone:         { icon: '', label: 'Başarı', color: '#f59e0b' },
+  mention:           { icon: '', label: 'Etiket', color: '#14b8a6' },
 };
 
 function ActivityFeedPage({ incidents, clients, activities, currentUser, showToast }) {
@@ -179,7 +179,7 @@ function ActivityFeedPage({ incidents, clients, activities, currentUser, showToa
     return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
-  const REACTION_EMOJIS = ['👍', '❤️', '😄', '🎉', '👀', '🚀'];
+  const REACTION_EMOJIS = ['', '', '', '', '', ''];
 
   // Stats
   const todayCount = allItems.filter(i => {
@@ -194,7 +194,7 @@ function ActivityFeedPage({ incidents, clients, activities, currentUser, showToa
     <div className="page-content">
       <div className="page-header">
         <div>
-          <h1 className="page-title">📡 Canlı Akış</h1>
+          <h1 className="page-title"> Canlı Akış</h1>
           <p className="page-subtitle">Tüm sistem olaylarını ve ekip paylaşımlarını takip edin</p>
         </div>
       </div>
@@ -211,8 +211,8 @@ function ActivityFeedPage({ incidents, clients, activities, currentUser, showToa
       <div className="af-composer">
         {replyTo && (
           <div className="af-reply-banner">
-            <span>↩️ Yanıt: <strong>{replyTo.user}</strong> — "{replyTo.text.slice(0, 80)}"</span>
-            <button onClick={() => setReplyTo(null)}>✕</button>
+            <span> Yanıt: <strong>{replyTo.user}</strong> — "{replyTo.text.slice(0, 80)}"</span>
+            <button onClick={() => setReplyTo(null)}></button>
           </div>
         )}
         <form onSubmit={handlePost} className="af-composer-form">
@@ -229,10 +229,10 @@ function ActivityFeedPage({ incidents, clients, activities, currentUser, showToa
             />
             <div className="af-composer-footer">
               <select value={postType} onChange={e => setPostType(e.target.value)} className="af-post-type-select">
-                <option value="comment">💬 Yorum</option>
-                <option value="announcement">📢 Duyuru</option>
-                <option value="milestone">🏆 Başarı</option>
-                <option value="mention">📣 Bilgilendirme</option>
+                <option value="comment"> Yorum</option>
+                <option value="announcement"> Duyuru</option>
+                <option value="milestone"> Başarı</option>
+                <option value="mention"> Bilgilendirme</option>
               </select>
               <button type="submit" className="btn btn-primary btn-sm" disabled={!postText.trim()}>
                 Paylaş
@@ -257,7 +257,7 @@ function ActivityFeedPage({ incidents, clients, activities, currentUser, showToa
       {/* Feed */}
       {filtered.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">📡</div>
+          <div className="empty-icon"></div>
           <p>Akışta görüntülenecek etkinlik yok.</p>
         </div>
       ) : (
@@ -272,7 +272,7 @@ function ActivityFeedPage({ incidents, clients, activities, currentUser, showToa
 
             return (
               <div key={item.id} className={`af-item ${isPinned ? 'pinned' : ''} ${item.isSystem ? 'system' : 'user-post'}`}>
-                {isPinned && <div className="af-pin-badge">📌 Sabitlenmiş</div>}
+                {isPinned && <div className="af-pin-badge"> Sabitlenmiş</div>}
 
                 <div className="af-item-row">
                   <div className="af-item-icon" style={{ background: typeInfo.color + '18', color: typeInfo.color }}>
@@ -281,7 +281,7 @@ function ActivityFeedPage({ incidents, clients, activities, currentUser, showToa
 
                   <div className="af-item-body">
                     {item.replyPreview && (
-                      <div className="af-reply-ref">↩️ {item.replyPreview}</div>
+                      <div className="af-reply-ref"> {item.replyPreview}</div>
                     )}
                     <div className="af-item-header">
                       <span className="af-item-user">{item.user}</span>
@@ -294,7 +294,7 @@ function ActivityFeedPage({ incidents, clients, activities, currentUser, showToa
                       <span className="af-item-time">{formatDate(item.date)}</span>
                     </div>
                     <p className="af-item-text">{item.text}</p>
-                    {item.context && <span className="af-item-context">🏢 {item.context}</span>}
+                    {item.context && <span className="af-item-context"> {item.context}</span>}
 
                     {/* Reactions */}
                     <div className="af-reactions">
@@ -317,15 +317,15 @@ function ActivityFeedPage({ incidents, clients, activities, currentUser, showToa
 
                   <div className="af-item-actions">
                     <button className="btn-icon" title="Yanıtla" onClick={() => setReplyTo(item)}>
-                      ↩️
+                      
                     </button>
                     <button className={`btn-icon ${isPinned ? 'active' : ''}`} title={isPinned ? 'Sabitlemeyi Kaldır' : 'Sabitle'}
                       onClick={() => togglePin(item.id)}>
-                      📌
+                      
                     </button>
                     {canDelete && (
                       <button className="btn-icon delete" title="Sil" onClick={() => deletePost(item.id)}>
-                        🗑️
+                        
                       </button>
                     )}
                   </div>

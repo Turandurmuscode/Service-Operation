@@ -6,11 +6,11 @@ const COST_ENTRIES_KEY = 'costTrackingEntries';
 const INVOICES_KEY = 'costTrackingInvoices';
 
 const COST_TYPES = [
-  { id: 'labor', label: 'İşçilik', icon: '👷', color: '#6366f1' },
-  { id: 'part', label: 'Yedek Parça', icon: '🔧', color: '#f59e0b' },
-  { id: 'travel', label: 'Ulaşım', icon: '🚗', color: '#10b981' },
-  { id: 'external', label: 'Dış Hizmet', icon: '🏢', color: '#ef4444' },
-  { id: 'other', label: 'Diğer', icon: '📦', color: '#8b5cf6' },
+  { id: 'labor', label: 'İşçilik', icon: '', color: '#6366f1' },
+  { id: 'part', label: 'Yedek Parça', icon: '', color: '#f59e0b' },
+  { id: 'travel', label: 'Ulaşım', icon: '', color: '#10b981' },
+  { id: 'external', label: 'Dış Hizmet', icon: '', color: '#ef4444' },
+  { id: 'other', label: 'Diğer', icon: '', color: '#8b5cf6' },
 ];
 
 const emptyCostEntry = {
@@ -333,10 +333,10 @@ function CostTrackingPage({ incidents, clients, currentUser, showToast }) {
         </div>
         <div className="page-header-actions">
           <button className="btn btn-secondary" onClick={autoAddLabor} title="Saat Takibi kayıtlarından işçilik maliyetlerini otomatik ekle">
-            ⏱️ İşçilik Aktar
+             İşçilik Aktar
           </button>
           <button className="btn btn-secondary" onClick={autoAddParts} title="Yedek Parça kullanım kayıtlarından maliyetleri otomatik ekle">
-            🔧 Parça Aktar
+             Parça Aktar
           </button>
           <button className="btn btn-primary" onClick={() => { setShowForm(true); setEditingEntry(null); setForm({ ...emptyCostEntry }); }}>
             + Maliyet Ekle
@@ -367,9 +367,9 @@ function CostTrackingPage({ incidents, clients, currentUser, showToast }) {
       {/* Tabs */}
       <div className="ct-tabs">
         {[
-          { id: 'costs', label: 'Maliyet Kayıtları', icon: '💰' },
-          { id: 'invoices', label: 'Faturalar', icon: '🧾' },
-          { id: 'analysis', label: 'Analiz', icon: '📊' },
+          { id: 'costs', label: 'Maliyet Kayıtları', icon: '' },
+          { id: 'invoices', label: 'Faturalar', icon: '' },
+          { id: 'analysis', label: 'Analiz', icon: '' },
         ].map(tab => (
           <button key={tab.id} className={`ct-tab ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}>
@@ -401,7 +401,7 @@ function CostTrackingPage({ incidents, clients, currentUser, showToast }) {
 
           {filteredEntries.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">💰</div>
+              <div className="empty-icon"></div>
               <p>Maliyet kaydı bulunamadı. Manuel ekleyin veya otomatik aktarım kullanın.</p>
             </div>
           ) : (
@@ -469,13 +469,13 @@ function CostTrackingPage({ incidents, clients, currentUser, showToast }) {
         <>
           <div className="ct-invoice-header">
             <button className="btn btn-primary" onClick={() => setShowInvoiceForm(true)}>
-              🧾 Yeni Fatura Oluştur
+               Yeni Fatura Oluştur
             </button>
           </div>
 
           {invoices.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">🧾</div>
+              <div className="empty-icon"></div>
               <p>Henüz fatura oluşturulmamış. Maliyet kayıtlarından otomatik fatura oluşturabilirsiniz.</p>
             </div>
           ) : (
@@ -519,7 +519,7 @@ function CostTrackingPage({ incidents, clients, currentUser, showToast }) {
                     {invoiceStatusLabels[selectedInvoice.status]}
                   </span>
                 </div>
-                <button className="modal-close" onClick={() => setSelectedInvoice(null)}>✕</button>
+                <button className="modal-close" onClick={() => setSelectedInvoice(null)}></button>
               </div>
               <div className="ct-inv-detail-body">
                 <div className="ct-inv-info-grid">
@@ -629,7 +629,7 @@ function CostTrackingPage({ incidents, clients, currentUser, showToast }) {
           <div className="modal-content ct-form-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2>{editingEntry ? 'Maliyet Düzenle' : 'Yeni Maliyet Kaydı'}</h2>
-              <button className="modal-close" onClick={() => setShowForm(false)}>✕</button>
+              <button className="modal-close" onClick={() => setShowForm(false)}></button>
             </div>
             <form onSubmit={handleSubmit} className="ct-form">
               <div className="form-row">
@@ -697,8 +697,8 @@ function CostTrackingPage({ incidents, clients, currentUser, showToast }) {
         <div className="modal-overlay" onClick={() => setShowInvoiceForm(false)}>
           <div className="modal-content ct-form-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>🧾 Fatura Oluştur</h2>
-              <button className="modal-close" onClick={() => setShowInvoiceForm(false)}>✕</button>
+              <h2> Fatura Oluştur</h2>
+              <button className="modal-close" onClick={() => setShowInvoiceForm(false)}></button>
             </div>
             <form onSubmit={handleGenerateInvoice} className="ct-form">
               <div className="form-group">

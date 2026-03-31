@@ -32,7 +32,7 @@ function NotificationCenter({ incidents, clients, onNavigate }) {
             message: `${client?.name || 'Müşteri'} - ${inc.description.substring(0, 50)}...`,
             timestamp: inc.startTime,
             read: false,
-            icon: '🔴'
+            icon: ''
           });
         }
 
@@ -51,7 +51,7 @@ function NotificationCenter({ incidents, clients, onNavigate }) {
               message: `${client?.name || 'Müşteri'} - ${remainingMinutes} dakika kaldı`,
               timestamp: new Date().toISOString(),
               read: false,
-              icon: '⚠️'
+              icon: ''
             });
           }
         }
@@ -70,7 +70,7 @@ function NotificationCenter({ incidents, clients, onNavigate }) {
             message: `${client?.name || 'Müşteri'} - ${inc.description.substring(0, 50)}...`,
             timestamp: inc.startTime,
             read: false,
-            icon: '🆕'
+            icon: ''
           });
         }
       });
@@ -88,7 +88,7 @@ function NotificationCenter({ incidents, clients, onNavigate }) {
             message: `${r.title} - ${new Date(r.followUpDate).toLocaleDateString('tr-TR')}`,
             timestamp: r.createdAt || new Date().toISOString(),
             read: false,
-            icon: isOverdue ? '📌' : '📅',
+            icon: isOverdue ? '' : '',
             actionTarget: 'crmdeals',
           });
         });
@@ -147,7 +147,7 @@ function NotificationCenter({ incidents, clients, onNavigate }) {
         className="notification-trigger"
         onClick={() => setIsOpen(!isOpen)}
       >
-        🔔
+        
         {unreadCount > 0 && (
           <span className="notification-badge">{unreadCount}</span>
         )}
@@ -170,7 +170,7 @@ function NotificationCenter({ incidents, clients, onNavigate }) {
                   className="notification-close-btn"
                   title="Kapat"
                 >
-                  ✕
+                  
                 </button>
               </div>
             </div>
@@ -178,7 +178,7 @@ function NotificationCenter({ incidents, clients, onNavigate }) {
             <div className="notification-list">
               {notifications.length === 0 ? (
                 <div className="notification-empty">
-                  <span style={{ fontSize: '48px' }}>🔕</span>
+                  <span style={{ fontSize: '48px' }}></span>
                   <p>Henüz bildirim yok</p>
                 </div>
               ) : (

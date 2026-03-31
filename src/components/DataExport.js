@@ -301,20 +301,20 @@ function DataExport({ incidents, clients, setClients, showToast }) {
   return (
     <div className="export-actions">
       <button onClick={exportToPDF} className="btn btn-danger">
-        📄 PDF İndir
+         PDF İndir
       </button>
       <button onClick={exportToJSON} className="btn btn-primary">
-        📥 JSON İndir
+         JSON İndir
       </button>
       <button onClick={exportToCSV} className="btn btn-primary">
-        📊 CSV İndir
+         CSV İndir
       </button>
       <label className="btn btn-warning" style={{ cursor: 'pointer' }}>
-        📤 Müşteri CSV Yükle
+         Müşteri CSV Yükle
         <input ref={fileInputRef} type="file" accept=".csv" onChange={importClientsFromCSV} style={{ display: 'none' }} />
       </label>
       <label className="btn btn-secondary" style={{ cursor: 'pointer' }}>
-        📂 JSON Yükle
+         JSON Yükle
         <input type="file" accept=".json" onChange={importData} style={{ display: 'none' }} />
       </label>
     </div>

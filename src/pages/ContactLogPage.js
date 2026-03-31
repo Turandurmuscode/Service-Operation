@@ -377,7 +377,7 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
                       {log.followUpNote && <p className="cl-fu-note">{log.followUpNote}</p>}
                     </div>
                     <button className="btn btn-xs" onClick={() => completeFollowUp(log.id)}>
-                      ✓ Tamamla
+                       Tamamla
                     </button>
                   </div>
                 );
@@ -393,7 +393,7 @@ function ContactLogPage({ incidents, clients, currentUser, showToast }) {
           <div className="modal-content cl-form-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2>{editingLog ? 'İletişim Düzenle' : 'Yeni İletişim Kaydı'}</h2>
-              <button className="modal-close" onClick={() => setShowForm(false)}>✕</button>
+              <button className="modal-close" onClick={() => setShowForm(false)}></button>
             </div>
             <form onSubmit={handleSubmit} className="cl-form">
               <div className="form-row">

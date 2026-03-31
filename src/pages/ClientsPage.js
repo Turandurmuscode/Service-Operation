@@ -18,14 +18,14 @@ function ClientsPage({ clients, incidents, addClient, setClients, addClientNote,
     const updated = clients.filter(c => c.id !== clientId);
     setClients(updated);
     localStorage.setItem('clients', JSON.stringify(updated));
-    if (showToast) showToast('🗑️ Müşteri silindi.', 'warning');
+    if (showToast) showToast(' Müşteri silindi.', 'warning');
   };
 
   const editClient = (updatedClient) => {
     const updated = clients.map(c => c.id === updatedClient.id ? updatedClient : c);
     setClients(updated);
     localStorage.setItem('clients', JSON.stringify(updated));
-    if (showToast) showToast('✅ Müşteri güncellendi!', 'success');
+    if (showToast) showToast(' Müşteri güncellendi!', 'success');
   };
 
   if (detailClient) {

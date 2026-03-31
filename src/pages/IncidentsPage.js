@@ -76,7 +76,7 @@ function IncidentsPage({
           <p>Tüm arıza kayıtlarını görüntüle ve yönet</p>
         </div>
         <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-          {showForm ? '✕ Formu Kapat' : '+ Yeni Arıza'}
+          {showForm ? ' Formu Kapat' : '+ Yeni Arıza'}
         </button>
       </div>
 

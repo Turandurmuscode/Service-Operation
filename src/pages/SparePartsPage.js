@@ -2,14 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './SparePartsPage.css';
 
 const CATEGORIES = [
-  { value: 'hardware', label: 'Donanım', icon: '🖥️' },
-  { value: 'network', label: 'Ağ Ekipmanı', icon: '🌐' },
-  { value: 'printer', label: 'Yazıcı Parçası', icon: '🖨️' },
-  { value: 'cable', label: 'Kablo & Bağlantı', icon: '🔌' },
-  { value: 'storage', label: 'Depolama', icon: '💾' },
-  { value: 'peripheral', label: 'Çevre Birimi', icon: '🖱️' },
-  { value: 'power', label: 'Güç & UPS', icon: '🔋' },
-  { value: 'other', label: 'Diğer', icon: '📦' },
+  { value: 'hardware', label: 'Donanım', icon: '' },
+  { value: 'network', label: 'Ağ Ekipmanı', icon: '' },
+  { value: 'printer', label: 'Yazıcı Parçası', icon: '' },
+  { value: 'cable', label: 'Kablo & Bağlantı', icon: '' },
+  { value: 'storage', label: 'Depolama', icon: '' },
+  { value: 'peripheral', label: 'Çevre Birimi', icon: '' },
+  { value: 'power', label: 'Güç & UPS', icon: '' },
+  { value: 'other', label: 'Diğer', icon: '' },
 ];
 
 const UNITS = ['Adet', 'Metre', 'Kutu', 'Paket', 'Set'];
@@ -163,7 +163,7 @@ function SparePartsPage({ incidents, clients, currentUser, showToast }) {
     <div className="page-content">
       <div className="page-header-row">
         <div>
-          <h1 className="page-title">🔧 Yedek Parça & Stok Yönetimi</h1>
+          <h1 className="page-title"> Yedek Parça & Stok Yönetimi</h1>
           <p className="page-subtitle">Envanter takibi, stok seviyeleri ve kullanım geçmişi</p>
         </div>
         <button className="btn btn-primary" onClick={() => { setEditingPart(null); setShowForm(true); }}>
@@ -202,7 +202,7 @@ function SparePartsPage({ incidents, clients, currentUser, showToast }) {
       {/* Low stock alert banner */}
       {(lowStockParts.length > 0 || outOfStockParts.length > 0) && (
         <div className="sp-alert-banner">
-          <span className="sp-alert-icon">⚠️</span>
+          <span className="sp-alert-icon"></span>
           <div>
             {outOfStockParts.length > 0 && (
               <div className="sp-alert-critical">
@@ -223,11 +223,11 @@ function SparePartsPage({ incidents, clients, currentUser, showToast }) {
       {/* View Tabs */}
       <div className="sp-tabs">
         <button className={`sp-tab ${activeView === 'inventory' ? 'active' : ''}`}
-          onClick={() => setActiveView('inventory')}>📦 Envanter ({parts.length})</button>
+          onClick={() => setActiveView('inventory')}> Envanter ({parts.length})</button>
         <button className={`sp-tab ${activeView === 'usage' ? 'active' : ''}`}
-          onClick={() => setActiveView('usage')}>📋 Kullanım Geçmişi ({usageLog.length})</button>
+          onClick={() => setActiveView('usage')}> Kullanım Geçmişi ({usageLog.length})</button>
         <button className={`sp-tab ${activeView === 'alerts' ? 'active' : ''}`}
-          onClick={() => setActiveView('alerts')}>🔔 Stok Uyarıları ({lowStockParts.length + outOfStockParts.length})</button>
+          onClick={() => setActiveView('alerts')}> Stok Uyarıları ({lowStockParts.length + outOfStockParts.length})</button>
       </div>
 
       {/* ── INVENTORY VIEW ─────────────── */}
@@ -244,8 +244,8 @@ function SparePartsPage({ incidents, clients, currentUser, showToast }) {
             </select>
             <select className="filter-select" value={filterStock} onChange={e => setFilterStock(e.target.value)}>
               <option value="all">Tüm Stok</option>
-              <option value="low">⚠️ Düşük Stok</option>
-              <option value="out">🔴 Stokta Yok</option>
+              <option value="low"> Düşük Stok</option>
+              <option value="out"> Stokta Yok</option>
             </select>
           </div>
 
@@ -279,7 +279,7 @@ function SparePartsPage({ incidents, clients, currentUser, showToast }) {
                       <tr key={part.id} className={isOut ? 'row-danger' : isLow ? 'row-warning' : ''}>
                         <td>
                           <div className="sp-part-name">{part.name}</div>
-                          {part.location && <div className="sp-part-location">📍 {part.location}</div>}
+                          {part.location && <div className="sp-part-location"> {part.location}</div>}
                         </td>
                         <td><code className="sp-code">{part.code || '-'}</code></td>
                         <td>{cat ? `${cat.icon} ${cat.label}` : part.category}</td>
@@ -307,15 +307,15 @@ function SparePartsPage({ incidents, clients, currentUser, showToast }) {
                           <div className="sp-actions">
                             <button className="btn-icon" title="Kullanım Kaydet"
                               onClick={() => setShowUsageForm(part)} disabled={isOut}>
-                              📤
+                              
                             </button>
                             <StockAddButton part={part} onAdd={addStock} />
                             <button className="btn-icon" title="Düzenle"
                               onClick={() => { setEditingPart(part); setShowForm(true); }}>
-                              ✏️
+                              
                             </button>
                             <button className="btn-icon" title="Sil" onClick={() => deletePart(part.id)}>
-                              🗑️
+                              
                             </button>
                           </div>
                         </td>
@@ -378,14 +378,14 @@ function SparePartsPage({ incidents, clients, currentUser, showToast }) {
         <div className="sp-alerts-list">
           {[...outOfStockParts, ...lowStockParts].length === 0 ? (
             <div className="empty-state">
-              <p>✅ Tüm stok seviyeleri yeterli.</p>
+              <p> Tüm stok seviyeleri yeterli.</p>
             </div>
           ) : (
             <div className="sp-alert-cards">
               {outOfStockParts.map(p => (
                 <div key={p.id} className="sp-alert-card danger">
                   <div className="sp-alert-card-header">
-                    <span className="sp-alert-level">🔴 STOKTA YOK</span>
+                    <span className="sp-alert-level"> STOKTA YOK</span>
                     <StockAddButton part={p} onAdd={addStock} />
                   </div>
                   <h4>{p.name}</h4>
@@ -396,7 +396,7 @@ function SparePartsPage({ incidents, clients, currentUser, showToast }) {
               {lowStockParts.map(p => (
                 <div key={p.id} className="sp-alert-card warning">
                   <div className="sp-alert-card-header">
-                    <span className="sp-alert-level">⚠️ DÜŞÜK STOK ({p.currentStock}/{p.minStock})</span>
+                    <span className="sp-alert-level"> DÜŞÜK STOK ({p.currentStock}/{p.minStock})</span>
                     <StockAddButton part={p} onAdd={addStock} />
                   </div>
                   <h4>{p.name}</h4>
@@ -442,12 +442,12 @@ function StockAddButton({ part, onAdd }) {
       <div className="sp-inline-add">
         <input type="number" min="1" value={qty} onChange={e => setQty(e.target.value)}
           placeholder="Adet" className="sp-inline-input" autoFocus />
-        <button className="btn-sm btn-success" onClick={() => { onAdd(part.id, qty); setShow(false); setQty(''); }}>✓</button>
-        <button className="btn-sm btn-ghost" onClick={() => { setShow(false); setQty(''); }}>✕</button>
+        <button className="btn-sm btn-success" onClick={() => { onAdd(part.id, qty); setShow(false); setQty(''); }}></button>
+        <button className="btn-sm btn-ghost" onClick={() => { setShow(false); setQty(''); }}></button>
       </div>
     );
   }
-  return <button className="btn-icon" title="Stok Ekle" onClick={() => setShow(true)}>📥</button>;
+  return <button className="btn-icon" title="Stok Ekle" onClick={() => setShow(true)}></button>;
 }
 
 // ── Part Form Modal ────────────────
@@ -559,7 +559,7 @@ function UsageFormModal({ part, incidents, clients, currentUser, onSave, onClose
     <div className="modal-overlay" onClick={e => e.target.className === 'modal-overlay' && onClose()}>
       <div className="modal sp-modal">
         <div className="modal-header">
-          <h2>📤 Kullanım Kaydet — {part.name}</h2>
+          <h2> Kullanım Kaydet — {part.name}</h2>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
         <div className="modal-body">

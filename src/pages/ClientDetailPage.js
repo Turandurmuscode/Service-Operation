@@ -19,23 +19,23 @@ function ClientDetailPage({ client, incidents, clients, onBack, addClientNote, s
 
   const getStatusInfo = (status) => {
     const map = {
-      new:         { label: '🆕 Yeni',         color: '#3b82f6' },
-      in_progress: { label: '🔄 Devam Ediyor',  color: '#f59e0b' },
-      on_hold:     { label: '⏸️ Beklemede',     color: '#a855f7' },
-      resolved:    { label: '✅ Çözüldü',       color: '#10b981' },
-      cancelled:   { label: '❌ İptal',         color: '#6b7280' },
+      new:         { label: ' Yeni',         color: '#3b82f6' },
+      in_progress: { label: ' Devam Ediyor',  color: '#f59e0b' },
+      on_hold:     { label: ' Beklemede',     color: '#a855f7' },
+      resolved:    { label: ' Çözüldü',       color: '#10b981' },
+      cancelled:   { label: ' İptal',         color: '#6b7280' },
     };
     return map[status] || { label: status, color: '#94a3b8' };
   };
 
   const getPriorityColor = (p) => ({ critical: '#ef4444', medium: '#f59e0b', low: '#10b981' }[p] || '#94a3b8');
-  const getPriorityLabel = (p) => ({ critical: '🔴 Kritik', medium: '🟡 Orta', low: '🟢 Düşük' }[p] || p);
+  const getPriorityLabel = (p) => ({ critical: ' Kritik', medium: ' Orta', low: ' Düşük' }[p] || p);
 
   const handleAddNote = () => {
     if (!noteText.trim()) return;
     addClientNote(client.id, noteText.trim());
     setNoteText('');
-    if (showToast) showToast('✅ Not eklendi!', 'success');
+    if (showToast) showToast(' Not eklendi!', 'success');
   };
 
   const statCard = (label, value, color = 'var(--text-primary)') => (
@@ -168,7 +168,7 @@ function ClientDetailPage({ client, incidents, clients, onBack, addClientNote, s
                           </td>
                           <td style={{ fontSize: '12px', color: isOverdue ? '#ef4444' : 'var(--text-secondary)' }}>
                             {inc.deadline ? new Date(inc.deadline).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-'}
-                            {isOverdue && ' ⚠️'}
+                            {isOverdue && ' '}
                           </td>
                           <td style={{ fontSize: '13px' }}>{inc.duration ? `${inc.duration}dk` : '-'}</td>
                         </tr>
@@ -225,7 +225,7 @@ function ClientDetailPage({ client, incidents, clients, onBack, addClientNote, s
               ['Telefon', client.phone],
               ['E-posta', client.email],
               ['Kayıt Tarihi', client.createdAt ? new Date(client.createdAt).toLocaleString('tr-TR') : '-'],
-              ['Favori', client.favorite ? 'Evet ⭐' : 'Hayır'],
+              ['Favori', client.favorite ? 'Evet ' : 'Hayır'],
             ].map(([label, value]) => value ? (
               <div key={label} style={{ display: 'flex', gap: '12px', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
                 <span style={{ width: '120px', color: 'var(--text-secondary)', flexShrink: 0 }}>{label}</span>

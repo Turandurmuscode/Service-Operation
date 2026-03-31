@@ -11,7 +11,7 @@ export const SLA_TIERS = {
     color: '#f59e0b',
     bgColor: '#f59e0b18',
     borderColor: '#f59e0b40',
-    icon: '🥇',
+    icon: '',
     // SLA limits in minutes
     limits: { critical: 60, medium: 240, low: 480 },
     // Warn when this % of the SLA window has elapsed
@@ -29,7 +29,7 @@ export const SLA_TIERS = {
     color: '#94a3b8',
     bgColor: '#94a3b818',
     borderColor: '#94a3b840',
-    icon: '🥈',
+    icon: '',
     limits: { critical: 120, medium: 480, low: 960 },
     warningAt: 80,
     features: [
@@ -45,7 +45,7 @@ export const SLA_TIERS = {
     color: '#cd7f32',
     bgColor: '#cd7f3218',
     borderColor: '#cd7f3240',
-    icon: '🥉',
+    icon: '',
     limits: { critical: 240, medium: 960, low: 2880 },
     warningAt: 85,
     features: [

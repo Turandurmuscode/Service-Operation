@@ -2,25 +2,25 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './WorkflowRulesPage.css';
 
 const TRIGGERS = [
-  { id: 'incident_created', label: 'Yeni arıza oluşturulduğunda', icon: '🔧' },
-  { id: 'incident_critical', label: 'Kritik arıza geldiğinde', icon: '🚨' },
-  { id: 'incident_overdue', label: 'SLA süresi aşıldığında', icon: '⏰' },
-  { id: 'incident_resolved', label: 'Arıza çözüldüğünde', icon: '✅' },
-  { id: 'incident_status_change', label: 'Arıza durumu değiştiğinde', icon: '🔄' },
-  { id: 'client_added', label: 'Yeni müşteri eklendiğinde', icon: '👤' },
-  { id: 'no_update_24h', label: '24 saat güncelleme yapılmadığında', icon: '💤' },
-  { id: 'high_incident_count', label: 'Aktif arıza sayısı eşiği aşıldığında', icon: '📊' },
+  { id: 'incident_created', label: 'Yeni arıza oluşturulduğunda', icon: '' },
+  { id: 'incident_critical', label: 'Kritik arıza geldiğinde', icon: '' },
+  { id: 'incident_overdue', label: 'SLA süresi aşıldığında', icon: '' },
+  { id: 'incident_resolved', label: 'Arıza çözüldüğünde', icon: '' },
+  { id: 'incident_status_change', label: 'Arıza durumu değiştiğinde', icon: '' },
+  { id: 'client_added', label: 'Yeni müşteri eklendiğinde', icon: '' },
+  { id: 'no_update_24h', label: '24 saat güncelleme yapılmadığında', icon: '' },
+  { id: 'high_incident_count', label: 'Aktif arıza sayısı eşiği aşıldığında', icon: '' },
 ];
 
 const ACTIONS = [
-  { id: 'notify_admin', label: 'Admin\'e bildirim gönder', icon: '🔔' },
-  { id: 'notify_manager', label: 'Yöneticiye bildirim gönder', icon: '📩' },
-  { id: 'notify_all', label: 'Tüm ekibe bildirim gönder', icon: '📢' },
-  { id: 'auto_assign', label: 'Otomatik atama yap', icon: '👷' },
-  { id: 'escalate', label: 'Üst seviyeye yükselt', icon: '⬆️' },
-  { id: 'add_note', label: 'Otomatik not ekle', icon: '📝' },
-  { id: 'change_priority', label: 'Önceliği değiştir', icon: '🎯' },
-  { id: 'log_event', label: 'Olay kaydı oluştur', icon: '📋' },
+  { id: 'notify_admin', label: 'Admin\'e bildirim gönder', icon: '' },
+  { id: 'notify_manager', label: 'Yöneticiye bildirim gönder', icon: '' },
+  { id: 'notify_all', label: 'Tüm ekibe bildirim gönder', icon: '' },
+  { id: 'auto_assign', label: 'Otomatik atama yap', icon: '' },
+  { id: 'escalate', label: 'Üst seviyeye yükselt', icon: '' },
+  { id: 'add_note', label: 'Otomatik not ekle', icon: '' },
+  { id: 'change_priority', label: 'Önceliği değiştir', icon: '' },
+  { id: 'log_event', label: 'Olay kaydı oluştur', icon: '' },
 ];
 
 const CONDITIONS = [
@@ -262,7 +262,7 @@ function WorkflowRulesPage({ incidents, currentUser, showToast }) {
     <div className="page-content">
       <div className="page-header">
         <div>
-          <h1 className="page-title">⚡ İş Akışı Otomasyonu</h1>
+          <h1 className="page-title"> İş Akışı Otomasyonu</h1>
           <p className="page-subtitle">If-then kurallarıyla otomatik bildirim ve aksiyonlar tanımlayın</p>
         </div>
         {isAdmin && (
@@ -286,9 +286,9 @@ function WorkflowRulesPage({ incidents, currentUser, showToast }) {
       {/* Tabs */}
       <div className="wf-tabs">
         {[
-          { id: 'rules', label: 'Kurallar', icon: '📋', badge: rules.length || null },
-          { id: 'log', label: 'Çalışma Logu', icon: '📊', badge: executionLog.length || null },
-          { id: 'templates', label: 'Şablonlar', icon: '📦', badge: null },
+          { id: 'rules', label: 'Kurallar', icon: '', badge: rules.length || null },
+          { id: 'log', label: 'Çalışma Logu', icon: '', badge: executionLog.length || null },
+          { id: 'templates', label: 'Şablonlar', icon: '', badge: null },
         ].map(tab => (
           <button key={tab.id} className={`wf-tab ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}>
@@ -308,7 +308,7 @@ function WorkflowRulesPage({ incidents, currentUser, showToast }) {
 
           {filteredRules.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">⚡</div>
+              <div className="empty-icon"></div>
               <p>{rules.length === 0 ? 'Henüz kural tanımlanmamış. Şablonlardan başlayabilirsiniz.' : 'Aramayla eşleşen kural bulunamadı.'}</p>
             </div>
           ) : (
@@ -333,9 +333,9 @@ function WorkflowRulesPage({ incidents, currentUser, showToast }) {
                       </div>
                       {isAdmin && (
                         <div className="wf-rule-actions">
-                          <button className="btn btn-xs" onClick={() => simulateRule(rule)} title="Simüle Et">▶️ Test</button>
-                          <button className="btn-icon" title="Düzenle" onClick={() => handleEdit(rule)}>✏️</button>
-                          <button className="btn-icon delete" title="Sil" onClick={() => handleDelete(rule.id)}>🗑️</button>
+                          <button className="btn btn-xs" onClick={() => simulateRule(rule)} title="Simüle Et"> Test</button>
+                          <button className="btn-icon" title="Düzenle" onClick={() => handleEdit(rule)}></button>
+                          <button className="btn-icon delete" title="Sil" onClick={() => handleDelete(rule.id)}></button>
                         </div>
                       )}
                     </div>
@@ -395,12 +395,12 @@ function WorkflowRulesPage({ incidents, currentUser, showToast }) {
         <div className="wf-log">
           {executionLog.length > 0 && (
             <div style={{ textAlign: 'right', marginBottom: 12 }}>
-              <button className="btn btn-secondary btn-sm" onClick={clearLog}>🗑️ Logu Temizle</button>
+              <button className="btn btn-secondary btn-sm" onClick={clearLog}> Logu Temizle</button>
             </div>
           )}
           {executionLog.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">📊</div>
+              <div className="empty-icon"></div>
               <p>Henüz çalışma logu yok. Kuralları test ederek log oluşturabilirsiniz.</p>
             </div>
           ) : (
@@ -412,7 +412,7 @@ function WorkflowRulesPage({ incidents, currentUser, showToast }) {
                     <div className="wf-log-header">
                       <strong>{log.ruleName}</strong>
                       <span className={`wf-log-result ${log.result}`}>
-                        {log.result === 'success' ? '✅ Başarılı' : '❌ Hata'}
+                        {log.result === 'success' ? ' Başarılı' : ' Hata'}
                       </span>
                     </div>
                     <div className="wf-log-detail">
@@ -420,8 +420,8 @@ function WorkflowRulesPage({ incidents, currentUser, showToast }) {
                       <span>Aksiyonlar: {log.actions}</span>
                     </div>
                     <div className="wf-log-meta">
-                      <span>👤 {log.simulatedBy}</span>
-                      <span>📅 {formatDate(log.date)}</span>
+                      <span> {log.simulatedBy}</span>
+                      <span> {formatDate(log.date)}</span>
                     </div>
                   </div>
                 </div>
@@ -466,8 +466,8 @@ function WorkflowRulesPage({ incidents, currentUser, showToast }) {
         <div className="modal-overlay" onClick={() => setShowForm(false)}>
           <div className="modal-content wf-form-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>{editingRule ? 'Kuralı Düzenle' : '⚡ Yeni Otomasyon Kuralı'}</h2>
-              <button className="modal-close" onClick={() => setShowForm(false)}>✕</button>
+              <h2>{editingRule ? 'Kuralı Düzenle' : ' Yeni Otomasyon Kuralı'}</h2>
+              <button className="modal-close" onClick={() => setShowForm(false)}></button>
             </div>
             <form onSubmit={handleSubmit} className="wf-form">
               <div className="form-group">
@@ -485,7 +485,7 @@ function WorkflowRulesPage({ incidents, currentUser, showToast }) {
 
               {/* Trigger */}
               <div className="wf-form-section">
-                <h4>🎯 Tetikleyici (EĞER)</h4>
+                <h4> Tetikleyici (EĞER)</h4>
                 <div className="wf-option-grid">
                   {TRIGGERS.map(t => (
                     <label key={t.id} className={`wf-option-card ${form.trigger === t.id ? 'selected' : ''}`}>
@@ -501,7 +501,7 @@ function WorkflowRulesPage({ incidents, currentUser, showToast }) {
 
               {/* Conditions */}
               <div className="wf-form-section">
-                <h4>🔍 Koşullar (VE)</h4>
+                <h4> Koşullar (VE)</h4>
                 <div className="wf-option-grid">
                   {CONDITIONS.map(c => (
                     <label key={c.id} className={`wf-option-card ${form.conditions.includes(c.id) ? 'selected' : ''}`}>
@@ -516,7 +516,7 @@ function WorkflowRulesPage({ incidents, currentUser, showToast }) {
 
               {/* Actions */}
               <div className="wf-form-section">
-                <h4>⚡ Aksiyonlar (O ZAMAN)</h4>
+                <h4> Aksiyonlar (O ZAMAN)</h4>
                 <div className="wf-option-grid">
                   {ACTIONS.map(a => (
                     <label key={a.id} className={`wf-option-card ${form.actions.includes(a.id) ? 'selected' : ''}`}>

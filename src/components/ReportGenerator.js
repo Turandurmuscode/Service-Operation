@@ -102,13 +102,13 @@ function ReportGenerator({ incidents, clients }) {
 
   return (
     <div className="card" style={{ marginTop: '20px' }}>
-      <h3 style={{ fontSize: '16px', marginBottom: '12px' }}>📊 Raporlama</h3>
+      <h3 style={{ fontSize: '16px', marginBottom: '12px' }}> Raporlama</h3>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <button onClick={generatePDFReport} className="btn btn-primary">
-          📄 PDF Rapor İndir
+           PDF Rapor İndir
         </button>
         <button onClick={generateWeeklyReport} className="btn btn-secondary">
-          📅 Haftalık Rapor (JSON)
+           Haftalık Rapor (JSON)
         </button>
       </div>
     </div>

@@ -223,7 +223,7 @@ function TimesheetPage({ incidents, clients, currentUser, showToast }) {
                         <div className="ts-entry-desc">{entry.description}</div>
                         <div className="ts-entry-meta">
                           <span className="ts-entry-incident">{getIncidentLabel(entry.incidentId)}</span>
-                          <span className="ts-entry-tech">👤 {entry.technician}</span>
+                          <span className="ts-entry-tech"> {entry.technician}</span>
                         </div>
                       </div>
                       <div className="ts-entry-actions">
@@ -273,7 +273,7 @@ function TimesheetPage({ incidents, clients, currentUser, showToast }) {
           <div className="modal-content ts-form-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2>{editingEntry ? 'Kaydı Düzenle' : 'Çalışma Saati Kaydet'}</h2>
-              <button className="modal-close" onClick={() => setShowForm(false)}>✕</button>
+              <button className="modal-close" onClick={() => setShowForm(false)}></button>
             </div>
             <form onSubmit={handleSubmit} className="ts-form">
               <div className="form-row">

@@ -12,13 +12,13 @@ const FREQUENCY_OPTIONS = [
 ];
 
 const MAINTENANCE_TYPES = [
-  { value: 'preventive', label: 'Önleyici Bakım', icon: '🛡️', color: '#3b82f6' },
-  { value: 'routine', label: 'Rutin Kontrol', icon: '🔄', color: '#22c55e' },
-  { value: 'update', label: 'Güncelleme', icon: '⬆️', color: '#8b5cf6' },
-  { value: 'backup', label: 'Yedekleme', icon: '💾', color: '#f59e0b' },
-  { value: 'security', label: 'Güvenlik Taraması', icon: '🔍', color: '#ef4444' },
-  { value: 'cleaning', label: 'Temizlik', icon: '🧹', color: '#06b6d4' },
-  { value: 'inspection', label: 'Muayene', icon: '📋', color: '#6b7280' },
+  { value: 'preventive', label: 'Önleyici Bakım', icon: '', color: '#3b82f6' },
+  { value: 'routine', label: 'Rutin Kontrol', icon: '', color: '#22c55e' },
+  { value: 'update', label: 'Güncelleme', icon: '', color: '#8b5cf6' },
+  { value: 'backup', label: 'Yedekleme', icon: '', color: '#f59e0b' },
+  { value: 'security', label: 'Güvenlik Taraması', icon: '', color: '#ef4444' },
+  { value: 'cleaning', label: 'Temizlik', icon: '', color: '#06b6d4' },
+  { value: 'inspection', label: 'Muayene', icon: '', color: '#6b7280' },
 ];
 
 function ScheduledMaintenancePage({ clients, incidents, addIncident, currentUser, showToast }) {
@@ -194,7 +194,7 @@ function ScheduledMaintenancePage({ clients, incidents, addIncident, currentUser
     <div className="page-content">
       <div className="page-header-row">
         <div>
-          <h1 className="page-title">🔄 Periyodik Bakım Planlama</h1>
+          <h1 className="page-title"> Periyodik Bakım Planlama</h1>
           <p className="page-subtitle">Otomatik bakım görevleri ve tekrarlayan iş planları</p>
         </div>
         <button className="btn btn-primary" onClick={() => { setEditingSchedule(null); setShowForm(true); }}>
@@ -231,7 +231,7 @@ function ScheduledMaintenancePage({ clients, incidents, addIncident, currentUser
       {/* Overdue Banner */}
       {overdueTasks.length > 0 && (
         <div className="sm-alert-banner danger">
-          <span>🚨</span>
+          <span></span>
           <div>
             <strong>{overdueTasks.length} bakım görevi gecikmiş durumda!</strong>
             <div className="sm-alert-list">
@@ -248,11 +248,11 @@ function ScheduledMaintenancePage({ clients, incidents, addIncident, currentUser
       {/* View Tabs */}
       <div className="sm-tabs">
         <button className={`sm-tab ${activeView === 'upcoming' ? 'active' : ''}`}
-          onClick={() => setActiveView('upcoming')}>📅 Yaklaşan İşler ({upcomingTasks.length})</button>
+          onClick={() => setActiveView('upcoming')}> Yaklaşan İşler ({upcomingTasks.length})</button>
         <button className={`sm-tab ${activeView === 'schedules' ? 'active' : ''}`}
-          onClick={() => setActiveView('schedules')}>⚙️ Planlar ({schedules.length})</button>
+          onClick={() => setActiveView('schedules')}> Planlar ({schedules.length})</button>
         <button className={`sm-tab ${activeView === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveView('history')}>📋 Geçmiş ({executions.length})</button>
+          onClick={() => setActiveView('history')}> Geçmiş ({executions.length})</button>
       </div>
 
       {/* ── UPCOMING VIEW ─────────── */}
@@ -269,12 +269,12 @@ function ScheduledMaintenancePage({ clients, incidents, addIncident, currentUser
                   <div key={i} className={`sm-task-card ${task.isOverdue ? 'overdue' : task.isDueSoon ? 'due-soon' : ''}`}>
                     <div className="sm-task-left">
                       <div className="sm-task-icon" style={{ background: `${typeInfo?.color || '#6b7280'}15`, color: typeInfo?.color }}>
-                        {typeInfo?.icon || '🔧'}
+                        {typeInfo?.icon || ''}
                       </div>
                       <div>
                         <div className="sm-task-title">{task.schedule.title}</div>
                         <div className="sm-task-meta">
-                          {typeInfo?.label} | {freq?.label} | 👤 {task.client.name}
+                          {typeInfo?.label} | {freq?.label} |  {task.client.name}
                         </div>
                       </div>
                     </div>
@@ -290,13 +290,13 @@ function ScheduledMaintenancePage({ clients, incidents, addIncident, currentUser
                       {task.client.id !== 'all' && (
                         <button className="btn-sm btn-primary"
                           onClick={() => executeMaintenance(task.schedule, task.client.id)}>
-                          ▶ Çalıştır
+                           Çalıştır
                         </button>
                       )}
                       {task.client.id === 'all' && (
                         <button className="btn-sm btn-primary"
                           onClick={() => executeAllForSchedule(task.schedule)}>
-                          ▶ Tümünü Çalıştır
+                           Tümünü Çalıştır
                         </button>
                       )}
                     </div>
@@ -347,20 +347,20 @@ function ScheduledMaintenancePage({ clients, incidents, addIncident, currentUser
                       <p className="sm-schedule-desc">{schedule.description}</p>
                     )}
                     <div className="sm-schedule-info">
-                      <div>🔄 {freq?.label || schedule.frequency}</div>
-                      <div>👥 {targetClients.length > 0 ? targetClients.map(c => c.name).join(', ') : 'Tüm Müşteriler'}</div>
-                      {nextDue && <div>📅 Sonraki: {nextDue.toLocaleDateString('tr-TR')}</div>}
-                      <div>🔢 {schedule.executionCount || 0} kez çalıştırıldı</div>
+                      <div> {freq?.label || schedule.frequency}</div>
+                      <div> {targetClients.length > 0 ? targetClients.map(c => c.name).join(', ') : 'Tüm Müşteriler'}</div>
+                      {nextDue && <div> Sonraki: {nextDue.toLocaleDateString('tr-TR')}</div>}
+                      <div> {schedule.executionCount || 0} kez çalıştırıldı</div>
                     </div>
                     <div className="sm-schedule-actions">
                       <button className="btn-sm btn-primary"
                         onClick={() => executeAllForSchedule(schedule)} disabled={!schedule.active}>
-                        ▶ Şimdi Çalıştır
+                         Şimdi Çalıştır
                       </button>
                       <button className="btn-sm btn-ghost"
-                        onClick={() => { setEditingSchedule(schedule); setShowForm(true); }}>✏️</button>
+                        onClick={() => { setEditingSchedule(schedule); setShowForm(true); }}></button>
                       <button className="btn-sm btn-ghost" style={{ color: '#ef4444' }}
-                        onClick={() => deleteSchedule(schedule.id)}>🗑️</button>
+                        onClick={() => deleteSchedule(schedule.id)}></button>
                     </div>
                   </div>
                 );

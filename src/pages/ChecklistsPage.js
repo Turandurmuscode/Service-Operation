@@ -140,7 +140,7 @@ function ChecklistsPage({ incidents, clients, currentUser, showToast }) {
     const updatedCl = updated.find(cl => cl.id === checklistId);
     setSelectedChecklist(updatedCl);
     if (updatedCl?.completedAt) {
-      showToast('Kontrol listesi tamamlandı! ✅', 'success');
+      showToast('Kontrol listesi tamamlandı! ', 'success');
     }
   };
 
@@ -281,7 +281,7 @@ function ChecklistsPage({ incidents, clients, currentUser, showToast }) {
                           <div className="cl-card-info">
                             <div className="cl-card-name">{cl.templateName}</div>
                             {cl.incidentId && (
-                              <div className="cl-card-incident">🔧 {getIncidentLabel(cl.incidentId)}</div>
+                              <div className="cl-card-incident"> {getIncidentLabel(cl.incidentId)}</div>
                             )}
                           </div>
                         </div>
@@ -306,12 +306,12 @@ function ChecklistsPage({ incidents, clients, currentUser, showToast }) {
                 <div>
                   <h3 style={{ color: selectedChecklist.color }}>{selectedChecklist.templateName}</h3>
                   {selectedChecklist.incidentId && (
-                    <div className="cl-detail-incident">🔧 {getIncidentLabel(selectedChecklist.incidentId)}</div>
+                    <div className="cl-detail-incident"> {getIncidentLabel(selectedChecklist.incidentId)}</div>
                   )}
                   <div className="cl-detail-meta">
-                    {selectedChecklist.createdBy} • {new Date(selectedChecklist.createdAt).toLocaleDateString('tr-TR')}
+                    {selectedChecklist.createdBy}  {new Date(selectedChecklist.createdAt).toLocaleDateString('tr-TR')}
                     {selectedChecklist.completedAt && (
-                      <span className="cl-completed-badge">✅ Tamamlandı — {new Date(selectedChecklist.completedAt).toLocaleString('tr-TR')}</span>
+                      <span className="cl-completed-badge"> Tamamlandı — {new Date(selectedChecklist.completedAt).toLocaleString('tr-TR')}</span>
                     )}
                   </div>
                 </div>
@@ -321,7 +321,7 @@ function ChecklistsPage({ incidents, clients, currentUser, showToast }) {
                       <path d="M3 4h10M6 4V3h4v1M5 4v9h6V4" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
-                  <button className="modal-close" onClick={() => setSelectedChecklist(null)}>✕</button>
+                  <button className="modal-close" onClick={() => setSelectedChecklist(null)}></button>
                 </div>
               </div>
 
@@ -390,7 +390,7 @@ function ChecklistsPage({ incidents, clients, currentUser, showToast }) {
                 </ul>
                 <div className="cl-template-actions">
                   <button className="btn btn-primary btn-sm" onClick={() => startChecklist(tpl)}>
-                    ▶ Başlat
+                     Başlat
                   </button>
                   <select className="cl-start-with-incident" onChange={(e) => { if (e.target.value) { startChecklist(tpl, e.target.value); e.target.value = ''; } }}>
                     <option value="">Arıza ile başlat...</option>
@@ -420,7 +420,7 @@ function ChecklistsPage({ incidents, clients, currentUser, showToast }) {
           <div className="modal-content cl-template-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2>{editingTemplate ? 'Şablon Düzenle' : 'Yeni Şablon'}</h2>
-              <button className="modal-close" onClick={() => setShowTemplateForm(false)}>✕</button>
+              <button className="modal-close" onClick={() => setShowTemplateForm(false)}></button>
             </div>
             <form onSubmit={handleTemplateSubmit} className="cl-template-form">
               <div className="form-row">
@@ -432,12 +432,12 @@ function ChecklistsPage({ incidents, clients, currentUser, showToast }) {
                 <div className="form-group">
                   <label>Kategori</label>
                   <select value={templateForm.category} onChange={e => setTemplateForm({ ...templateForm, category: e.target.value })}>
-                    <option value="software">💿 Yazılım</option>
-                    <option value="hardware">🔧 Donanım</option>
-                    <option value="network">🌐 Ağ</option>
-                    <option value="procedure">📋 Prosedür</option>
-                    <option value="maintenance">⚙️ Bakım</option>
-                    <option value="other">📦 Diğer</option>
+                    <option value="software"> Yazılım</option>
+                    <option value="hardware"> Donanım</option>
+                    <option value="network"> Ağ</option>
+                    <option value="procedure"> Prosedür</option>
+                    <option value="maintenance"> Bakım</option>
+                    <option value="other"> Diğer</option>
                   </select>
                 </div>
               </div>

@@ -68,26 +68,26 @@ function BulkActions({ incidents, onBulkResolve, onBulkDelete, onBulkChangePrior
             <span className="bulk-selected-count">{selectedIds.size} arıza seçildi</span>
             
             <button onClick={handleBulkResolve} className="bulk-action-btn success">
-              ✓ Çöz
+               Çöz
             </button>
             
             <div className="bulk-action-dropdown">
               <button className="bulk-action-btn warning">
-                🎯 Öncelik
+                 Öncelik
               </button>
               <div className="bulk-dropdown-menu">
-                <button onClick={() => handleBulkPriority('critical')}>🔴 Kritik</button>
-                <button onClick={() => handleBulkPriority('medium')}>🟡 Orta</button>
-                <button onClick={() => handleBulkPriority('low')}>🟢 Düşük</button>
+                <button onClick={() => handleBulkPriority('critical')}> Kritik</button>
+                <button onClick={() => handleBulkPriority('medium')}> Orta</button>
+                <button onClick={() => handleBulkPriority('low')}> Düşük</button>
               </div>
             </div>
             
             <button onClick={handleBulkDelete} className="bulk-action-btn danger">
-              🗑️ Sil
+               Sil
             </button>
             
             <button onClick={() => { setSelectedIds(new Set()); setShowActions(false); }} className="bulk-action-btn">
-              ✕ İptal
+               İptal
             </button>
           </div>
         )}

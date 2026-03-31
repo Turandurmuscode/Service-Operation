@@ -70,7 +70,7 @@ export function executeRuleActions(rule, incident, options = {}) {
           notify_all: 'Tüm Ekip',
         };
         if (showToast) {
-          showToast(`🔔 [Otomasyon] ${rule.name}: ${labels[action]}'e bildirim gönderildi`, 'info');
+          showToast(` [Otomasyon] ${rule.name}: ${labels[action]}'e bildirim gönderildi`, 'info');
         }
         // Browser notification
         if ('Notification' in window && Notification.permission === 'granted') {
@@ -91,7 +91,7 @@ export function executeRuleActions(rule, incident, options = {}) {
       }
       case 'escalate': {
         if (showToast) {
-          showToast(`⬆️ [Otomasyon] ${rule.name}: Arıza üst seviyeye yükseltildi`, 'warning');
+          showToast(` [Otomasyon] ${rule.name}: Arıza üst seviyeye yükseltildi`, 'warning');
         }
         executed.push('Yükseltildi');
         break;

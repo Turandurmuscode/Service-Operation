@@ -13,9 +13,9 @@ const loadJSON = (key, fallback) => {
 };
 
 export const ROUTING_MODES = {
-  manual:      { label: 'Manuel',       desc: 'Teknisyen her arıza için elle seçilir.',           icon: '🖐️' },
-  round_robin: { label: 'Round-Robin',  desc: 'Arızalar sırayla tüm teknisyenlere dağıtılır.',    icon: '🔄' },
-  skill_based: { label: 'Yetenek Bazlı', desc: 'Kategori eşleşmesine + en az iş yüküne göre atanır.', icon: '🎯' },
+  manual:      { label: 'Manuel',       desc: 'Teknisyen her arıza için elle seçilir.',           icon: '' },
+  round_robin: { label: 'Round-Robin',  desc: 'Arızalar sırayla tüm teknisyenlere dağıtılır.',    icon: '' },
+  skill_based: { label: 'Yetenek Bazlı', desc: 'Kategori eşleşmesine + en az iş yüküne göre atanır.', icon: '' },
 };
 
 export const SKILL_OPTIONS = [

@@ -104,7 +104,7 @@ function LoginScreen() {
                 type={showPwd ? 'text' : 'password'}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder=""
                 autoComplete="current-password"
               />
               <button

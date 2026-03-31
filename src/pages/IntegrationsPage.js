@@ -27,7 +27,7 @@ const INTEGRATIONS_META = [
     color: '#e63946',
     fields: [
       { key: 'apiUrl',   label: 'API URL',   placeholder: 'https://logo-server:8080/api/v2', type: 'url' },
-      { key: 'apiKey',   label: 'API Key',   placeholder: 'logo-api-key-••••••••',          type: 'password' },
+      { key: 'apiKey',   label: 'API Key',   placeholder: 'logo-api-key-',          type: 'password' },
       { key: 'firmNo',   label: 'Firma No',  placeholder: '1',                              type: 'text' },
       { key: 'periodNo', label: 'Dönem No',  placeholder: '001',                            type: 'text' },
     ],
@@ -43,7 +43,7 @@ const INTEGRATIONS_META = [
       { key: 'dbServer',   label: 'DB Sunucu',    placeholder: '192.168.1.10\\SQLEXPRESS', type: 'text' },
       { key: 'dbName',     label: 'Veritabanı',   placeholder: 'NETSIS_DB',               type: 'text' },
       { key: 'dbUser',     label: 'DB Kullanıcı', placeholder: 'sa',                      type: 'text' },
-      { key: 'dbPassword', label: 'DB Şifresi',   placeholder: '••••••••',                type: 'password' },
+      { key: 'dbPassword', label: 'DB Şifresi',   placeholder: '',                type: 'password' },
     ],
   },
   {
@@ -58,7 +58,7 @@ const INTEGRATIONS_META = [
       { key: 'systemNo',    label: 'Sistem No',         placeholder: '00',                   type: 'text' },
       { key: 'client',      label: 'Mandant',           placeholder: '100',                  type: 'text' },
       { key: 'sapUser',     label: 'Kullanıcı',         placeholder: 'RFC_USER',             type: 'text' },
-      { key: 'sapPassword', label: 'Şifre',             placeholder: '••••••••',             type: 'password' },
+      { key: 'sapPassword', label: 'Şifre',             placeholder: '',             type: 'password' },
     ],
   },
   {
@@ -72,7 +72,7 @@ const INTEGRATIONS_META = [
       { key: 'integrator',  label: 'Entegratör URL',  placeholder: 'https://efatura.entegrator.com', type: 'url' },
       { key: 'username',    label: 'Kullanıcı Adı',   placeholder: 'VKN + şifre tanımlaması',       type: 'text' },
       { key: 'vkn',         label: 'Vergi Kimlik No', placeholder: '1234567890',                    type: 'text' },
-      { key: 'efaturaKey',  label: 'API Key',         placeholder: 'efatura-api-••••••••',          type: 'password' },
+      { key: 'efaturaKey',  label: 'API Key',         placeholder: 'efatura-api-',          type: 'password' },
     ],
   },
   {
@@ -83,8 +83,8 @@ const INTEGRATIONS_META = [
     logo: 'WA',
     color: '#25d366',
     fields: [
-      { key: 'waToken',   label: 'Bearer Token',   placeholder: 'EAAG••••••••',                  type: 'password' },
-      { key: 'phoneId',   label: 'Phone Number ID', placeholder: '10638••••••',                  type: 'text' },
+      { key: 'waToken',   label: 'Bearer Token',   placeholder: 'EAAG',                  type: 'password' },
+      { key: 'phoneId',   label: 'Phone Number ID', placeholder: '10638',                  type: 'text' },
       { key: 'waAccount', label: 'Account ID',     placeholder: 'business_account_id',           type: 'text' },
       { key: 'waWebhook', label: 'Webhook URL',    placeholder: 'https://yourdomain.com/wa-hook', type: 'url' },
     ],
@@ -100,7 +100,7 @@ const INTEGRATIONS_META = [
       { key: 'smtpHost', label: 'SMTP Sunucu', placeholder: 'smtp.mailsunucu.com',  type: 'text' },
       { key: 'smtpPort', label: 'Port',        placeholder: '587',                  type: 'text' },
       { key: 'smtpUser', label: 'Kullanıcı',   placeholder: 'noreply@sirket.com',   type: 'text' },
-      { key: 'smtpPass', label: 'Şifre',       placeholder: '••••••••',             type: 'password' },
+      { key: 'smtpPass', label: 'Şifre',       placeholder: '',             type: 'password' },
     ],
   },
   {
@@ -112,7 +112,7 @@ const INTEGRATIONS_META = [
     color: '#ff6b6b',
     fields: [
       { key: 'crmUrl',   label: 'CRM API URL', placeholder: 'https://crm.sirket.com/api', type: 'url' },
-      { key: 'crmKey',   label: 'API Key',     placeholder: 'crm-key-••••••••',           type: 'password' },
+      { key: 'crmKey',   label: 'API Key',     placeholder: 'crm-key-',           type: 'password' },
       { key: 'crmTenant', label: 'Tenant ID',  placeholder: 'tenant-uuid',               type: 'text' },
     ],
   },
@@ -221,7 +221,7 @@ function LogModal({ log, onClose }) {
               {log.map((l, i) => (
                 <div key={i} className="int-log-entry">
                   <span className="int-log-time">[{fmtTime(l.at)}]</span>
-                  <span className={l.ok ? 'int-log-ok' : 'int-log-err'}>{l.ok ? '✓' : '✗'}</span>
+                  <span className={l.ok ? 'int-log-ok' : 'int-log-err'}>{l.ok ? '' : ''}</span>
                   <span style={{ color: 'var(--text-primary)' }}>{l.name}</span>
                   <span style={{ color: 'var(--text-muted)' }}>— {l.msg}</span>
                 </div>
@@ -389,7 +389,7 @@ export default function IntegrationsPage({ showToast, currentUser }) {
                         <div key={f.key} className="int-field-row">
                           <span className="int-field-key">{f.label}:</span>
                           <span className="int-field-val">
-                            {f.type === 'password' ? '••••••••' : String(cfg[f.key]).substring(0, 40)}
+                            {f.type === 'password' ? '' : String(cfg[f.key]).substring(0, 40)}
                           </span>
                         </div>
                       ))}

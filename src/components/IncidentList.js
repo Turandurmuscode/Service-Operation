@@ -112,7 +112,7 @@ function EditIncidentModal({ incident, clients, technicians, onSave, onClose }) 
             onClick={onClose}
             style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: 'var(--text-secondary)', lineHeight: 1, padding: 0 }}
           >
-            ✕
+            
           </button>
         </div>
 
@@ -231,7 +231,7 @@ function ResolveIncidentModal({ incident, onClose, onConfirm, requirePhoto }) {
             onClick={onClose}
             style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: 'var(--text-secondary)', lineHeight: 1, padding: 0 }}
           >
-            ✕
+            
           </button>
         </div>
 

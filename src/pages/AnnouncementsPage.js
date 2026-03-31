@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './AnnouncementsPage.css';
 
 const CATEGORIES = [
-  { id: 'urgent', label: 'Acil', icon: '🔴', color: '#ef4444' },
-  { id: 'update', label: 'Güncelleme', icon: '🔵', color: '#3b82f6' },
-  { id: 'info', label: 'Bilgilendirme', icon: '🟢', color: '#10b981' },
-  { id: 'event', label: 'Etkinlik', icon: '🟡', color: '#f59e0b' },
-  { id: 'hr', label: 'İnsan Kaynakları', icon: '🟣', color: '#8b5cf6' },
+  { id: 'urgent', label: 'Acil', icon: '', color: '#ef4444' },
+  { id: 'update', label: 'Güncelleme', icon: '', color: '#3b82f6' },
+  { id: 'info', label: 'Bilgilendirme', icon: '', color: '#10b981' },
+  { id: 'event', label: 'Etkinlik', icon: '', color: '#f59e0b' },
+  { id: 'hr', label: 'İnsan Kaynakları', icon: '', color: '#8b5cf6' },
 ];
 
 const emptyForm = { title: '', content: '', category: 'info', pinned: false, expiresAt: '' };
@@ -163,13 +163,13 @@ function AnnouncementsPage({ currentUser, showToast }) {
     <div className="page-content">
       <div className="page-header">
         <div>
-          <h1 className="page-title">📢 Duyuru Panosu</h1>
+          <h1 className="page-title"> Duyuru Panosu</h1>
           <p className="page-subtitle">Şirket içi duyurular, ilanlar ve bilgilendirmeler</p>
         </div>
         <div className="page-header-actions">
           {unreadCount > 0 && (
             <button className="btn btn-secondary" onClick={markAllRead}>
-              ✓ Tümünü Okundu İşaretle ({unreadCount})
+               Tümünü Okundu İşaretle ({unreadCount})
             </button>
           )}
           {canManage && (
@@ -234,7 +234,7 @@ function AnnouncementsPage({ currentUser, showToast }) {
       {/* Content */}
       {sorted.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">📢</div>
+          <div className="empty-icon"></div>
           <p>Duyuru bulunamadı.</p>
         </div>
       ) : viewMode === 'card' ? (
@@ -245,7 +245,7 @@ function AnnouncementsPage({ currentUser, showToast }) {
             return (
               <div key={ann.id} className={`ann-card ${ann.pinned ? 'pinned' : ''} ${!read ? 'unread' : ''} ${selectedAnn?.id === ann.id ? 'selected' : ''}`}
                 onClick={() => openDetail(ann)}>
-                {ann.pinned && <div className="ann-pin-badge">📌 Sabitlenmiş</div>}
+                {ann.pinned && <div className="ann-pin-badge"> Sabitlenmiş</div>}
                 {!read && <div className="ann-unread-dot" />}
                 <div className="ann-card-header">
                   <span className="ann-cat-badge" style={{ background: cat?.color + '18', color: cat?.color }}>
@@ -256,15 +256,15 @@ function AnnouncementsPage({ currentUser, showToast }) {
                 <h3 className="ann-card-title">{ann.title}</h3>
                 <p className="ann-card-preview">{ann.content.slice(0, 120)}{ann.content.length > 120 ? '...' : ''}</p>
                 <div className="ann-card-footer">
-                  <span className="ann-author">👤 {ann.createdBy}</span>
+                  <span className="ann-author"> {ann.createdBy}</span>
                   {ann.expiresAt && (
-                    <span className="ann-expires">⏰ {formatDate(ann.expiresAt)}</span>
+                    <span className="ann-expires"> {formatDate(ann.expiresAt)}</span>
                   )}
                 </div>
                 {canManage && (
                   <div className="ann-card-actions" onClick={e => e.stopPropagation()}>
                     <button className="btn-icon" title={ann.pinned ? 'Sabitlemeyi Kaldır' : 'Sabitle'}
-                      onClick={() => togglePin(ann.id)}>📌</button>
+                      onClick={() => togglePin(ann.id)}></button>
                     <button className="btn-icon" title="Düzenle" onClick={() => handleEdit(ann)}>
                       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" width="12" height="12">
                         <path d="M11 2l3 3-8 8H3v-3l8-8z" strokeLinejoin="round"/>
@@ -290,7 +290,7 @@ function AnnouncementsPage({ currentUser, showToast }) {
               <div key={ann.id} className={`ann-list-item ${!read ? 'unread' : ''} ${selectedAnn?.id === ann.id ? 'selected' : ''}`}
                 onClick={() => openDetail(ann)}>
                 {!read && <div className="ann-unread-dot-sm" />}
-                {ann.pinned && <span className="ann-pin-icon">📌</span>}
+                {ann.pinned && <span className="ann-pin-icon"></span>}
                 <span className="ann-cat-dot" style={{ background: cat?.color }} />
                 <div className="ann-list-content">
                   <span className="ann-list-title">{ann.title}</span>
@@ -326,7 +326,7 @@ function AnnouncementsPage({ currentUser, showToast }) {
         <div className="ann-detail-panel">
           <div className="ann-detail-header">
             <div className="ann-detail-title-area">
-              {selectedAnn.pinned && <span>📌</span>}
+              {selectedAnn.pinned && <span></span>}
               <span className="ann-cat-badge" style={{
                 background: (CATEGORIES.find(c => c.id === selectedAnn.category)?.color || '#6366f1') + '18',
                 color: CATEGORIES.find(c => c.id === selectedAnn.category)?.color || '#6366f1',
@@ -335,14 +335,14 @@ function AnnouncementsPage({ currentUser, showToast }) {
               </span>
               <h3>{selectedAnn.title}</h3>
             </div>
-            <button className="modal-close" onClick={() => setSelectedAnn(null)}>✕</button>
+            <button className="modal-close" onClick={() => setSelectedAnn(null)}></button>
           </div>
           <div className="ann-detail-body">
             <div className="ann-detail-meta">
-              <span>👤 {selectedAnn.createdBy}</span>
-              <span>📅 {formatDateTime(selectedAnn.createdAt)}</span>
-              {selectedAnn.updatedAt && <span>✏️ Güncellendi: {formatDateTime(selectedAnn.updatedAt)}</span>}
-              {selectedAnn.expiresAt && <span>⏰ Son geçerlilik: {formatDate(selectedAnn.expiresAt)}</span>}
+              <span> {selectedAnn.createdBy}</span>
+              <span> {formatDateTime(selectedAnn.createdAt)}</span>
+              {selectedAnn.updatedAt && <span> Güncellendi: {formatDateTime(selectedAnn.updatedAt)}</span>}
+              {selectedAnn.expiresAt && <span> Son geçerlilik: {formatDate(selectedAnn.expiresAt)}</span>}
             </div>
             <div className="ann-detail-content">
               {selectedAnn.content.split('\n').map((line, i) => (
@@ -358,8 +358,8 @@ function AnnouncementsPage({ currentUser, showToast }) {
         <div className="modal-overlay" onClick={() => setShowForm(false)}>
           <div className="modal-content ann-form-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>{editingAnn ? 'Duyuru Düzenle' : '📢 Yeni Duyuru'}</h2>
-              <button className="modal-close" onClick={() => setShowForm(false)}>✕</button>
+              <h2>{editingAnn ? 'Duyuru Düzenle' : ' Yeni Duyuru'}</h2>
+              <button className="modal-close" onClick={() => setShowForm(false)}></button>
             </div>
             <form onSubmit={handleSubmit} className="ann-form">
               <div className="form-group">
@@ -388,7 +388,7 @@ function AnnouncementsPage({ currentUser, showToast }) {
                 <label className="ann-checkbox">
                   <input type="checkbox" checked={form.pinned}
                     onChange={e => setForm({ ...form, pinned: e.target.checked })} />
-                  <span>📌 Panoda Sabitle</span>
+                  <span> Panoda Sabitle</span>
                 </label>
               </div>
               <div className="form-actions">

@@ -22,9 +22,9 @@ function MessagingPage({ currentUser, incidents, clients, showToast }) {
     } else {
       // Create default channels
       const defaults = [
-        { id: 'general', name: 'Genel', type: 'team', icon: '💬', createdAt: new Date().toISOString(), createdBy: 'System' },
-        { id: 'urgent', name: 'Acil Durumlar', type: 'team', icon: '🚨', createdAt: new Date().toISOString(), createdBy: 'System' },
-        { id: 'announcements', name: 'Duyurular', type: 'team', icon: '📢', createdAt: new Date().toISOString(), createdBy: 'System' },
+        { id: 'general', name: 'Genel', type: 'team', icon: '', createdAt: new Date().toISOString(), createdBy: 'System' },
+        { id: 'urgent', name: 'Acil Durumlar', type: 'team', icon: '', createdAt: new Date().toISOString(), createdBy: 'System' },
+        { id: 'announcements', name: 'Duyurular', type: 'team', icon: '', createdAt: new Date().toISOString(), createdBy: 'System' },
       ];
       setChannels(defaults);
       setActiveChannel('general');
@@ -99,7 +99,7 @@ function MessagingPage({ currentUser, incidents, clients, showToast }) {
       name: channelForm.name.trim(),
       type: channelForm.type,
       incidentId: channelForm.incidentId || null,
-      icon: channelForm.type === 'incident' ? '🔧' : channelForm.type === 'private' ? '🔒' : '💬',
+      icon: channelForm.type === 'incident' ? '' : channelForm.type === 'private' ? '' : '',
       createdAt: new Date().toISOString(),
       createdBy: currentUser?.name || 'System',
     };
@@ -212,7 +212,7 @@ function MessagingPage({ currentUser, incidents, clients, showToast }) {
                     <h3>{activeChannelObj.name}</h3>
                     <span className="msg-chat-meta">
                       {(messages[activeChannel] || []).length} mesaj
-                      {activeChannelObj.createdBy !== 'System' && ` • ${activeChannelObj.createdBy} tarafından oluşturuldu`}
+                      {activeChannelObj.createdBy !== 'System' && `  ${activeChannelObj.createdBy} tarafından oluşturuldu`}
                     </span>
                   </div>
                 </div>
@@ -297,7 +297,7 @@ function MessagingPage({ currentUser, incidents, clients, showToast }) {
           <div className="modal-content msg-channel-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Yeni Kanal Oluştur</h2>
-              <button className="modal-close" onClick={() => setShowNewChannel(false)}>✕</button>
+              <button className="modal-close" onClick={() => setShowNewChannel(false)}></button>
             </div>
             <form onSubmit={handleCreateChannel} className="msg-channel-form">
               <div className="form-group">
@@ -307,9 +307,9 @@ function MessagingPage({ currentUser, incidents, clients, showToast }) {
               <div className="form-group">
                 <label>Kanal Tipi</label>
                 <select value={channelForm.type} onChange={e => setChannelForm({ ...channelForm, type: e.target.value })}>
-                  <option value="team">💬 Ekip Kanalı</option>
-                  <option value="incident">🔧 Arıza Kanalı</option>
-                  <option value="private">🔒 Özel Kanal</option>
+                  <option value="team"> Ekip Kanalı</option>
+                  <option value="incident"> Arıza Kanalı</option>
+                  <option value="private"> Özel Kanal</option>
                 </select>
               </div>
               {channelForm.type === 'incident' && (

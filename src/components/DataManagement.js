@@ -34,7 +34,7 @@ function DataManagement({ clients, incidents, setClients, setIncidents, setActiv
   return (
     <div className="data-management">
       <h3 style={{ fontSize: '16px', marginBottom: '12px', color: '#666' }}>
-        ⚠️ Tehlikeli İşlemler
+         Tehlikeli İşlemler
       </h3>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <button 
@@ -42,21 +42,21 @@ function DataManagement({ clients, incidents, setClients, setIncidents, setActiv
           className="btn btn-warning"
           style={{ fontSize: '13px' }}
         >
-          🗑️ Tüm Müşterileri Sil
+           Tüm Müşterileri Sil
         </button>
         <button 
           onClick={clearAllIncidents} 
           className="btn btn-warning"
           style={{ fontSize: '13px' }}
         >
-          🗑️ Tüm Arızaları Sil
+           Tüm Arızaları Sil
         </button>
         <button 
           onClick={clearAllData} 
           className="btn btn-danger"
           style={{ fontSize: '13px' }}
         >
-          💥 Tüm Verileri Sil
+           Tüm Verileri Sil
         </button>
       </div>
       
@@ -68,7 +68,7 @@ function DataManagement({ clients, incidents, setClients, setIncidents, setActiv
         fontSize: '12px',
         color: '#856404'
       }}>
-        <strong>⚠️ Dikkat:</strong> Bu işlemler geri alınamaz!
+        <strong> Dikkat:</strong> Bu işlemler geri alınamaz!
       </div>
     </div>
   );

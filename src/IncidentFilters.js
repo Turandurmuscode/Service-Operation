@@ -31,7 +31,7 @@ function IncidentFilters({ onFilterChange }) {
       <div className="filter-group">
         <input
           type="text"
-          placeholder="🔍 Arıza açıklamasında ara..."
+          placeholder=" Arıza açıklamasında ara..."
           value={filters.search}
           onChange={(e) => handleFilterChange('search', e.target.value)}
           className="search-input"
@@ -64,7 +64,7 @@ function IncidentFilters({ onFilterChange }) {
       </div>
 
       <button onClick={resetFilters} className="btn btn-secondary">
-        🔄 Filtreleri Sıfırla
+         Filtreleri Sıfırla
       </button>
     </div>
   );

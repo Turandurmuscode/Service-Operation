@@ -2,13 +2,13 @@ import { useState, useEffect, useMemo } from 'react';
 import './RemoteAccessPage.css';
 
 const CONNECTION_TYPES = [
-  { id: 'anydesk', label: 'AnyDesk', icon: '🖥️', color: '#ef4444' },
-  { id: 'teamviewer', label: 'TeamViewer', icon: '🔵', color: '#0078d4' },
-  { id: 'rdp', label: 'RDP (Uzak Masaüstü)', icon: '💻', color: '#3b82f6' },
-  { id: 'vpn', label: 'VPN', icon: '🔒', color: '#8b5cf6' },
-  { id: 'ssh', label: 'SSH', icon: '⌨️', color: '#10b981' },
-  { id: 'web', label: 'Web Panel', icon: '🌐', color: '#f59e0b' },
-  { id: 'other', label: 'Diğer', icon: '🔗', color: '#64748b' },
+  { id: 'anydesk', label: 'AnyDesk', icon: '', color: '#ef4444' },
+  { id: 'teamviewer', label: 'TeamViewer', icon: '', color: '#0078d4' },
+  { id: 'rdp', label: 'RDP (Uzak Masaüstü)', icon: '', color: '#3b82f6' },
+  { id: 'vpn', label: 'VPN', icon: '', color: '#8b5cf6' },
+  { id: 'ssh', label: 'SSH', icon: '', color: '#10b981' },
+  { id: 'web', label: 'Web Panel', icon: '', color: '#f59e0b' },
+  { id: 'other', label: 'Diğer', icon: '', color: '#64748b' },
 ];
 
 const RemoteAccessPage = ({ clients, currentUser, showToast, darkMode }) => {
@@ -144,17 +144,17 @@ const RemoteAccessPage = ({ clients, currentUser, showToast, darkMode }) => {
 
   return (
     <div className={`remote-access-page ${darkMode ? 'dark' : ''}`}>
-      <h2>🔌 Uzak Erişim Yöneticisi</h2>
+      <h2> Uzak Erişim Yöneticisi</h2>
       <p className="page-subtitle">Müşteri bağlantı bilgilerini güvenli şekilde saklayın ve yönetin</p>
 
       {/* Stats */}
       <div className="ra-stats">
         <div className="ra-stat">
-          <div className="stat-icon">🔗</div>
+          <div className="stat-icon"></div>
           <div className="stat-info"><div className="val">{totalConnections}</div><div className="lbl">Toplam Bağlantı</div></div>
         </div>
         <div className="ra-stat">
-          <div className="stat-icon">🏢</div>
+          <div className="stat-icon"></div>
           <div className="stat-info"><div className="val">{clientsWithConns}</div><div className="lbl">Bağlantılı Müşteri</div></div>
         </div>
         {CONNECTION_TYPES.slice(0, 4).map(t => typeBreakdown[t.id] ? (
@@ -167,7 +167,7 @@ const RemoteAccessPage = ({ clients, currentUser, showToast, darkMode }) => {
 
       {/* Toolbar */}
       <div className="ra-toolbar">
-        <input type="text" placeholder="🔍 Müşteri, ID veya adres ara..." value={search} onChange={e => setSearch(e.target.value)} />
+        <input type="text" placeholder=" Müşteri, ID veya adres ara..." value={search} onChange={e => setSearch(e.target.value)} />
       </div>
 
       {/* Client cards */}
@@ -199,19 +199,19 @@ const RemoteAccessPage = ({ clients, currentUser, showToast, darkMode }) => {
                               </div>
                             )}
                             {conn.host && <div className="conn-id" onClick={() => copyToClipboard(conn.host, 'Adres')} style={{ cursor: 'pointer' }} title="Tıkla & Kopyala">{conn.host}{conn.port ? `:${conn.port}` : ''}</div>}
-                            {conn.username && <div className="conn-note">👤 {conn.username}</div>}
+                            {conn.username && <div className="conn-note"> {conn.username}</div>}
                             {conn.password && (
                               <div className="password-field">
-                                <span className="masked">{showPw ? conn.password : '••••••••'}</span>
-                                <button onClick={() => togglePassword(conn.id)} title={showPw ? 'Gizle' : 'Göster'}>{showPw ? '🙈' : '👁️'}</button>
-                                <button onClick={() => copyToClipboard(conn.password, 'Şifre')} title="Kopyala">📋</button>
+                                <span className="masked">{showPw ? conn.password : ''}</span>
+                                <button onClick={() => togglePassword(conn.id)} title={showPw ? 'Gizle' : 'Göster'}>{showPw ? '' : ''}</button>
+                                <button onClick={() => copyToClipboard(conn.password, 'Şifre')} title="Kopyala"></button>
                               </div>
                             )}
-                            {conn.note && <div className="conn-note">📝 {conn.note}</div>}
+                            {conn.note && <div className="conn-note"> {conn.note}</div>}
                           </div>
                           <div className="ra-conn-actions">
-                            <button onClick={() => handleEdit(conn)} title="Düzenle">✏️</button>
-                            <button onClick={() => handleDelete(conn.id)} title="Sil">🗑️</button>
+                            <button onClick={() => handleEdit(conn)} title="Düzenle"></button>
+                            <button onClick={() => handleDelete(conn.id)} title="Sil"></button>
                           </div>
                         </div>
                       );
@@ -251,7 +251,7 @@ const RemoteAccessPage = ({ clients, currentUser, showToast, darkMode }) => {
                       </div>
                       <div>
                         <label>Şifre</label>
-                        <input type="password" value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} placeholder="••••••" />
+                        <input type="password" value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} placeholder="" />
                       </div>
                     </div>
                     <div className="form-row full">
@@ -261,7 +261,7 @@ const RemoteAccessPage = ({ clients, currentUser, showToast, darkMode }) => {
                       </div>
                     </div>
                     <div className="ra-conn-form-actions">
-                      <button className="btn-save" onClick={() => handleSave(client.id)}>💾 {editingConn ? 'Güncelle' : 'Kaydet'}</button>
+                      <button className="btn-save" onClick={() => handleSave(client.id)}> {editingConn ? 'Güncelle' : 'Kaydet'}</button>
                       <button className="btn-cancel" onClick={() => { setAddingForClient(null); resetForm(); }}>İptal</button>
                     </div>
                   </div>
@@ -278,7 +278,7 @@ const RemoteAccessPage = ({ clients, currentUser, showToast, darkMode }) => {
 
       {filteredClients.length === 0 && (
         <div className="empty-state">
-          <div className="icon">🔍</div>
+          <div className="icon"></div>
           <p>Arama kriterine uygun müşteri bulunamadı</p>
         </div>
       )}
